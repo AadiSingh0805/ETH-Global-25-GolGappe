@@ -7,6 +7,8 @@ const RepoList = ({
   selectedRepos, 
   loading, 
   onRepoToggle,
+  onLoadBountyInfo,
+  onDonate,
   error 
 }) => {
   if (loading) {
@@ -85,6 +87,8 @@ const RepoList = ({
             isListed={listedRepos.has(repo.id)}
             isSelected={selectedRepos.has(repo.id)}
             onToggle={() => onRepoToggle(repo.id)}
+            onLoadBountyInfo={onLoadBountyInfo}
+            onDonate={onDonate}
           />
         ))}
       </div>

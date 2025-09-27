@@ -4,6 +4,7 @@ import Navbar from '../Navbar/Navbar';
 import RepoList from './RepoList';
 import { repositoryAPI, blockchainAPI } from '../../services/api';
 import { useAuth } from '../../contexts/AuthContext';
+import web3Service from '../../services/web3Service';
 
 const CreatorDashboard = () => {
   const [repositories, setRepositories] = useState([]);
@@ -15,48 +16,156 @@ const CreatorDashboard = () => {
 
   // Fetch user's repositories from GitHub
   const fetchRepositories = async () => {
+    console.log('📥 Fetching GitHub repositories...');
     setLoading(true);
     setError(null);
     try {
       const response = await repositoryAPI.getUserRepos();
+      console.log('📊 GitHub repositories API response:', response);
       
       if (response.success) {
-        const reposWithBountyData = await Promise.all(
-          response.repos.map(async (repo) => {
-            try {
-              // Try to get bounty information for this repository
-              const bountyInfo = await repositoryAPI.getRepositoryBounties(repo.id);
-              return {
-                ...repo,
-                bountyInfo: bountyInfo.success ? bountyInfo.projectPool : null
-              };
-            } catch (bountyError) {
-              console.log(`No bounty info for repo ${repo.id}`);
-              return {
-                ...repo,
-                bountyInfo: null
-              };
-            }
-          })
-        );
+        const repos = response.repos.map(repo => ({
+          ...repo,
+          bountyInfo: null // Will be loaded on demand
+        }));
         
-        setRepositories(reposWithBountyData);
+        setRepositories(repos);
+        console.log(`✅ Fetched ${repos.length} GitHub repositories:`, repos.map(r => ({
+          id: r.id, 
+          name: r.name, 
+          fullName: r.fullName
+        })));
       } else {
         setError(response.message || 'Failed to fetch repositories');
+        console.error('❌ Failed to fetch GitHub repositories:', response);
       }
     } catch (error) {
-      console.error('Failed to fetch repositories:', error);
+      console.error('💥 Failed to fetch repositories:', error);
       setError(error.message || 'Failed to fetch repositories. Please ensure you have connected your GitHub account.');
     } finally {
       setLoading(false);
     }
   };
 
+  // Load bounty information for a specific repository
+  const loadBountyInfo = async (repoId) => {
+    try {
+      // Use Web3 service to get project pool balance directly from blockchain
+      const poolInfo = await web3Service.getProjectPool(repoId);
+      
+      if (poolInfo.success) {
+        const bountyInfo = {
+          balance: poolInfo.balance,
+          balanceWei: poolInfo.balanceWei
+        };
+        
+        setRepositories(prev => prev.map(repo => 
+          repo.id === repoId 
+            ? { ...repo, bountyInfo }
+            : repo
+        ));
+        
+        return bountyInfo;
+      }
+    } catch (error) {
+      console.log(`No bounty info available for repository ${repoId}:`, error);
+    }
+    return null;
+  };
+
+  // Check for already listed repositories from blockchain
+  const checkAlreadyListedRepos = async () => {
+    console.log('🔍 Checking for already listed repositories...');
+    try {
+      const response = await repositoryAPI.getListedRepositories();
+      console.log('📊 Listed repositories API response:', response);
+      
+      if (response.success && response.listedRepos) {
+        console.log(`📦 Found ${response.listedRepos.length} repositories on blockchain:`, response.listedRepos);
+        
+        // Filter out repos without githubId and convert to Set
+        const validRepos = response.listedRepos.filter(repo => {
+          const hasGithubId = repo.githubId && !isNaN(parseInt(repo.githubId));
+          if (!hasGithubId) {
+            console.log(`⚠️ Skipping repo without valid GitHub ID:`, repo);
+          }
+          return hasGithubId;
+        });
+        
+        const listedRepoIds = new Set(validRepos.map(repo => parseInt(repo.githubId)));
+        setListedRepos(listedRepoIds);
+        
+        console.log(`✅ Auto-detected ${listedRepoIds.size} already listed repositories from blockchain`);
+        console.log('🔢 Listed repository IDs:', Array.from(listedRepoIds));
+        
+        if (validRepos.length > 0) {
+          console.log('📋 Valid repositories with GitHub IDs:', validRepos.map(repo => ({
+            blockchainId: repo.blockchainId,
+            githubId: repo.githubId,
+            name: repo.name,
+            owner: repo.owner
+          })));
+        }
+      } else {
+        console.log('❌ Failed to fetch listed repositories:', response);
+      }
+    } catch (error) {
+      console.error('💥 Failed to fetch already listed repositories:', error);
+      // Don't show error to user as this is a background check
+    }
+  };
+
   useEffect(() => {
     if (user) {
+      console.log('🚀 User authenticated, starting data fetch...');
       fetchRepositories();
+      checkAlreadyListedRepos(); // Auto-detect already listed repos
     }
   }, [user]);
+
+  // Debug: Show matching between GitHub and blockchain repos
+  useEffect(() => {
+    if (repositories.length > 0 && listedRepos.size > 0) {
+      console.log('🔗 MATCHING ANALYSIS:');
+      console.log('📁 GitHub Repositories:', repositories.map(r => `${r.id} (${r.name})`));
+      console.log('⛓️ Blockchain Repository IDs:', Array.from(listedRepos));
+      
+      const matches = repositories.filter(repo => listedRepos.has(repo.id));
+      console.log(`✅ Found ${matches.length} matches:`, matches.map(r => `${r.id} (${r.name})`));
+      
+      const unmatched = repositories.filter(repo => !listedRepos.has(repo.id));
+      if (unmatched.length > 0) {
+        console.log(`❌ ${unmatched.length} unmatched repositories:`, unmatched.map(r => `${r.id} (${r.name})`));
+      }
+    }
+  }, [repositories, listedRepos]);
+
+  const handleDonate = async (repoId, amount) => {
+    try {
+      if (!amount || parseFloat(amount) <= 0) {
+        alert('Please enter a valid donation amount');
+        return;
+      }
+
+      console.log(`Starting donation: ${amount} ETH to repo ${repoId}`);
+      
+      // Use Web3 service for MetaMask-based donation
+      const result = await web3Service.donateToProject(repoId, parseFloat(amount));
+      
+      console.log('Donation result:', result);
+      
+      if (result.success) {
+        alert(`Successfully donated ${amount} tFIL to project!\n\nTransaction Hash: ${result.transactionHash}\nBlock Number: ${result.blockNumber}`);
+        // Refresh bounty info for this repo
+        await loadBountyInfo(repoId);
+      } else {
+        alert(`Donation failed: ${result.message}`);
+      }
+    } catch (error) {
+      console.error('Donation error:', error);
+      alert(`Donation failed: ${error.message}`);
+    }
+  };
 
   const handleRepoToggle = (repoId) => {
     const newSelected = new Set(selectedRepos);
@@ -259,6 +368,8 @@ const CreatorDashboard = () => {
             selectedRepos={selectedRepos}
             loading={loading}
             onRepoToggle={handleRepoToggle}
+            onLoadBountyInfo={loadBountyInfo}
+            onDonate={handleDonate}
             error={error}
           />
         </div>

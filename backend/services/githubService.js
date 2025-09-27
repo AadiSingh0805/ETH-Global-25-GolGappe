@@ -104,7 +104,10 @@ class GitHubService {
         }))
       };
     } catch (error) {
-      console.error('GitHub Issues API Error:', error.response?.data || error.message);
+      // Don't log 404s as errors since they're expected for private/missing repos
+      if (error.response?.status !== 404) {
+        console.error('GitHub Issues API Error:', error.response?.data || error.message);
+      }
       return {
         success: false,
         error: error.response?.data?.message || 'Failed to fetch repository issues',
@@ -123,39 +126,41 @@ class GitHubService {
         }
       });
 
-      const repoData = response.data;
       return {
         success: true,
         data: {
-          id: repoData.id,
-          name: repoData.name,
-          fullName: repoData.full_name,
-          description: repoData.description || '',
-          stars: repoData.stargazers_count,
-          forks: repoData.forks_count,
-          language: repoData.language,
-          isPrivate: repoData.private,
-          htmlUrl: repoData.html_url,
-          cloneUrl: repoData.clone_url,
-          defaultBranch: repoData.default_branch,
-          openIssues: repoData.open_issues_count,
-          lastUpdated: repoData.updated_at,
-          createdAt: repoData.created_at,
-          topics: repoData.topics || [],
-          hasIssues: repoData.has_issues,
-          size: repoData.size,
+          id: response.data.id,
+          name: response.data.name,
+          fullName: response.data.full_name,
+          description: response.data.description || '',
+          stars: response.data.stargazers_count,
+          forks: response.data.forks_count,
+          language: response.data.language,
+          isPrivate: response.data.private,
+          htmlUrl: response.data.html_url,
+          cloneUrl: response.data.clone_url,
+          defaultBranch: response.data.default_branch,
+          openIssues: response.data.open_issues_count,
+          lastUpdated: response.data.updated_at,
+          createdAt: response.data.created_at,
+          topics: response.data.topics || [],
+          hasIssues: response.data.has_issues,
+          size: response.data.size,
           owner: {
-            login: repoData.owner.login,
-            id: repoData.owner.id,
-            avatar: repoData.owner.avatar_url
+            login: response.data.owner.login,
+            id: response.data.owner.id,
+            avatar: response.data.owner.avatar_url
           }
         }
       };
     } catch (error) {
-      console.error('GitHub Repository API Error:', error.response?.data || error.message);
+      // Don't log 404s as errors since they're expected for private/missing repos
+      if (error.response?.status !== 404) {
+        console.error('GitHub Repository API Error:', error.response?.data || error.message);
+      }
       return {
         success: false,
-        error: error.response?.data?.message || 'Failed to fetch repository metadata',
+        error: error.response?.data?.message || 'Failed to fetch repository information',
         status: error.response?.status
       };
     }
@@ -180,17 +185,17 @@ class GitHubService {
           email: response.data.email,
           avatar: response.data.avatar_url,
           bio: response.data.bio,
-          company: response.data.company,
-          location: response.data.location,
           publicRepos: response.data.public_repos,
+          publicGists: response.data.public_gists,
           followers: response.data.followers,
           following: response.data.following,
           createdAt: response.data.created_at,
+          updatedAt: response.data.updated_at,
           htmlUrl: response.data.html_url
         }
       };
     } catch (error) {
-      console.error('GitHub User API Error:', error.response?.data || error.message);
+      console.error('GitHub User Profile API Error:', error.response?.data || error.message);
       return {
         success: false,
         error: error.response?.data?.message || 'Failed to fetch user profile',
