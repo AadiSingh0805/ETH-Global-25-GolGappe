@@ -94,6 +94,10 @@ const MainContent = () => {
     return colors[category] || '#1DB954'
   }
 
+  const handleDonate = (companyName) => {
+    alert(`Donate to ${companyName} - Feature coming soon!`)
+  }
+
   return (
     <section className="main-content">
       <div className="main-content-container">
@@ -135,6 +139,12 @@ const MainContent = () => {
                 <a href={company.repoLink} target="_blank" rel="noopener noreferrer" className="repo-link">
                   View Repository
                 </a>
+                <button 
+                  className="donate-btn"
+                  onClick={() => handleDonate(company.name)}
+                >
+                  Donate
+                </button>
               </div>
             </div>
           ))}

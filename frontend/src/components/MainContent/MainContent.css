@@ -160,8 +160,8 @@
 
 .company-actions {
   display: flex;
-  justify-content: center;
-  margin-top: auto;
+  flex-direction: column;
+  gap: 8px;
 }
 
 .repo-link {
@@ -183,6 +183,33 @@
   background-color: #1ed760;
   transform: translateY(-1px);
   color: #ffffff;
+}
+
+.donate-btn {
+  background: linear-gradient(135deg, #1DB954, #1ed760);
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 8px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.donate-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(29, 185, 84, 0.4);
+}
+
+.donate-btn:active {
+  transform: translateY(0);
 }
 
 @media (max-width: 1200px) {
