@@ -12,6 +12,10 @@ import mongoose from 'mongoose';
 import authRoutes from './routes/auth.js';
 import userRoutes from './routes/users.js';
 import projectRoutes from './routes/projects.js';
+import blockchainRoutes from './routes/blockchain.js';
+import escrowRoutes from './routes/escrow.js';
+import analyticsRoutes from './routes/analytics.js';
+import githubRoutes from './routes/github.js';
 
 // Import middleware
 import { errorHandler } from './middleware/errorHandler.js';
@@ -81,6 +85,10 @@ app.get('/health', (req, res) => {
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/projects', projectRoutes);
+app.use('/api/blockchain', blockchainRoutes);
+app.use('/api/escrow', escrowRoutes);
+app.use('/api/analytics', analyticsRoutes);
+app.use('/api/github', githubRoutes);
 
 // 404 handler
 app.use('*', (req, res) => {

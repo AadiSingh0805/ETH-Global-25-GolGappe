@@ -9,7 +9,7 @@ const router = express.Router();
 router.get('/github', (req, res) => {
   const clientId = process.env.GITHUB_CLIENT_ID;
   const redirectUri = process.env.GITHUB_CALLBACK_URL;
-  const scope = 'user:email';
+  const scope = 'user:email repo read:org';
   
   const githubAuthUrl = `https://github.com/login/oauth/authorize?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&scope=${scope}`;
   
