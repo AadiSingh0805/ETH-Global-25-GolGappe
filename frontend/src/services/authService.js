@@ -16,45 +16,61 @@ class AuthService {
     }
   }
 
-  // MetaMask authentication
+  // MetaMask nonce generation
+  async getMetaMaskNonce(address) {
+    try {
+      return await api.post('/auth/metamask/nonce', { address });
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  // MetaMask signature verification
+  async verifyMetaMaskSignature(address, signature, message) {
+    try {
+      return await api.post('/auth/metamask/verify', {
+        address,
+        signature,
+        message
+      });
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  // Full MetaMask connection flow
   async connectMetaMask() {
     try {
       // Check if MetaMask is installed
-      if (typeof window.ethereum === 'undefined') {
-        throw { success: false, message: 'MetaMask is not installed' };
+      if (!window.ethereum) {
+        throw new Error('MetaMask is not installed. Please install MetaMask to continue.');
       }
 
       // Request account access
-      const accounts = await window.ethereum.request({ 
-        method: 'eth_requestAccounts' 
+      const accounts = await window.ethereum.request({
+        method: 'eth_requestAccounts'
       });
 
-      if (!accounts.length) {
-        throw { success: false, message: 'No accounts found' };
+      if (!accounts || accounts.length === 0) {
+        throw new Error('No accounts found. Please connect your MetaMask wallet.');
       }
 
       const address = accounts[0];
 
-      // Get nonce from backend
-      const nonceResponse = await api.post('/auth/metamask/nonce', { address });
-      
+      // Get nonce
+      const nonceResponse = await this.getMetaMaskNonce(address);
       if (!nonceResponse.success) {
-        throw nonceResponse;
+        throw new Error(nonceResponse.message || 'Failed to generate nonce');
       }
 
-      // Request signature from MetaMask
-      const provider = new ethers.BrowserProvider(window.ethereum);
-      const signer = await provider.getSigner();
-      const signature = await signer.signMessage(nonceResponse.message);
-
-      // Verify signature with backend
-      const verifyResponse = await api.post('/auth/metamask/verify', {
-        address,
-        signature,
-        message: nonceResponse.message
+      // Sign message
+      const signature = await window.ethereum.request({
+        method: 'personal_sign',
+        params: [nonceResponse.message, address]
       });
 
-      return verifyResponse;
+      // Verify and authenticate
+      return await this.verifyMetaMaskSignature(address, signature, nonceResponse.message);
     } catch (error) {
       console.error('MetaMask connection error:', error);
       throw error;

@@ -164,7 +164,9 @@ userSchema.virtual('fullProfile').get(function() {
     stats: this.stats,
     isVerified: this.isVerified,
     hasGithub: !!this.github?.id,
-    hasWallet: !!this.wallet?.address
+    hasWallet: !!this.wallet?.address,
+    walletAddress: this.wallet?.address || null,
+    preferences: this.preferences
   };
 });
 

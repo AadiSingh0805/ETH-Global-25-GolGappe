@@ -3,15 +3,15 @@ import authService from '../services/authService';
 
 const AuthContext = createContext();
 
-export const useAuth = () => {
+function useAuth() {
   const context = useContext(AuthContext);
   if (!context) {
     throw new Error('useAuth must be used within an AuthProvider');
   }
   return context;
-};
+}
 
-export const AuthProvider = ({ children }) => {
+function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -42,19 +42,40 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const githubLogin = async () => {
-    try {
-      await authService.githubLogin();
-      // Redirect will happen automatically
-    } catch (error) {
-      console.error('GitHub login failed:', error);
-      throw error;
-    }
-  };
-
   const metamaskLogin = async () => {
     try {
-      const response = await authService.connectMetaMask();
+      // Check if MetaMask is installed
+      if (!window.ethereum) {
+        throw new Error('MetaMask is not installed. Please install MetaMask to continue.');
+      }
+
+      // Request account access
+      const accounts = await window.ethereum.request({
+        method: 'eth_requestAccounts'
+      });
+
+      if (!accounts || accounts.length === 0) {
+        throw new Error('No accounts found. Please connect your MetaMask wallet.');
+      }
+
+      const address = accounts[0];
+
+      // Get nonce from backend for signature
+      const nonceResponse = await authService.getMetaMaskNonce(address);
+      if (!nonceResponse.success) {
+        throw new Error(nonceResponse.message || 'Failed to generate nonce');
+      }
+
+      const { message } = nonceResponse;
+
+      // Sign message with MetaMask
+      const signature = await window.ethereum.request({
+        method: 'personal_sign',
+        params: [message, address]
+      });
+
+      // Verify signature and authenticate
+      const response = await authService.verifyMetaMaskSignature(address, signature, message);
       
       if (response.success && response.user) {
         setUser(response.user);
@@ -65,6 +86,17 @@ export const AuthProvider = ({ children }) => {
       }
     } catch (error) {
       console.error('MetaMask login failed:', error);
+      throw error;
+    }
+  };
+
+  const githubLogin = async () => {
+    try {
+      // This should only happen after MetaMask connection
+      await authService.githubLogin();
+      // Redirect will happen automatically
+    } catch (error) {
+      console.error('GitHub login failed:', error);
       throw error;
     }
   };
@@ -114,4 +146,7 @@ export const AuthProvider = ({ children }) => {
       {children}
     </AuthContext.Provider>
   );
-};
+}
+
+// Export at the bottom in a consistent way
+export { useAuth, AuthProvider };

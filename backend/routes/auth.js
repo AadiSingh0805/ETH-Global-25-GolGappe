@@ -73,17 +73,29 @@ router.get('/github/callback', async (req, res) => {
     const emails = await emailResponse.json();
     const primaryEmail = emails.find(email => email.primary)?.email || githubUser.email;
 
-    // Find or create user
+    // Find or create user - prioritize existing MetaMask user
     let user = await User.findOne({ 'github.id': githubUser.id.toString() });
     
     if (!user) {
-      // Check if user exists with same email or username
-      user = await User.findOne({
+      // Check if user exists with same email or username, or if there's an existing session with wallet
+      const existingQuery = {
         $or: [
           { email: primaryEmail },
           { username: githubUser.login }
         ]
-      });
+      };
+
+      // If there's a session with wallet, prioritize linking to that user
+      if (req.session.userId) {
+        const sessionUser = await User.findById(req.session.userId);
+        if (sessionUser && sessionUser.wallet?.address) {
+          user = sessionUser;
+        }
+      }
+
+      if (!user) {
+        user = await User.findOne(existingQuery);
+      }
 
       if (user) {
         // Update existing user with GitHub info
@@ -95,8 +107,19 @@ router.get('/github/callback', async (req, res) => {
           profileUrl: githubUser.html_url,
           accessToken: tokenData.access_token
         };
+        
+        // If user doesn't have basic info, update from GitHub
+        if (!user.displayName) {
+          user.displayName = githubUser.name || githubUser.login;
+        }
+        if (!user.bio) {
+          user.bio = githubUser.bio || '';
+        }
+        if (!user.avatar && !user.wallet?.address) {
+          user.avatar = githubUser.avatar_url;
+        }
       } else {
-        // Create new user
+        // Create new user - but they should have connected MetaMask first
         user = new User({
           username: githubUser.login,
           displayName: githubUser.name || githubUser.login,
@@ -126,10 +149,10 @@ router.get('/github/callback', async (req, res) => {
 
     // Set session
     req.session.userId = user._id;
-    req.session.authMethod = 'github';
+    req.session.authMethod = user.wallet?.address ? 'both' : 'github';
 
-    // Redirect to frontend with success
-    res.redirect(`${process.env.FRONTEND_URL}/?auth=success`);
+    // Redirect to frontend with success - indicate GitHub connection completed
+    res.redirect(`${process.env.FRONTEND_URL}/auth?auth=github_success`);
     
   } catch (error) {
     console.error('GitHub OAuth error:', error);
@@ -201,33 +224,67 @@ router.post('/metamask/verify', validateEthSignature, async (req, res) => {
       });
     }
 
-    // Find or create user
-    let user = await User.findOne({ 'wallet.address': address.toLowerCase() });
-    
-    if (!user) {
-      // Create new user with wallet
-      const shortAddress = address.slice(0, 6) + '...' + address.slice(-4);
-      user = new User({
-        username: `wallet_${address.slice(2, 8)}`,
-        displayName: `User ${shortAddress}`,
-        wallet: {
-          address: address.toLowerCase(),
-          isVerified: true,
-          nonce: req.session.metamaskNonce
-        }
-      });
+    let user;
+
+    // Check if user is already logged in (GitHub first, then MetaMask)
+    if (req.session.userId) {
+      // User is already authenticated, link wallet to existing account
+      user = await User.findById(req.session.userId);
+      
+      if (!user) {
+        return res.status(404).json({
+          success: false,
+          message: 'User not found'
+        });
+      }
+
+      // Check if wallet is already linked to another account
+      const existingWalletUser = await User.findOne({ 'wallet.address': address.toLowerCase() });
+      if (existingWalletUser && !existingWalletUser._id.equals(user._id)) {
+        return res.status(400).json({
+          success: false,
+          message: 'This wallet is already linked to another account'
+        });
+      }
+
+      // Link wallet to existing user
+      user.wallet = {
+        address: address.toLowerCase(),
+        isVerified: true,
+        nonce: req.session.metamaskNonce,
+        lastSignInMessage: message
+      };
     } else {
-      // Update existing user
-      user.wallet.isVerified = true;
-      user.wallet.nonce = req.session.metamaskNonce;
+      // No existing session, find or create user with wallet
+      user = await User.findOne({ 'wallet.address': address.toLowerCase() });
+      
+      if (!user) {
+        // Create new user with wallet
+        const shortAddress = address.slice(0, 6) + '...' + address.slice(-4);
+        user = new User({
+          username: `wallet_${address.slice(2, 8)}`,
+          displayName: `User ${shortAddress}`,
+          wallet: {
+            address: address.toLowerCase(),
+            isVerified: true,
+            nonce: req.session.metamaskNonce,
+            lastSignInMessage: message
+          }
+        });
+      } else {
+        // Update existing user
+        user.wallet.isVerified = true;
+        user.wallet.nonce = req.session.metamaskNonce;
+        user.wallet.lastSignInMessage = message;
+      }
     }
 
     await user.save();
     await user.updateLastLogin();
 
-    // Set session
+    // Set/update session
     req.session.userId = user._id;
-    req.session.authMethod = 'metamask';
+    req.session.authMethod = req.session.authMethod ? 'both' : 'metamask';
     
     // Clear MetaMask session data
     delete req.session.metamaskNonce;
@@ -235,15 +292,16 @@ router.post('/metamask/verify', validateEthSignature, async (req, res) => {
 
     res.json({
       success: true,
-      message: 'Authentication successful',
-      user: user.fullProfile
+      message: 'MetaMask connected successfully',
+      user: user.fullProfile,
+      walletAddress: address.toLowerCase()
     });
     
   } catch (error) {
     console.error('MetaMask verification error:', error);
     res.status(500).json({
       success: false,
-      message: 'Authentication failed'
+      message: 'MetaMask authentication failed'
     });
   }
 });
