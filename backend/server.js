@@ -5,7 +5,6 @@ import helmet from 'helmet';
 import morgan from 'morgan';
 import rateLimit from 'express-rate-limit';
 import session from 'express-session';
-import passport from 'passport';
 import cookieParser from 'cookie-parser';
 import mongoose from 'mongoose';
 
@@ -63,10 +62,6 @@ app.use(session({
     maxAge: 24 * 60 * 60 * 1000 // 24 hours
   }
 }));
-
-// Passport middleware
-app.use(passport.initialize());
-app.use(passport.session());
 
 // Logging middleware
 if (process.env.NODE_ENV === 'development') {
