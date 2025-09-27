@@ -1,0 +1,20 @@
+{
+  "name": "hedera-agentic-workflow",
+  "version": "1.0.0",
+  "description": "Agentic AI workflow using Hedera Previewnet",
+  "main": "src/index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node src/index.js",
+    "test": "node --test tests/"
+  },
+  "dependencies": {
+    "@hashgraph/sdk": "^2.49.0",
+    "axios": "^1.6.0",
+    "js-sha3": "^0.8.0",
+    "dotenv": "^16.3.1"
+  },
+  "keywords": ["hedera", "ai", "blockchain", "recommendation"],
+  "author": "Your Name",
+  "license": "MIT"
+}
