@@ -5,8 +5,8 @@ dotenv.config();
 
 // Contract addresses
 export const CONTRACT_ADDRESSES = {
-  REPO_REGISTRY: '0xE865690eCAc3547dA4e87e648F7Fbb10778C6050',
-  BOUNTY_ESCROW: '0x3bf06982df5959b3Bf26bA62B46069c42FA002e0'
+  REPO_REGISTRY: '0x3bf06982df5959b3Bf26bA62B46069c42FA002e0',
+  BOUNTY_ESCROW: '0xE865690eCAc3547dA4e87e648F7Fbb10778C6050'
 };
 
 // Contract ABIs
@@ -74,9 +74,27 @@ export const getSigner = () => {
   const provider = getProvider();
   const privateKey = process.env.PRIVATE_KEY;
   
-  if (!privateKey) {
-    throw new Error('PRIVATE_KEY not found in environment variables');
+  if (!privateKey || privateKey === 'your_private_key_here_without_0x_prefix') {
+    throw new Error('PRIVATE_KEY not configured in environment variables. This is required for write operations only.');
   }
   
-  return new ethers.Wallet(privateKey, provider);
+  // Clean and format the private key
+  const cleanedKey = privateKey.trim();
+  console.log('Private key length:', cleanedKey.length);
+  console.log('Private key starts with 0x:', cleanedKey.startsWith('0x'));
+  
+  // Ensure private key has 0x prefix for ethers.js and is 66 characters total (0x + 64 hex chars)
+  const formattedKey = cleanedKey.startsWith('0x') ? cleanedKey : `0x${cleanedKey}`;
+  
+  if (formattedKey.length !== 66) {
+    throw new Error(`Invalid private key length: ${formattedKey.length}. Expected 66 characters (0x + 64 hex chars)`);
+  }
+  
+  return new ethers.Wallet(formattedKey, provider);
+};
+
+// Check if signer is available (for conditional features)
+export const isSignerAvailable = () => {
+  const privateKey = process.env.PRIVATE_KEY;
+  return privateKey && privateKey !== 'your_private_key_here_without_0x_prefix';
 };

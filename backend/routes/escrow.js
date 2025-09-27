@@ -167,16 +167,19 @@ router.post('/projects/:repoId/issues/:issueId/fund', async (req, res) => {
 router.post('/projects/:repoId/issues/:issueId/release', async (req, res) => {
   try {
     const { repoId, issueId } = req.params;
-    const { solverAddress, privateKey } = req.body;
+    const { solverAddress, contributorAddress, privateKey } = req.body;
     
-    if (!solverAddress) {
+    // Accept either solverAddress or contributorAddress
+    const recipientAddress = solverAddress || contributorAddress;
+    
+    if (!recipientAddress) {
       return res.status(400).json({
         success: false,
-        message: 'Solver address is required'
+        message: 'Solver address (solverAddress or contributorAddress) is required'
       });
     }
     
-    if (!ethers.isAddress(solverAddress)) {
+    if (!ethers.isAddress(recipientAddress)) {
       return res.status(400).json({
         success: false,
         message: 'Invalid solver address format'
@@ -194,7 +197,7 @@ router.post('/projects/:repoId/issues/:issueId/release', async (req, res) => {
     
     const contract = getBountyEscrowContract(signer);
     
-    const tx = await contract.releaseBounty(repoId, issueId, solverAddress);
+    const tx = await contract.releaseBounty(repoId, issueId, recipientAddress);
     const receipt = await tx.wait();
     
     // Extract amount from event
@@ -219,7 +222,7 @@ router.post('/projects/:repoId/issues/:issueId/release', async (req, res) => {
         transactionHash: tx.hash,
         repoId: parseInt(repoId),
         issueId: parseInt(issueId),
-        solver: solverAddress,
+        solver: recipientAddress,
         amount,
         gasUsed: receipt.gasUsed.toString()
       }

@@ -15,10 +15,16 @@ router.get('/repos', async (req, res) => {
     const provider = getProvider();
     const contract = getRepoRegistryContract(provider);
     
+    // First check if contract exists and has the repoCount function
     const repoCount = await contract.repoCount();
+    const totalRepos = Number(repoCount);
+    
+    console.log(`Total repos found: ${totalRepos}`);
+    
     const repos = [];
     
-    for (let i = 1; i <= repoCount; i++) {
+    // Only fetch repos if count > 0
+    for (let i = 1; i <= totalRepos; i++) {
       try {
         const [cid, owner, isPublic, issueIds] = await contract.getRepo(i);
         repos.push({
@@ -35,7 +41,9 @@ router.get('/repos', async (req, res) => {
     
     res.json({
       success: true,
-      data: repos
+      data: repos,
+      total: totalRepos,
+      message: totalRepos === 0 ? 'No repositories registered yet' : `Found ${totalRepos} repositories`
     });
   } catch (error) {
     console.error('Error fetching repos:', error);
@@ -92,7 +100,18 @@ router.post('/repos', async (req, res) => {
     let signer;
     
     if (privateKey) {
-      signer = new ethers.Wallet(privateKey, provider);
+      // Format and validate the private key from request
+      const cleanedKey = privateKey.trim();
+      const formattedKey = cleanedKey.startsWith('0x') ? cleanedKey : `0x${cleanedKey}`;
+      
+      if (formattedKey.length !== 66 || !/^0x[0-9a-fA-F]{64}$/.test(formattedKey)) {
+        return res.status(400).json({
+          success: false,
+          message: 'Invalid private key format. Expected 64 hex characters (with or without 0x prefix)'
+        });
+      }
+      
+      signer = new ethers.Wallet(formattedKey, provider);
     } else {
       signer = getSigner();
     }

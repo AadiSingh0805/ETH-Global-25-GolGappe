@@ -12,7 +12,9 @@ import mongoose from 'mongoose';
 import authRoutes from './routes/auth.js';
 import userRoutes from './routes/users.js';
 import projectRoutes from './routes/projects.js';
+import reposRoutes from './routes/repos.js';
 import blockchainRoutes from './routes/blockchain.js';
+import blockchainFrontendRoutes from './routes/blockchain-frontend.js';
 import escrowRoutes from './routes/escrow.js';
 import analyticsRoutes from './routes/analytics.js';
 
@@ -83,7 +85,9 @@ app.get('/health', (req, res) => {
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/projects', projectRoutes);
+app.use('/api/repos', reposRoutes);
 app.use('/api/blockchain', blockchainRoutes);
+app.use('/api/blockchain-frontend', blockchainFrontendRoutes);
 app.use('/api/escrow', escrowRoutes);
 app.use('/api/analytics', analyticsRoutes);
 
