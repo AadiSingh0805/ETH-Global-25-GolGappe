@@ -1,11 +1,12 @@
 .landing-page {
-  min-height: 100vh;
+  height: 100vh; /* Changed from min-height to height for exact 100vh */
   background-color: #121212;
   color: #e0e0e0;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 20px;
+  overflow: hidden; /* Prevent scrolling if content exceeds viewport */
 }
 
 .landing-container {
@@ -99,6 +100,10 @@
 }
 
 @media (max-width: 768px) {
+  .landing-page {
+    padding: 16px;
+  }
+  
   .landing-title {
     font-size: 36px;
   }
@@ -115,5 +120,24 @@
   
   .option-card {
     padding: 30px 20px;
+  }
+}
+
+@media (max-height: 700px) {
+  .landing-header {
+    margin-bottom: 30px;
+  }
+  
+  .options-container {
+    margin-top: 30px;
+    gap: 20px;
+  }
+  
+  .option-card {
+    padding: 20px 15px;
+  }
+  
+  .landing-title {
+    font-size: 36px;
   }
 }

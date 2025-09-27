@@ -1,34 +1,143 @@
-import './CreatorDashboard.css'
+import React, { useState, useEffect } from 'react';
+import './CreatorDashboard.css';
+import Navbar from '../Navbar/Navbar';
+import RepoList from './RepoList';
 
 const CreatorDashboard = () => {
+  const [repositories, setRepositories] = useState([]);
+  const [listedRepos, setListedRepos] = useState(new Set());
+  const [loading, setLoading] = useState(false);
+  const [selectedRepos, setSelectedRepos] = useState(new Set());
+
+  // Mock function to fetch repositories from GitHub API
+  const fetchRepositories = async () => {
+    setLoading(true);
+    try {
+      // Replace with actual GitHub API call
+      const mockRepos = [
+        {
+          id: 1,
+          name: 'awesome-project',
+          description: 'A really awesome open source project that does amazing things',
+          stars: 1234,
+          forks: 567,
+          language: 'JavaScript',
+          commits: 892,
+          issues: 15,
+          pullRequests: 8,
+          lastUpdated: '2025-01-15'
+        },
+        {
+          id: 2,
+          name: 'react-components',
+          description: 'Reusable React components library',
+          stars: 2345,
+          forks: 890,
+          language: 'TypeScript',
+          commits: 1456,
+          issues: 23,
+          pullRequests: 12,
+          lastUpdated: '2025-01-20'
+        },
+        {
+          id: 3,
+          name: 'blockchain-utils',
+          description: 'Utility functions for blockchain development',
+          stars: 678,
+          forks: 234,
+          language: 'Solidity',
+          commits: 345,
+          issues: 7,
+          pullRequests: 3,
+          lastUpdated: '2025-01-10'
+        }
+      ];
+      
+      setRepositories(mockRepos);
+    } catch (error) {
+      console.error('Failed to fetch repositories:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchRepositories();
+  }, []);
+
+  const handleRepoToggle = (repoId) => {
+    const newSelected = new Set(selectedRepos);
+    if (newSelected.has(repoId)) {
+      newSelected.delete(repoId);
+    } else {
+      newSelected.add(repoId);
+    }
+    setSelectedRepos(newSelected);
+  };
+
+  const handleListSelected = () => {
+    const newListed = new Set([...listedRepos, ...selectedRepos]);
+    setListedRepos(newListed);
+    setSelectedRepos(new Set());
+  };
+
+  const handleListAll = () => {
+    const allRepoIds = repositories.map(repo => repo.id);
+    setListedRepos(new Set(allRepoIds));
+    setSelectedRepos(new Set());
+  };
+
+  const handleRemoveAll = () => {
+    setListedRepos(new Set());
+    setSelectedRepos(new Set());
+  };
+
   return (
     <div className="creator-dashboard">
+      <Navbar />
+      
       <div className="dashboard-container">
         <div className="dashboard-header">
-          <h1 className="dashboard-title">Creator Dashboard</h1>
-          <p className="dashboard-subtitle">Manage your bounties and projects</p>
+          <h1>Repository Owner Dashboard</h1>
+          <p>Manage your repositories and bounties</p>
         </div>
-        
+
         <div className="dashboard-content">
-          <div className="empty-state">
-            <div className="empty-icon">
-              <svg width="64" height="64" fill="#1DB954" viewBox="0 0 24 24">
-                <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
-              </svg>
+          <div className="actions-section">
+            <div className="bulk-actions">
+              <button 
+                className="action-btn primary"
+                onClick={handleListSelected}
+                disabled={selectedRepos.size === 0}
+              >
+                List Selected ({selectedRepos.size})
+              </button>
+              <button 
+                className="action-btn secondary"
+                onClick={handleListAll}
+              >
+                List All
+              </button>
+              <button 
+                className="action-btn danger"
+                onClick={handleRemoveAll}
+              >
+                Remove All
+              </button>
             </div>
-            <h3>Welcome to your Creator Dashboard!</h3>
-            <p>Your dashboard is being prepared. Soon you'll be able to:</p>
-            <ul className="feature-list">
-              <li>Create and manage bounties</li>
-              <li>Track project progress</li>
-              <li>Review contributor submissions</li>
-              <li>Manage payments and rewards</li>
-            </ul>
           </div>
+
+          <RepoList 
+            repositories={repositories}
+            listedRepos={listedRepos}
+            selectedRepos={selectedRepos}
+            loading={loading}
+            onRepoToggle={handleRepoToggle}
+          />
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default CreatorDashboard
+export default CreatorDashboard;
