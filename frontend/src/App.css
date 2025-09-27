@@ -47,6 +47,7 @@
   color: #e0e0e0;
 }
 
+/* Only apply padding when app-content class is used (for dashboard pages) */
 .app-content {
   padding-top: 80px; /* Account for fixed navbar */
   min-height: calc(100vh - 80px);
