@@ -30,9 +30,70 @@
   color: #b3b3b3;
 }
 
+.user-info {
+  color: #1db954;
+  font-size: 1rem;
+  margin-top: 0.5rem;
+}
+
+/* Error handling */
+.error-message {
+  background: #2a1a1a;
+  border: 1px solid #d73a49;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.error-message p {
+  color: #ff7875;
+  margin: 0 0 1rem 0;
+}
+
+.retry-btn {
+  background: #d73a49;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.retry-btn:hover {
+  background: #cb2431;
+}
+
 /* Actions Section */
 .actions-section {
   margin-bottom: 2rem;
+}
+
+.stats {
+  display: flex;
+  gap: 2rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0.5rem;
+}
+
+.stat-label {
+  font-size: 0.875rem;
+  color: #b3b3b3;
+  margin-bottom: 0.25rem;
+}
+
+.stat-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #1db954;
 }
 
 .bulk-actions {
@@ -89,11 +150,79 @@
   color: white;
 }
 
+.action-btn.refresh {
+  background: #6f42c1;
+  color: white;
+}
+
+.action-btn.refresh:hover {
+  background: #5a32a3;
+  transform: translateY(-2px);
+}
+
+.action-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
 /* Repo List */
-.repo-list-loading, .repo-list-empty {
+.repo-list-loading, .repo-list-empty, .repo-list-error {
   text-align: center;
   padding: 3rem;
   color: #b3b3b3;
+}
+
+.repo-list-error {
+  background: #2a1a1a;
+  border: 1px solid #d73a49;
+  border-radius: 8px;
+  margin: 2rem 0;
+}
+
+.repo-list-error h3 {
+  color: #ff7875;
+  margin-bottom: 1rem;
+}
+
+.error-suggestions {
+  text-align: left;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.error-suggestions h4 {
+  color: #1db954;
+  margin-bottom: 0.5rem;
+}
+
+.error-suggestions ul {
+  color: #b3b3b3;
+  line-height: 1.6;
+}
+
+.error-suggestions li {
+  margin-bottom: 0.5rem;
+}
+
+.empty-state-actions {
+  margin-top: 1.5rem;
+}
+
+.create-repo-btn {
+  background: #1db954;
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border-radius: 25px;
+  text-decoration: none;
+  font-weight: 600;
+  display: inline-block;
+  transition: all 0.3s ease;
+}
+
+.create-repo-btn:hover {
+  background: #1ed760;
+  transform: translateY(-2px);
 }
 
 .loading-spinner {
@@ -214,6 +343,17 @@
   text-transform: uppercase;
 }
 
+.private-badge {
+  background: #6f42c1;
+  color: white;
+  font-size: 0.7rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  margin-left: 0.5rem;
+}
+
 .repo-checkbox {
   width: 18px;
   height: 18px;
@@ -271,10 +411,64 @@
   color: #1db954;
 }
 
+.bounty-stat .issue-count {
+  color: #ff9800;
+}
+
+.bounty-stat .issue-label {
+  color: #ff9800;
+}
+
 .issue-label {
   font-size: 0.7rem;
   color: #b3b3b3;
   text-transform: uppercase;
+}
+
+.repo-metadata {
+  margin-bottom: 1rem;
+  padding: 0.75rem 0;
+  border-top: 1px solid #333;
+  border-bottom: 1px solid #333;
+}
+
+.repo-meta-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+  font-size: 0.8rem;
+}
+
+.meta-label {
+  color: #b3b3b3;
+}
+
+.meta-value {
+  color: white;
+  font-weight: 500;
+}
+
+.repo-links {
+  display: flex;
+  justify-content: center;
+  margin-top: 0.5rem;
+}
+
+.github-link {
+  color: #b3b3b3;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  transition: all 0.3s ease;
+}
+
+.github-link:hover {
+  color: white;
+  background: rgba(255, 255, 255, 0.1);
 }
 
 .repo-actions-footer {
@@ -376,12 +570,63 @@
   padding: 1.5rem 2rem;
   border-bottom: 1px solid #333;
   flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .filter-controls, .sort-controls {
   display: flex;
   align-items: center;
   gap: 0.5rem;
+}
+
+.refresh-issues-btn {
+  background: #6f42c1;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+}
+
+.refresh-issues-btn:hover {
+  background: #5a32a3;
+}
+
+.loading-container, .error-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem;
+  text-align: center;
+}
+
+.error-container p {
+  color: #ff7875;
+  margin-bottom: 1rem;
+}
+
+.repo-link {
+  margin-top: 0.5rem;
+}
+
+.repo-link .github-link {
+  color: #1db954;
+  text-decoration: none;
+  font-size: 0.9rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  transition: all 0.3s ease;
+}
+
+.repo-link .github-link:hover {
+  background: rgba(29, 185, 84, 0.1);
 }
 
 .filter-controls label, .sort-controls label {
@@ -453,9 +698,307 @@
 .issue-title {
   margin: 0;
   color: white;
-  font-size: 1.1rem;
+  font-size: 1rem;
   font-weight: 600;
-  flex: 1;
+}
+
+.issue-link {
+  color: inherit;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.issue-link:hover {
+  color: #1db954;
+}
+
+.issue-meta {
+  display: flex;
+  gap: 1rem;
+  margin-top: 0.5rem;
+  font-size: 0.8rem;
+  color: #b3b3b3;
+  flex-wrap: wrap;
+}
+
+.issue-author strong {
+  color: white;
+}
+
+.issue-status {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.bounty-status {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0.5rem;
+  border-radius: 6px;
+  min-width: 80px;
+}
+
+.bounty-status.active {
+  background: rgba(255, 152, 0, 0.2);
+  border: 1px solid #ff9800;
+}
+
+.bounty-status.inactive {
+  background: rgba(115, 115, 115, 0.2);
+  border: 1px solid #737373;
+}
+
+.bounty-amount {
+  font-weight: 700;
+  color: #ff9800;
+  font-size: 0.9rem;
+}
+
+.bounty-label {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  margin-top: 0.25rem;
+}
+
+.bounty-status.active .bounty-label {
+  color: #ff9800;
+}
+
+.bounty-status.inactive .bounty-label {
+  color: #737373;
+}
+
+.issue-body {
+  margin-bottom: 1rem;
+  color: #b3b3b3;
+  line-height: 1.5;
+  font-size: 0.9rem;
+}
+
+.issue-labels {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+
+.issue-label {
+  color: white;
+  padding: 0.25rem 0.75rem;
+  border-radius: 12px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.issue-stats {
+  display: flex;
+  gap: 1.5rem;
+  margin-bottom: 1rem;
+  color: #b3b3b3;
+  font-size: 0.8rem;
+}
+
+.issue-stats .stat-item {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.issue-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid #333;
+}
+
+.create-bounty-btn {
+  background: #1db954;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.create-bounty-btn:hover {
+  background: #1ed760;
+}
+
+.create-bounty-btn:disabled {
+  background: #535353;
+  cursor: not-allowed;
+}
+
+.bounty-info {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.bounty-active {
+  color: #1db954;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.view-metadata-btn {
+  color: #6f42c1;
+  text-decoration: none;
+  font-size: 0.8rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  border: 1px solid #6f42c1;
+  transition: all 0.3s ease;
+}
+
+.view-metadata-btn:hover {
+  background: #6f42c1;
+  color: white;
+}
+
+/* Bounty Form */
+.bounty-form-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 2rem;
+}
+
+.bounty-form {
+  background: #2a2a2a;
+  border-radius: 8px;
+  width: 100%;
+  max-width: 500px;
+  max-height: 90vh;
+  overflow-y: auto;
+  border: 1px solid #333;
+}
+
+.bounty-form-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem;
+  border-bottom: 1px solid #333;
+}
+
+.bounty-form-header h4 {
+  margin: 0;
+  color: white;
+  font-size: 1.1rem;
+}
+
+.close-form-btn {
+  background: none;
+  border: none;
+  color: #b3b3b3;
+  cursor: pointer;
+  font-size: 1.5rem;
+  padding: 0.25rem;
+  border-radius: 4px;
+  transition: all 0.3s ease;
+}
+
+.close-form-btn:hover {
+  background: #333;
+  color: white;
+}
+
+.bounty-form form {
+  padding: 1.5rem;
+}
+
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: white;
+  font-weight: 500;
+}
+
+.form-group input,
+.form-group textarea {
+  width: 100%;
+  background: #333;
+  color: white;
+  border: 1px solid #555;
+  border-radius: 6px;
+  padding: 0.75rem;
+  font-size: 0.9rem;
+  transition: border-color 0.3s ease;
+  font-family: inherit;
+  resize: vertical;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: #1db954;
+}
+
+.form-group textarea {
+  min-height: 80px;
+}
+
+.form-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-end;
+  margin-top: 2rem;
+}
+
+.cancel-btn {
+  background: transparent;
+  color: #b3b3b3;
+  border: 1px solid #555;
+  padding: 0.75rem 1.5rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.cancel-btn:hover {
+  background: #333;
+  color: white;
+}
+
+.create-btn {
+  background: #1db954;
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.create-btn:hover {
+  background: #1ed760;
+}
+
+.create-btn:disabled,
+.cancel-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
 .bounty-badge {
