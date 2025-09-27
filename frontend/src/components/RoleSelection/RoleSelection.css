@@ -1,0 +1,157 @@
+.role-selection-page {
+  height: 100vh;
+  background-color: #121212;
+  color: #e0e0e0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  overflow: hidden;
+}
+
+.role-selection-container {
+  max-width: 1000px;
+  width: 100%;
+  text-align: center;
+}
+
+.role-selection-header {
+  margin-bottom: 60px;
+}
+
+.role-selection-logo {
+  width: 80px;
+  height: 80px;
+  margin-bottom: 20px;
+}
+
+.role-selection-title {
+  font-size: 48px;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0 0 16px 0;
+}
+
+.role-selection-subtitle {
+  font-size: 20px;
+  color: #e0e0e0;
+  margin: 0;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+  line-height: 1.5;
+}
+
+.options-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+  margin-top: 60px;
+}
+
+.option-card {
+  background-color: #2b2b2b;
+  border-radius: 16px;
+  padding: 40px 30px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: 2px solid transparent;
+  text-align: center;
+}
+
+.option-card:hover {
+  transform: translateY(-8px);
+  border-color: #1DB954;
+  box-shadow: 0 12px 32px rgba(29, 185, 84, 0.3);
+}
+
+.option-icon {
+  margin-bottom: 24px;
+}
+
+.option-title {
+  font-size: 28px;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0 0 16px 0;
+}
+
+.option-description {
+  font-size: 16px;
+  color: #e0e0e0;
+  line-height: 1.6;
+  margin: 0 0 24px 0;
+}
+
+.option-features {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+}
+
+.feature-tag {
+  background-color: rgba(29, 185, 84, 0.2);
+  color: #1DB954;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.user-info {
+  margin-top: 40px;
+  padding: 20px;
+  background-color: #2b2b2b;
+  border-radius: 12px;
+  border: 1px solid #1DB954;
+}
+
+.user-info p {
+  margin: 8px 0;
+  color: #e0e0e0;
+  font-size: 16px;
+}
+
+@media (max-width: 768px) {
+  .role-selection-page {
+    padding: 16px;
+  }
+  
+  .role-selection-title {
+    font-size: 36px;
+  }
+  
+  .role-selection-subtitle {
+    font-size: 18px;
+  }
+  
+  .options-container {
+    grid-template-columns: 1fr;
+    gap: 24px;
+    margin-top: 40px;
+  }
+  
+  .option-card {
+    padding: 30px 20px;
+  }
+}
+
+@media (max-height: 700px) {
+  .role-selection-header {
+    margin-bottom: 30px;
+  }
+  
+  .options-container {
+    margin-top: 30px;
+    gap: 20px;
+  }
+  
+  .option-card {
+    padding: 20px 15px;
+  }
+  
+  .role-selection-title {
+    font-size: 36px;
+  }
+}
