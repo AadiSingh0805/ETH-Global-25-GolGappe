@@ -12,11 +12,6 @@ import mongoose from 'mongoose';
 import authRoutes from './routes/auth.js';
 import userRoutes from './routes/users.js';
 import projectRoutes from './routes/projects.js';
-import reposRoutes from './routes/repos.js';
-import blockchainRoutes from './routes/blockchain.js';
-import blockchainFrontendRoutes from './routes/blockchain-frontend.js';
-import escrowRoutes from './routes/escrow.js';
-import analyticsRoutes from './routes/analytics.js';
 
 // Import middleware
 import { errorHandler } from './middleware/errorHandler.js';
@@ -35,7 +30,8 @@ mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/golgappe'
 // Rate limiting
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100 // limit each IP to 100 requests per windowMs
+  max: 100, // limit each IP to 100 requests per windowMs
+  message: 'Too many requests from this IP, please try again later.'
 });
 
 // Security middleware
@@ -52,7 +48,7 @@ app.use(cors({
 
 // Body parsing middleware
 app.use(express.json({ limit: '10mb' }));
-app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 // Session configuration
@@ -85,11 +81,6 @@ app.get('/health', (req, res) => {
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/projects', projectRoutes);
-app.use('/api/repos', reposRoutes);
-app.use('/api/blockchain', blockchainRoutes);
-app.use('/api/blockchain-frontend', blockchainFrontendRoutes);
-app.use('/api/escrow', escrowRoutes);
-app.use('/api/analytics', analyticsRoutes);
 
 // 404 handler
 app.use('*', (req, res) => {
@@ -104,9 +95,9 @@ app.use(errorHandler);
 
 // Start server
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-  console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
-  console.log(`CORS enabled for: ${process.env.FRONTEND_URL || 'http://localhost:5173'}`);
+  console.log(`🚀 Server running on port ${PORT}`);
+  console.log(`📊 Environment: ${process.env.NODE_ENV || 'development'}`);
+  console.log(`🌐 Frontend URL: ${process.env.FRONTEND_URL || 'http://localhost:5173'}`);
 });
 
 export default app;
