@@ -309,6 +309,340 @@
   text-align: center;
 }
 
+/* Issue List Overlay */
+.issue-list-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 2rem;
+}
+
+.issue-list-modal {
+  background: #1e1e1e;
+  border-radius: 12px;
+  width: 100%;
+  max-width: 900px;
+  max-height: 90vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.issue-list-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 2rem;
+  border-bottom: 1px solid #333;
+}
+
+.header-title h2 {
+  margin: 0 0 0.5rem 0;
+  color: white;
+  font-size: 1.5rem;
+}
+
+.header-title p {
+  margin: 0;
+  color: #b3b3b3;
+  font-size: 0.9rem;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  color: #b3b3b3;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+}
+
+.close-btn:hover {
+  background: #333;
+  color: white;
+}
+
+.issue-controls {
+  display: flex;
+  gap: 2rem;
+  padding: 1.5rem 2rem;
+  border-bottom: 1px solid #333;
+  flex-wrap: wrap;
+}
+
+.filter-controls, .sort-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.filter-controls label, .sort-controls label {
+  color: #b3b3b3;
+  font-size: 0.9rem;
+}
+
+.filter-controls select, .sort-controls select {
+  background: #333;
+  color: white;
+  border: 1px solid #555;
+  border-radius: 6px;
+  padding: 0.5rem;
+  font-size: 0.9rem;
+}
+
+.issues-container {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1rem 2rem 2rem;
+}
+
+.no-issues {
+  text-align: center;
+  padding: 3rem;
+  color: #b3b3b3;
+}
+
+/* Issue Card */
+.issue-card {
+  background: #2a2a2a;
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-bottom: 1rem;
+  border: 1px solid #333;
+  transition: all 0.3s ease;
+}
+
+.issue-card:hover {
+  border-color: #1db954;
+}
+
+.issue-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.issue-title-section {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex: 1;
+  flex-wrap: wrap;
+}
+
+.issue-number {
+  background: #333;
+  color: #1db954;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.issue-title {
+  margin: 0;
+  color: white;
+  font-size: 1.1rem;
+  font-weight: 600;
+  flex: 1;
+}
+
+.bounty-badge {
+  background: linear-gradient(135deg, #1db954, #1ed760);
+  color: white;
+  padding: 0.25rem 0.75rem;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.issue-meta {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  color: #b3b3b3;
+  font-size: 0.8rem;
+  flex-wrap: wrap;
+}
+
+.issue-comments {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.issue-body {
+  margin-bottom: 1rem;
+}
+
+.issue-body p {
+  color: #b3b3b3;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.issue-labels {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.issue-label {
+  padding: 0.25rem 0.5rem;
+  border-radius: 12px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: white;
+  text-transform: lowercase;
+}
+
+/* Bounty Section */
+.issue-bounty-section {
+  background: #333;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+
+.bounty-edit {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.bounty-input-group {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.currency-symbol {
+  color: #1db954;
+  font-weight: 600;
+  font-size: 1.1rem;
+}
+
+.bounty-input-group input {
+  background: #2a2a2a;
+  border: 1px solid #555;
+  border-radius: 6px;
+  padding: 0.5rem;
+  color: white;
+  font-size: 1rem;
+  width: 120px;
+}
+
+.currency-label {
+  color: #b3b3b3;
+  font-size: 0.9rem;
+}
+
+.bounty-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.save-btn, .cancel-btn {
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  font-size: 0.8rem;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.save-btn {
+  background: #1db954;
+  color: white;
+}
+
+.save-btn:hover {
+  background: #1ed760;
+}
+
+.cancel-btn {
+  background: transparent;
+  color: #b3b3b3;
+  border: 1px solid #555;
+}
+
+.cancel-btn:hover {
+  background: #555;
+  color: white;
+}
+
+.bounty-display {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.current-bounty {
+  color: #1db954;
+  font-weight: 600;
+}
+
+.no-bounty {
+  color: #b3b3b3;
+}
+
+.edit-bounty-btn {
+  background: transparent;
+  color: #1db954;
+  border: 1px solid #1db954;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.8rem;
+  transition: all 0.3s ease;
+}
+
+.edit-bounty-btn:hover {
+  background: #1db954;
+  color: white;
+}
+
+/* Issue Actions */
+.issue-actions {
+  display: flex;
+  justify-content: flex-end;
+  padding-top: 1rem;
+  border-top: 1px solid #444;
+}
+
+.view-github-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #b3b3b3;
+  text-decoration: none;
+  font-size: 0.9rem;
+  padding: 0.5rem;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+}
+
+.view-github-btn:hover {
+  color: white;
+  background: #333;
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
   .dashboard-container {
@@ -334,5 +668,37 @@
   
   .repo-stats {
     gap: 1rem;
+  }
+  
+  .issue-list-overlay {
+    padding: 1rem;
+  }
+  
+  .issue-list-header {
+    padding: 1.5rem;
+  }
+  
+  .issue-controls {
+    flex-direction: column;
+    gap: 1rem;
+    padding: 1rem 1.5rem;
+  }
+  
+  .issues-container {
+    padding: 1rem 1.5rem;
+  }
+  
+  .issue-card {
+    padding: 1rem;
+  }
+  
+  .issue-title-section {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .bounty-display {
+    flex-direction: column;
+    align-items: flex-start;
   }
 }
