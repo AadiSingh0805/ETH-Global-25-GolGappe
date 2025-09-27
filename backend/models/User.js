@@ -35,39 +35,35 @@ const userSchema = new mongoose.Schema({
     default: ''
   },
 
-  // GitHub authentication
-  github: {
-    id: {
-      type: String,
-      sparse: true,
-      unique: true
-    },
-    username: String,
-    email: String,
-    avatar: String,
-    profileUrl: String,
-    accessToken: String
-  },
-
-  // MetaMask/Ethereum authentication
+  // MetaMask/Ethereum authentication only
   wallet: {
     address: {
       type: String,
-      sparse: true,
+      required: true,
       unique: true,
       lowercase: true
     },
-    ensName: String,
     isVerified: {
       type: Boolean,
       default: false
     },
-    lastSignInMessage: String,
-    nonce: String
+    nonce: String,
+    lastSignInMessage: String
   },
 
-  // User preferences and settings
+  // User role and preferences
+  role: {
+    type: String,
+    enum: ['creator', 'contributor', 'admin'],
+    default: 'contributor'
+  },
+
   preferences: {
+    theme: {
+      type: String,
+      enum: ['light', 'dark', 'auto'],
+      default: 'auto'
+    },
     notifications: {
       email: {
         type: Boolean,
@@ -75,7 +71,7 @@ const userSchema = new mongoose.Schema({
       },
       push: {
         type: Boolean,
-        default: true
+        default: false
       }
     },
     privacy: {
@@ -85,28 +81,24 @@ const userSchema = new mongoose.Schema({
       },
       showWallet: {
         type: Boolean,
-        default: false
+        default: true
       }
-    },
-    theme: {
-      type: String,
-      enum: ['light', 'dark', 'auto'],
-      default: 'auto'
     }
   },
 
-  // User role and permissions
-  role: {
-    type: String,
-    enum: ['creator', 'contributor', 'admin'],
-    default: 'contributor'
-  },
-
-  // User stats
+  // User statistics
   stats: {
-    projectsCreated: {
+    bountiesCreated: {
       type: Number,
       default: 0
+    },
+    bountiesSolved: {
+      type: Number,
+      default: 0
+    },
+    totalEarned: {
+      type: String,
+      default: '0'
     },
     contributionsCount: {
       type: Number,
@@ -146,7 +138,6 @@ const userSchema = new mongoose.Schema({
 });
 
 // Indexes for better query performance
-userSchema.index({ 'github.id': 1 });
 userSchema.index({ 'wallet.address': 1 });
 userSchema.index({ username: 1 });
 userSchema.index({ email: 1 });
@@ -158,12 +149,12 @@ userSchema.virtual('fullProfile').get(function() {
     id: this._id,
     username: this.username,
     displayName: this.displayName,
-    avatar: this.avatar || this.github?.avatar || '',
+    email: this.email,
+    avatar: this.avatar,
     bio: this.bio,
     role: this.role,
     stats: this.stats,
     isVerified: this.isVerified,
-    hasGithub: !!this.github?.id,
     hasWallet: !!this.wallet?.address,
     walletAddress: this.wallet?.address || null,
     preferences: this.preferences
@@ -196,7 +187,6 @@ userSchema.statics.findByAnyIdentifier = function(identifier) {
     $or: [
       { username: identifier },
       { email: identifier },
-      { 'github.username': identifier },
       { 'wallet.address': identifier.toLowerCase() }
     ]
   });
@@ -214,7 +204,6 @@ userSchema.pre('save', function(next) {
 userSchema.set('toJSON', {
   transform: function(doc, ret) {
     delete ret.__v;
-    delete ret.github?.accessToken;
     delete ret.wallet?.nonce;
     delete ret.wallet?.lastSignInMessage;
     return ret;

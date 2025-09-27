@@ -15,7 +15,6 @@ import projectRoutes from './routes/projects.js';
 import blockchainRoutes from './routes/blockchain.js';
 import escrowRoutes from './routes/escrow.js';
 import analyticsRoutes from './routes/analytics.js';
-import githubRoutes from './routes/github.js';
 
 // Import middleware
 import { errorHandler } from './middleware/errorHandler.js';
@@ -34,8 +33,7 @@ mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/golgappe'
 // Rate limiting
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // limit each IP to 100 requests per windowMs
-  message: 'Too many requests from this IP, please try again later.'
+  max: 100 // limit each IP to 100 requests per windowMs
 });
 
 // Security middleware
@@ -52,7 +50,7 @@ app.use(cors({
 
 // Body parsing middleware
 app.use(express.json({ limit: '10mb' }));
-app.use(express.urlencoded({ extended: true }));
+app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 app.use(cookieParser());
 
 // Session configuration
@@ -88,7 +86,6 @@ app.use('/api/projects', projectRoutes);
 app.use('/api/blockchain', blockchainRoutes);
 app.use('/api/escrow', escrowRoutes);
 app.use('/api/analytics', analyticsRoutes);
-app.use('/api/github', githubRoutes);
 
 // 404 handler
 app.use('*', (req, res) => {
@@ -103,9 +100,9 @@ app.use(errorHandler);
 
 // Start server
 app.listen(PORT, () => {
-  console.log(`🚀 Server running on port ${PORT}`);
-  console.log(`📊 Environment: ${process.env.NODE_ENV || 'development'}`);
-  console.log(`🌐 Frontend URL: ${process.env.FRONTEND_URL || 'http://localhost:5173'}`);
+  console.log(`Server running on port ${PORT}`);
+  console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
+  console.log(`CORS enabled for: ${process.env.FRONTEND_URL || 'http://localhost:5173'}`);
 });
 
 export default app;

@@ -34,7 +34,7 @@ router.get('/profile/:username?', optionalAuth, async (req, res) => {
         id: user._id,
         username: user.username,
         displayName: user.displayName,
-        avatar: user.avatar || user.github?.avatar || '',
+        avatar: user.avatar,
         bio: user.bio,
         role: user.role,
         stats: user.stats,
@@ -108,86 +108,6 @@ router.put('/profile', requireAuth, async (req, res) => {
   }
 });
 
-// Link GitHub account
-router.post('/link/github', requireAuth, async (req, res) => {
-  try {
-    // This would redirect to GitHub OAuth with a special parameter
-    // indicating it's for linking an existing account
-    const clientId = process.env.GITHUB_CLIENT_ID;
-    const redirectUri = `${process.env.GITHUB_CALLBACK_URL}?link=true`;
-    const scope = 'user:email';
-    
-    const githubAuthUrl = `https://github.com/login/oauth/authorize?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&scope=${scope}&state=${req.user._id}`;
-    
-    res.json({ 
-      success: true, 
-      authUrl: githubAuthUrl 
-    });
-    
-  } catch (error) {
-    console.error('Link GitHub error:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Failed to initiate GitHub linking'
-    });
-  }
-});
-
-// Link wallet account
-router.post('/link/wallet', requireAuth, async (req, res) => {
-  try {
-    const { address, signature, message } = req.body;
-    
-    if (!address || !signature || !message) {
-      return res.status(400).json({
-        success: false,
-        message: 'Address, signature, and message are required'
-      });
-    }
-
-    // Verify signature (similar to MetaMask auth)
-    const { ethers } = await import('ethers');
-    const recoveredAddress = ethers.verifyMessage(message, signature);
-    
-    if (recoveredAddress.toLowerCase() !== address.toLowerCase()) {
-      return res.status(400).json({
-        success: false,
-        message: 'Invalid signature'
-      });
-    }
-
-    // Check if wallet is already linked to another account
-    const existingUser = await User.findOne({ 'wallet.address': address.toLowerCase() });
-    if (existingUser && !existingUser._id.equals(req.user._id)) {
-      return res.status(400).json({
-        success: false,
-        message: 'This wallet is already linked to another account'
-      });
-    }
-
-    // Link wallet to current user
-    req.user.wallet = {
-      address: address.toLowerCase(),
-      isVerified: true
-    };
-
-    await req.user.save();
-
-    res.json({
-      success: true,
-      message: 'Wallet linked successfully',
-      user: req.user.fullProfile
-    });
-    
-  } catch (error) {
-    console.error('Link wallet error:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Failed to link wallet'
-    });
-  }
-});
-
 // Get user statistics
 router.get('/stats', requireAuth, async (req, res) => {
   try {
@@ -199,7 +119,6 @@ router.get('/stats', requireAuth, async (req, res) => {
         ...user.stats,
         accountAge: Math.floor((Date.now() - user.createdAt) / (1000 * 60 * 60 * 24)), // days
         lastLoginAt: user.lastLoginAt,
-        hasGithub: !!user.github?.id,
         hasWallet: !!user.wallet?.address
       }
     });
