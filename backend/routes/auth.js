@@ -151,8 +151,16 @@ router.get('/github/callback', async (req, res) => {
     req.session.userId = user._id;
     req.session.authMethod = user.wallet?.address ? 'both' : 'github';
 
-    // Redirect to frontend with success - indicate GitHub connection completed
-    res.redirect(`${process.env.FRONTEND_URL}/auth?auth=github_success`);
+    // Check if user has both MetaMask and GitHub connected
+    const hasBothConnections = user.wallet?.address && user.github?.id;
+    
+    if (hasBothConnections) {
+      // Both connections complete - redirect to role selection
+      res.redirect(`${process.env.FRONTEND_URL}/role-selection`);
+    } else {
+      // Only GitHub connected - redirect back to auth page for MetaMask
+      res.redirect(`${process.env.FRONTEND_URL}/auth?auth=github_success`);
+    }
     
   } catch (error) {
     console.error('GitHub OAuth error:', error);
@@ -232,7 +240,7 @@ router.post('/metamask/verify', validateEthSignature, async (req, res) => {
       user = await User.findById(req.session.userId);
       
       if (!user) {
-        return res.status(404).json({
+        return res.status(400).json({
           success: false,
           message: 'User not found'
         });
@@ -258,8 +266,15 @@ router.post('/metamask/verify', validateEthSignature, async (req, res) => {
       // No existing session, find or create user with wallet
       user = await User.findOne({ 'wallet.address': address.toLowerCase() });
       
-      if (!user) {
-        // Create new user with wallet
+      if (user) {
+        // User exists with this wallet - log them in (returning user)
+        console.log(`Existing user found for wallet ${address.toLowerCase()}, logging them in`);
+        user.wallet.isVerified = true;
+        user.wallet.nonce = req.session.metamaskNonce;
+        user.wallet.lastSignInMessage = message;
+      } else {
+        // Create new user with wallet (first time user)
+        console.log(`Creating new user for wallet ${address.toLowerCase()}`);
         const shortAddress = address.slice(0, 6) + '...' + address.slice(-4);
         user = new User({
           username: `wallet_${address.slice(2, 8)}`,
@@ -271,11 +286,6 @@ router.post('/metamask/verify', validateEthSignature, async (req, res) => {
             lastSignInMessage: message
           }
         });
-      } else {
-        // Update existing user
-        user.wallet.isVerified = true;
-        user.wallet.nonce = req.session.metamaskNonce;
-        user.wallet.lastSignInMessage = message;
       }
     }
 

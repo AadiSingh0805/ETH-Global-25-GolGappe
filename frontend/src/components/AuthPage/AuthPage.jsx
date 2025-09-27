@@ -1,51 +1,63 @@
 import { useState, useEffect } from 'react'
-import { useNavigate, useParams, useSearchParams } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import { useAuth } from '../../contexts/AuthContext'
 import './AuthPage.css'
 
 const AuthPage = () => {
   const navigate = useNavigate()
-  const { userType } = useParams() // 'creator' or 'contributor'
   const [searchParams] = useSearchParams()
-  const { githubLogin, metamaskLogin, user, isAuthenticated } = useAuth()
+  const { githubLogin, metamaskLogin, user, isAuthenticated, checkAuth } = useAuth()
   
   const [githubConnected, setGithubConnected] = useState(false)
   const [metamaskConnected, setMetamaskConnected] = useState(false)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
-  // Check if user is already authenticated and redirect
+  // Check if user is already authenticated and redirect to role selection
   useEffect(() => {
     if (isAuthenticated && user) {
-      if (userType === 'creator') {
-        navigate('/creator/dashboard')
-      } else {
-        navigate('/contributor/dashboard')
-      }
+      navigate('/role-selection')
     }
-  }, [isAuthenticated, user, userType, navigate])
+  }, [isAuthenticated, user, navigate])
 
   // Check for authentication success/error from URL params
   useEffect(() => {
     const authParam = searchParams.get('auth')
     const errorParam = searchParams.get('error')
     
-    if (authParam === 'success') {
-      setGithubConnected(true)
+    if (authParam === 'github_success' || authParam === 'success') {
+      console.log('GitHub auth detected, refreshing user data...');
+      // Refresh user data after GitHub auth - this should populate user data
+      checkAuth().then(() => {
+        console.log('User data refreshed after GitHub auth');
+      });
     }
     
     if (errorParam) {
       setError(`Authentication error: ${errorParam}`)
     }
-  }, [searchParams])
+  }, [searchParams, checkAuth])
 
   // Update connection states based on user data
   useEffect(() => {
     if (user) {
-      setGithubConnected(user.hasGithub)
-      setMetamaskConnected(user.hasWallet)
+      const hasGithub = user.hasGithub || user.github?.id;
+      const hasWallet = user.hasWallet || user.wallet?.address;
+      
+      console.log('User data updated:', { user, hasGithub, hasWallet });
+      
+      setGithubConnected(hasGithub);
+      setMetamaskConnected(hasWallet);
+      
+      // If both are connected, redirect to role selection
+      if (hasGithub && hasWallet) {
+        console.log('Both connections detected, redirecting to role selection');
+        navigate('/role-selection');
+      }
+    } else {
+      console.log('No user data available');
     }
-  }, [user])
+  }, [user, navigate])
 
   const handleMetamaskConnect = async () => {
     try {
@@ -53,6 +65,11 @@ const AuthPage = () => {
       setError('')
       await metamaskLogin()
       setMetamaskConnected(true)
+      
+      // Automatically trigger GitHub login after MetaMask success
+      console.log('MetaMask connected successfully, starting GitHub authorization...')
+      await githubLogin()
+      
     } catch (error) {
       console.error('MetaMask connection failed:', error)
       setError(error.message || 'Failed to connect MetaMask')
@@ -82,15 +99,24 @@ const AuthPage = () => {
 
   const handleContinue = () => {
     if (githubConnected && metamaskConnected) {
-      if (userType === 'creator') {
-        navigate('/creator/dashboard')
-      } else {
-        navigate('/contributor/dashboard')
-      }
+      navigate('/role-selection')
     }
   }
 
   const canContinue = githubConnected && metamaskConnected
+
+  // Debug logging
+  console.log('Debug - Auth Status:', {
+    user,
+    isAuthenticated,
+    githubConnected,
+    metamaskConnected,
+    canContinue,
+    userHasGithub: user?.hasGithub,
+    userHasWallet: user?.hasWallet,
+    userGithubId: user?.github?.id,
+    userWalletAddress: user?.wallet?.address
+  })
 
   return (
     <div className="auth-page">
@@ -178,11 +204,71 @@ const AuthPage = () => {
 
           <button 
             className={`continue-btn ${canContinue ? 'enabled' : 'disabled'}`}
-            onClick={() => navigate('/auth/select-role')}
+            onClick={() => navigate('/role-selection')}
             disabled={!canContinue || loading}
           >
             {loading ? 'Connecting...' : 'Continue to Role Selection'}
           </button>
+
+          {/* Temporary debug button - remove this later */}
+          <button 
+            className="debug-btn"
+            onClick={() => {
+              console.log('Force navigate to role selection');
+              navigate('/role-selection');
+            }}
+            style={{ 
+              marginTop: '10px', 
+              backgroundColor: '#ff6b6b', 
+              color: 'white', 
+              border: 'none', 
+              padding: '8px 16px', 
+              borderRadius: '4px',
+              cursor: 'pointer'
+            }}
+          >
+            [DEBUG] Force Continue
+          </button>
+
+          {/* Refresh user data button */}
+          <button 
+            className="refresh-btn"
+            onClick={async () => {
+              console.log('Refreshing user data...');
+              await checkAuth();
+            }}
+            style={{ 
+              marginTop: '10px', 
+              backgroundColor: '#1DB954', 
+              color: 'white', 
+              border: 'none', 
+              padding: '8px 16px', 
+              borderRadius: '4px',
+              cursor: 'pointer',
+              marginLeft: '10px'
+            }}
+          >
+            Refresh User Data
+          </button>
+
+          {/* Debug info display */}
+          <div style={{ 
+            marginTop: '20px', 
+            padding: '10px', 
+            backgroundColor: '#2a2a2a', 
+            borderRadius: '4px', 
+            fontSize: '12px',
+            fontFamily: 'monospace',
+            color: '#fff'
+          }}>
+            <div>GitHub Connected: {String(githubConnected)}</div>
+            <div>MetaMask Connected: {String(metamaskConnected)}</div>
+            <div>Can Continue: {String(canContinue)}</div>
+            <div>User Has GitHub: {String(user?.hasGithub)}</div>
+            <div>User Has Wallet: {String(user?.hasWallet)}</div>
+            <div>User GitHub ID: {user?.github?.id || 'none'}</div>
+            <div>User Wallet: {user?.wallet?.address || 'none'}</div>
+          </div>
 
           <button 
             className="back-btn"

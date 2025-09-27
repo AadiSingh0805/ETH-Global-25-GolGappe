@@ -76,7 +76,6 @@ The frontend will run on http://localhost:5173
 - `GET /api/auth/github/callback` - GitHub OAuth callback
 - `POST /api/auth/metamask/nonce` - Get MetaMask nonce for signing
 - `POST /api/auth/metamask/verify` - Verify MetaMask signature
-- `GET /api/auth/me` - Get current user info
 - `POST /api/auth/logout` - Logout user
 - `GET /api/auth/status` - Check authentication status
 
