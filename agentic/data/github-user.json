@@ -1,0 +1,30 @@
+{
+  "username": "alice_dev",
+  "profile": {
+    "name": "Alice Johnson",
+    "bio": "Full-stack developer passionate about blockchain and AI",
+    "location": "San Francisco, CA",
+    "company": "TechCorp",
+    "publicRepos": 42,
+    "followers": 156,
+    "following": 89,
+    "createdAt": "2020-03-15T10:30:00Z"
+  },
+  "skills": {
+    "languages": ["JavaScript", "Python", "Solidity", "Go", "Rust"],
+    "frameworks": ["React", "Node.js", "Express", "Django", "Web3.js"],
+    "technologies": ["Docker", "Kubernetes", "AWS", "MongoDB", "PostgreSQL"],
+    "interests": ["DeFi", "Smart Contracts", "Machine Learning", "Data Science", "Blockchain Infrastructure"]
+  },
+  "recentActivity": {
+    "mostUsedLanguages": ["JavaScript", "Python", "Solidity"],
+    "recentCommits": 127,
+    "activeRepos": ["defi-dashboard", "smart-contracts-toolkit", "ml-trading-bot"],
+    "topicsOfInterest": ["blockchain", "defi", "machine-learning", "web3", "smart-contracts"]
+  },
+  "preferences": {
+    "projectSize": "medium-to-large",
+    "collaborationStyle": "open-source",
+    "learningGoals": ["Advanced Solidity patterns", "Layer 2 solutions", "AI/ML integration with blockchain"]
+  }
+}
