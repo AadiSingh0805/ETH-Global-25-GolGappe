@@ -18,109 +18,137 @@
 
 .companies-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
   gap: 24px;
 }
 
 .company-card {
-  background-color: #2b2b2b;
-  border-radius: 12px;
-  padding: 24px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  background: linear-gradient(135deg, #2b2b2b 0%, #252525 100%);
+  border-radius: 16px;
+  padding: 28px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
   transition: all 0.3s ease;
   border: 2px solid transparent;
   cursor: pointer;
   display: flex;
   flex-direction: column;
   height: 100%;
+  position: relative;
+  overflow: hidden;
+}
+
+.company-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #1DB954, #1ed760);
 }
 
 .company-card:hover {
-  transform: translateY(-4px);
+  transform: translateY(-6px);
   border-color: #1DB954;
-  box-shadow: 0 8px 24px rgba(29, 185, 84, 0.2);
+  box-shadow: 0 12px 32px rgba(29, 185, 84, 0.2);
 }
 
 .company-header {
-  display: flex;
-  align-items: flex-start;
-  gap: 16px;
   margin-bottom: 16px;
 }
 
-.company-logo {
-  width: 60px;
-  height: 60px;
-  border-radius: 12px;
-  flex-shrink: 0;
+.company-info {
+  width: 100%;
 }
 
-.company-info {
-  flex: 1;
+.company-name-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  gap: 12px;
 }
 
 .company-name {
-  font-size: 20px;
+  font-size: 22px;
   font-weight: 700;
   color: #ffffff;
-  margin: 0 0 8px 0;
+  margin: 0;
+  flex: 1;
+}
+
+.category-badge {
+  font-size: 10px;
+  font-weight: 700;
+  color: #ffffff;
+  padding: 4px 10px;
+  border-radius: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  flex-shrink: 0;
 }
 
 .active-issues-badge {
-  background-color: #1DB954;
-  color: #ffffff;
+  background-color: rgba(29, 185, 84, 0.2);
+  color: #1DB954;
   font-size: 12px;
   font-weight: 600;
-  padding: 4px 8px;
+  padding: 4px 10px;
   border-radius: 16px;
   display: inline-block;
+  border: 1px solid rgba(29, 185, 84, 0.3);
 }
 
 .company-description {
   color: #e0e0e0;
   font-size: 14px;
-  line-height: 1.5;
-  margin: 0 0 20px 0;
+  line-height: 1.6;
+  margin: 0 0 24px 0;
 }
 
 .top-bounties {
   flex: 1;
-  margin-bottom: 20px;
+  margin-bottom: 24px;
 }
 
 .bounties-title {
   font-size: 16px;
   font-weight: 600;
   color: #ffffff;
-  margin: 0 0 12px 0;
+  margin: 0 0 16px 0;
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .bounties-list {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 10px;
 }
 
 .bounty-item {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  padding: 8px 12px;
-  background-color: rgba(255, 255, 255, 0.05);
-  border-radius: 6px;
-  transition: background-color 0.25s;
+  padding: 12px 16px;
+  background-color: rgba(255, 255, 255, 0.03);
+  border-radius: 8px;
+  transition: all 0.25s;
   gap: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .bounty-item:hover {
-  background-color: rgba(255, 255, 255, 0.1);
+  background-color: rgba(29, 185, 84, 0.08);
+  border-color: rgba(29, 185, 84, 0.2);
 }
 
 .bounty-title {
   color: #e0e0e0;
   font-size: 13px;
-  line-height: 1.3;
+  line-height: 1.4;
   flex: 1;
+  font-weight: 500;
 }
 
 .bounty-amount {
@@ -132,14 +160,14 @@
 
 .company-actions {
   display: flex;
-  justify-content: flex-end;
+  justify-content: center;
   margin-top: auto;
 }
 
 .repo-link {
   background-color: #1DB954;
   color: #ffffff;
-  padding: 10px 16px;
+  padding: 12px 24px;
   border-radius: 8px;
   font-weight: 600;
   font-size: 14px;
@@ -147,6 +175,8 @@
   transition: all 0.25s;
   border: none;
   cursor: pointer;
+  width: 100%;
+  text-align: center;
 }
 
 .repo-link:hover {
@@ -157,7 +187,7 @@
 
 @media (max-width: 1200px) {
   .companies-grid {
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     gap: 20px;
   }
 }
@@ -173,35 +203,34 @@
   }
   
   .company-card {
-    padding: 20px;
+    padding: 24px;
   }
   
   .section-title {
     font-size: 24px;
     margin-bottom: 24px;
   }
+  
+  .company-name-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  
+  .category-badge {
+    align-self: flex-start;
+  }
 }
 
 @media (max-width: 480px) {
-  .companies-grid {
-    grid-template-columns: 1fr;
-  }
-  
-  .company-header {
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    gap: 12px;
-  }
-  
-  .company-actions {
-    justify-content: center;
+  .company-card {
+    padding: 20px;
   }
   
   .bounty-item {
     flex-direction: column;
     align-items: flex-start;
-    gap: 4px;
+    gap: 6px;
   }
   
   .bounty-amount {
