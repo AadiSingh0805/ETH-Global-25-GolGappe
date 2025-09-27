@@ -3,6 +3,7 @@ import { AuthProvider } from './contexts/AuthContext'
 import './App.css'
 import LandingPage from './components/LandingPage/LandingPage'
 import AuthPage from './components/AuthPage/AuthPage'
+import RoleSelection from './components/RoleSelection/RoleSelection'
 import CreatorDashboard from './components/CreatorDashboard/CreatorDashboard'
 import ContributorDashboard from './components/ContributorDashboard/ContributorDashboard'
 import Navbar from './components/Navbar/Navbar'
@@ -13,13 +14,16 @@ function App() {
       <Router>
         <div className="app">
           <Routes>
-            {/* Landing page without navbar */}
+            {/* Landing page - public */}
             <Route path="/" element={<LandingPage />} />
             
-            {/* Auth pages without navbar */}
-            <Route path="/:userType/auth" element={<AuthPage />} />
+            {/* Authentication page - handles MetaMask + GitHub */}
+            <Route path="/auth" element={<AuthPage />} />
             
-            {/* Dashboard pages with navbar */}
+            {/* Role selection - after successful authentication */}
+            <Route path="/role-selection" element={<RoleSelection />} />
+            
+            {/* Dashboard pages with navbar - protected */}
             <Route path="/creator/dashboard" element={
               <>
                 <Navbar />

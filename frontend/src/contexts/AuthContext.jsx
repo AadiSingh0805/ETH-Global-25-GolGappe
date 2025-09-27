@@ -16,22 +16,26 @@ function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  // Check authentication status on mount
+  // Initialize as not authenticated
   useEffect(() => {
-    checkAuth();
+    // Remove automatic auth check on mount
+    setLoading(false);
   }, []);
 
   const checkAuth = async () => {
+    // Manual auth check - can be called after successful login
+    setLoading(true);
     try {
-      setLoading(true);
       const response = await authService.getCurrentUser();
       
       if (response.success && response.user) {
         setUser(response.user);
         setIsAuthenticated(true);
+        console.log('Auth check successful:', response.user);
       } else {
         setUser(null);
         setIsAuthenticated(false);
+        console.log('Auth check failed: no user data');
       }
     } catch (error) {
       console.error('Auth check failed:', error);
