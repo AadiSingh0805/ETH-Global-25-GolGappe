@@ -6,11 +6,11 @@ const LandingPage = () => {
   const navigate = useNavigate()
 
   const handleCreatorClick = () => {
-    navigate('/creator/auth')
+    navigate('/creator/dashboard')
   }
 
   const handleContributorClick = () => {
-    navigate('/contributor/auth')
+    navigate('/contributor/dashboard')
   }
 
   return (
