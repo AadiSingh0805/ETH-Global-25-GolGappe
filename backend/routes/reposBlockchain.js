@@ -1,5 +1,5 @@
 import express from 'express';
-import { uploadJSON, fetchByCID, uploadRepoMetadata } from '../services/lighthouseService.js';
+import { uploadJSON, fetchByCID, uploadRepoMetadata } from '../services/lightHouseService.js';
 
 const router = express.Router();
 

@@ -12,6 +12,7 @@ const AuthPage = () => {
   const [metamaskConnected, setMetamaskConnected] = useState(false)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+  const [showDebug, setShowDebug] = useState(false) // New state for debug panel
 
   // Check if user is already authenticated and redirect to role selection
   useEffect(() => {
@@ -118,6 +119,140 @@ const AuthPage = () => {
     userWalletAddress: user?.wallet?.address
   })
 
+  // Debug Panel Component
+  const DebugPanel = () => (
+    <div className="debug-panel">
+      <button 
+        className="debug-toggle"
+        onClick={() => setShowDebug(!showDebug)}
+      >
+        <span>🔍 Debug Info</span>
+        <span className={`debug-arrow ${showDebug ? 'open' : ''}`}>▼</span>
+      </button>
+      
+      {showDebug && (
+        <div className="debug-content">
+          <div className="debug-section">
+            <h4>🔗 Connection Status</h4>
+            <div className="debug-grid">
+              <div className="debug-item">
+                <span className="debug-label">GitHub Connected:</span>
+                <span className={`debug-value ${githubConnected ? 'success' : 'error'}`}>
+                  {githubConnected ? '✅ Yes' : '❌ No'}
+                </span>
+              </div>
+              <div className="debug-item">
+                <span className="debug-label">MetaMask Connected:</span>
+                <span className={`debug-value ${metamaskConnected ? 'success' : 'error'}`}>
+                  {metamaskConnected ? '✅ Yes' : '❌ No'}
+                </span>
+              </div>
+              <div className="debug-item">
+                <span className="debug-label">Can Continue:</span>
+                <span className={`debug-value ${canContinue ? 'success' : 'error'}`}>
+                  {canContinue ? '✅ Yes' : '❌ No'}
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div className="debug-section">
+            <h4>👤 User Authentication</h4>
+            <div className="debug-grid">
+              <div className="debug-item">
+                <span className="debug-label">Is Authenticated:</span>
+                <span className={`debug-value ${isAuthenticated ? 'success' : 'error'}`}>
+                  {isAuthenticated ? '✅ Yes' : '❌ No'}
+                </span>
+              </div>
+              <div className="debug-item">
+                <span className="debug-label">User Object:</span>
+                <span className={`debug-value ${user ? 'success' : 'error'}`}>
+                  {user ? '✅ Loaded' : '❌ None'}
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div className="debug-section">
+            <h4>📊 User Data Properties</h4>
+            <div className="debug-grid">
+              <div className="debug-item">
+                <span className="debug-label">User Has GitHub:</span>
+                <span className={`debug-value ${user?.hasGithub === true ? 'success' : user?.hasGithub === false ? 'error' : 'warning'}`}>
+                  {user?.hasGithub === true ? '✅ Yes' : user?.hasGithub === false ? '❌ No' : '⚠️ Undefined'}
+                </span>
+              </div>
+              <div className="debug-item">
+                <span className="debug-label">User Has Wallet:</span>
+                <span className={`debug-value ${user?.hasWallet === true ? 'success' : user?.hasWallet === false ? 'error' : 'warning'}`}>
+                  {user?.hasWallet === true ? '✅ Yes' : user?.hasWallet === false ? '❌ No' : '⚠️ Undefined'}
+                </span>
+              </div>
+              <div className="debug-item">
+                <span className="debug-label">GitHub ID:</span>
+                <span className={`debug-value ${user?.github?.id ? 'success' : 'error'}`}>
+                  {user?.github?.id || '❌ None'}
+                </span>
+              </div>
+              <div className="debug-item">
+                <span className="debug-label">GitHub Username:</span>
+                <span className={`debug-value ${user?.github?.username ? 'success' : 'error'}`}>
+                  {user?.github?.username || '❌ None'}
+                </span>
+              </div>
+              <div className="debug-item">
+                <span className="debug-label">Wallet Address:</span>
+                <span className={`debug-value ${user?.wallet?.address ? 'success' : 'error'}`}>
+                  {user?.wallet?.address ? `✅ ${user.wallet.address.slice(0, 8)}...${user.wallet.address.slice(-6)}` : '❌ None'}
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div className="debug-section">
+            <h4>🛠️ Debug Actions</h4>
+            <div className="debug-actions">
+              <button 
+                className="debug-action-btn refresh"
+                onClick={async () => {
+                  console.log('Refreshing user data...');
+                  await checkAuth();
+                }}
+              >
+                🔄 Refresh User Data
+              </button>
+              <button 
+                className="debug-action-btn force-continue"
+                onClick={() => {
+                  console.log('Force navigate to role selection');
+                  navigate('/role-selection');
+                }}
+              >
+                🚀 Force Continue
+              </button>
+              <button 
+                className="debug-action-btn clear-error"
+                onClick={() => setError('')}
+              >
+                🧹 Clear Error
+              </button>
+            </div>
+          </div>
+
+          {user && (
+            <div className="debug-section">
+              <h4>📋 Raw User Data</h4>
+              <div className="debug-raw-data">
+                <pre>{JSON.stringify(user, null, 2)}</pre>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  )
+
   return (
     <div className="auth-page">
       <div className="auth-container">
@@ -210,65 +345,8 @@ const AuthPage = () => {
             {loading ? 'Connecting...' : 'Continue to Role Selection'}
           </button>
 
-          {/* Temporary debug button - remove this later */}
-          <button 
-            className="debug-btn"
-            onClick={() => {
-              console.log('Force navigate to role selection');
-              navigate('/role-selection');
-            }}
-            style={{ 
-              marginTop: '10px', 
-              backgroundColor: '#ff6b6b', 
-              color: 'white', 
-              border: 'none', 
-              padding: '8px 16px', 
-              borderRadius: '4px',
-              cursor: 'pointer'
-            }}
-          >
-            [DEBUG] Force Continue
-          </button>
-
-          {/* Refresh user data button */}
-          <button 
-            className="refresh-btn"
-            onClick={async () => {
-              console.log('Refreshing user data...');
-              await checkAuth();
-            }}
-            style={{ 
-              marginTop: '10px', 
-              backgroundColor: '#1DB954', 
-              color: 'white', 
-              border: 'none', 
-              padding: '8px 16px', 
-              borderRadius: '4px',
-              cursor: 'pointer',
-              marginLeft: '10px'
-            }}
-          >
-            Refresh User Data
-          </button>
-
-          {/* Debug info display */}
-          <div style={{ 
-            marginTop: '20px', 
-            padding: '10px', 
-            backgroundColor: '#2a2a2a', 
-            borderRadius: '4px', 
-            fontSize: '12px',
-            fontFamily: 'monospace',
-            color: '#fff'
-          }}>
-            <div>GitHub Connected: {String(githubConnected)}</div>
-            <div>MetaMask Connected: {String(metamaskConnected)}</div>
-            <div>Can Continue: {String(canContinue)}</div>
-            <div>User Has GitHub: {String(user?.hasGithub)}</div>
-            <div>User Has Wallet: {String(user?.hasWallet)}</div>
-            <div>User GitHub ID: {user?.github?.id || 'none'}</div>
-            <div>User Wallet: {user?.wallet?.address || 'none'}</div>
-          </div>
+          {/* Beautiful Debug Panel */}
+          <DebugPanel />
 
           <button 
             className="back-btn"
