@@ -43,11 +43,49 @@ const IssueCard = ({ issue, repo, onBountyUpdate }) => {
         
         alert(`Bounty created successfully! Metadata stored in Filecoin: ${response.ipfsUrl}`);
       } else {
-        setError(response.message || 'Failed to create bounty');
+        console.error('Bounty creation failed:', {
+          repoId: repo.id,
+          issueNumber: issue.number,
+          response
+        });
+        
+        // Handle specific error types
+        let errorMessage = response.message || 'Failed to create bounty';
+        
+        if (response.error) {
+          if (response.error.includes('Not repo owner')) {
+            errorMessage = `❌ Repository Ownership Error\n\nYou can only create bounties for repositories you own on the blockchain.\n\nPossible solutions:\n• Use the same wallet that listed the repository\n• Ask the repository owner to create the bounty\n• Check if repository ${repo.id} is registered correctly\n\nError: ${response.error}`;
+          } else if (response.error.includes('Repository') && response.error.includes('not found')) {
+            errorMessage = `❌ Repository Not Found\n\nRepository ${repo.id} is not registered on the blockchain.\n\nPlease list the repository first before creating bounties.\n\nError: ${response.error}`;
+          } else if (response.error.includes('Insufficient funds')) {
+            errorMessage = `❌ Insufficient Project Pool Funds\n\nThe project pool doesn't have enough tFIL to fund this bounty.\n\nPlease donate to the project pool first.\n\nError: ${response.error}`;
+          } else {
+            errorMessage = `${response.message}: ${response.error}`;
+          }
+        }
+        
+        setError(errorMessage);
       }
     } catch (error) {
-      console.error('Error creating bounty:', error);
-      setError(error.message || 'Failed to create bounty');
+      console.error('Error creating bounty:', {
+        repoId: repo.id,
+        issueNumber: issue.number,
+        error: error.message,
+        response: error.response?.data
+      });
+      
+      let errorMessage = 'Failed to create bounty';
+      
+      if (error.response?.data?.message) {
+        errorMessage = error.response.data.message;
+        if (error.response.data.error) {
+          errorMessage += `: ${error.response.data.error}`;
+        }
+      } else if (error.message) {
+        errorMessage = error.message;
+      }
+      
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -245,6 +283,21 @@ const IssueCard = ({ issue, repo, onBountyUpdate }) => {
               {error && (
                 <div className="error-message">
                   <p>⚠️ {error}</p>
+                  {error.includes('Repository') && error.includes('register') && (
+                    <div className="error-suggestion">
+                      <p><strong>💡 Suggestion:</strong> Register this repository on the blockchain first.</p>
+                    </div>
+                  )}
+                  {error.includes('Insufficient funds') && (
+                    <div className="error-suggestion">
+                      <p><strong>💡 Suggestion:</strong> Donate to the project pool before creating bounties.</p>
+                    </div>
+                  )}
+                  {error.includes('Filecoin') && (
+                    <div className="error-suggestion">
+                      <p><strong>💡 Suggestion:</strong> Check your internet connection and try again.</p>
+                    </div>
+                  )}
                 </div>
               )}
 

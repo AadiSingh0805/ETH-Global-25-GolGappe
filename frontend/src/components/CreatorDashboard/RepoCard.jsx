@@ -1,8 +1,95 @@
 import React, { useState } from 'react';
 import IssueList from './IssueList';
 
-const RepoCard = ({ repo, isListed, isSelected, onToggle }) => {
+// Donate Modal Component
+const DonateModal = ({ repo, onDonate, onClose }) => {
+  const [amount, setAmount] = useState('');
+  const [donating, setDonating] = useState(false);
+  const [error, setError] = useState('');
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError('');
+    
+    if (!amount || parseFloat(amount) <= 0) {
+      setError('Please enter a valid amount');
+      return;
+    }
+
+    if (parseFloat(amount) < 0.001) {
+      setError('Minimum donation amount is 0.001 tFIL');
+      return;
+    }
+
+    setDonating(true);
+    try {
+      await onDonate(amount);
+    } catch (error) {
+      setError(error.message);
+    } finally {
+      setDonating(false);
+    }
+  };
+
+  return (
+    <div className="modal-overlay" onClick={onClose}>
+      <div className="donate-modal" onClick={(e) => e.stopPropagation()}>
+        <div className="modal-header">
+          <h3>Donate to Project Pool</h3>
+          <button className="close-btn" onClick={onClose}>×</button>
+        </div>
+        <div className="modal-body">
+          <div className="repo-info">
+            <h4>{repo.name}</h4>
+            <p>{repo.description}</p>
+            {repo.bountyInfo && (
+              <p className="current-pool">
+                Current Pool: <strong>{repo.bountyInfo.balance || '0'} tFIL</strong>
+              </p>
+            )}
+          </div>
+          <form onSubmit={handleSubmit}>
+            <div className="form-group">
+              <label htmlFor="amount">Donation Amount (tFIL)</label>
+              <input
+                type="number"
+                id="amount"
+                value={amount}
+                onChange={(e) => setAmount(e.target.value)}
+                placeholder="0.1"
+                step="0.001"
+                min="0.001"
+                required
+              />
+            </div>
+            {error && (
+              <div className="error-message" style={{ color: '#ff4444', marginBottom: '1rem', padding: '0.5rem', background: 'rgba(255, 68, 68, 0.1)', borderRadius: '4px' }}>
+                {error}
+              </div>
+            )}
+            <div className="modal-actions">
+              <button type="button" onClick={onClose} className="btn-cancel">
+                Cancel
+              </button>
+              <button 
+                type="submit" 
+                className="btn-donate" 
+                disabled={donating}
+              >
+                {donating ? 'Donating...' : `Donate ${amount || '0'} tFIL`}
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const RepoCard = ({ repo, isListed, isSelected, onToggle, onLoadBountyInfo, onDonate }) => {
   const [showIssues, setShowIssues] = useState(false);
+  const [loadingBountyInfo, setLoadingBountyInfo] = useState(false);
+  const [showDonateModal, setShowDonateModal] = useState(false);
 
   const handleCardClick = () => {
     if (!isListed) {
@@ -10,13 +97,42 @@ const RepoCard = ({ repo, isListed, isSelected, onToggle }) => {
     }
   };
 
-  const handleViewIssues = (e) => {
+  const handleViewIssues = async (e) => {
     e.stopPropagation();
+    
+    // Load bounty information if not already loaded
+    if (!repo.bountyInfo && onLoadBountyInfo && !loadingBountyInfo) {
+      setLoadingBountyInfo(true);
+      try {
+        await onLoadBountyInfo(repo.id);
+      } catch (error) {
+        console.log('Failed to load bounty info:', error);
+      } finally {
+        setLoadingBountyInfo(false);
+      }
+    }
+    
     setShowIssues(true);
   };
 
   const handleCloseIssues = () => {
     setShowIssues(false);
+  };
+
+  const handleDonate = (e) => {
+    e.stopPropagation();
+    setShowDonateModal(true);
+  };
+
+  const handleCloseDonateModal = () => {
+    setShowDonateModal(false);
+  };
+
+  const handleDonateSubmit = (amount) => {
+    if (onDonate) {
+      onDonate(repo.id, amount);
+    }
+    setShowDonateModal(false);
   };
 
   const getLanguageColor = (language) => {
@@ -119,12 +235,17 @@ const RepoCard = ({ repo, isListed, isSelected, onToggle }) => {
             <span className="issue-count">{repo.openIssues}</span>
             <span className="issue-label">Issues</span>
           </div>
-          {repo.bountyInfo && (
+          {loadingBountyInfo ? (
+            <div className="issue-stat bounty-stat loading">
+              <span className="issue-count">...</span>
+              <span className="issue-label">Loading</span>
+            </div>
+          ) : repo.bountyInfo ? (
             <div className="issue-stat bounty-stat">
-              <span className="issue-count">{repo.bountyInfo.balance} ETH</span>
+              <span className="issue-count">{repo.bountyInfo.balance} tFIL</span>
               <span className="issue-label">Pool</span>
             </div>
-          )}
+          ) : null}
         </div>
 
         <div className="repo-metadata">
@@ -155,6 +276,15 @@ const RepoCard = ({ repo, isListed, isSelected, onToggle }) => {
           >
             Manage Issues & Bounties
           </button>
+          {isListed && (
+            <button 
+              className="donate-btn"
+              onClick={handleDonate}
+              title="Donate to project pool"
+            >
+              💰 Donate
+            </button>
+          )}
         </div>
       </div>
 
@@ -162,6 +292,14 @@ const RepoCard = ({ repo, isListed, isSelected, onToggle }) => {
         <IssueList 
           repo={repo} 
           onClose={handleCloseIssues}
+        />
+      )}
+
+      {showDonateModal && (
+        <DonateModal
+          repo={repo}
+          onDonate={handleDonateSubmit}
+          onClose={handleCloseDonateModal}
         />
       )}
     </>

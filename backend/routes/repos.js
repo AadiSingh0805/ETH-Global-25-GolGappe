@@ -3,6 +3,7 @@ import { requireAuth, optionalAuth } from '../middleware/auth.js';
 import githubService from '../services/githubService.js';
 import bountyService from '../services/bountyService.js';
 import { uploadRepoMetadata } from '../services/lightHouseService.js';
+import { isAdmin } from '../utils/adminUtils.js';
 
 const router = express.Router();
 
@@ -36,6 +37,75 @@ router.get('/', requireAuth, async (req, res) => {
     res.status(500).json({
       success: false,
       message: 'Failed to get repositories'
+    });
+  }
+});
+
+// Get already listed repositories from blockchain
+router.get('/listed', requireAuth, async (req, res) => {
+  try {
+    console.log('🔍 Fetching listed repositories from blockchain...');
+    const listedReposResult = await bountyService.getListedRepositories();
+    console.log('📊 Blockchain query result:', {
+      success: listedReposResult.success,
+      total: listedReposResult.total,
+      dataLength: listedReposResult.data?.length
+    });
+    
+    if (listedReposResult.success) {
+      // Log detailed information about each repository
+      listedReposResult.data.forEach((repo, index) => {
+        console.log(`📦 Repo ${index + 1}:`, {
+          blockchainId: repo.blockchainId,
+          cid: repo.cid,
+          owner: repo.owner,
+          githubId: repo.githubId,
+          name: repo.name,
+          hasMetadata: !!repo.metadata
+        });
+      });
+      
+      res.json({
+        success: true,
+        listedRepos: listedReposResult.data,
+        total: listedReposResult.total,
+        message: `Found ${listedReposResult.total} listed repositories`
+      });
+    } else {
+      console.error('❌ Failed to fetch listed repositories:', listedReposResult);
+      res.status(500).json({
+        success: false,
+        message: listedReposResult.message || 'Failed to fetch listed repositories',
+        error: listedReposResult.error
+      });
+    }
+  } catch (error) {
+    console.error('💥 Get listed repositories error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to get listed repositories'
+    });
+  }
+});
+
+// Test endpoint (no auth required) for debugging
+router.get('/listed/debug', async (req, res) => {
+  try {
+    console.log('🔧 DEBUG: Fetching listed repositories without authentication...');
+    const listedReposResult = await bountyService.getListedRepositories();
+    
+    res.json({
+      success: true,
+      debug: true,
+      result: listedReposResult,
+      message: 'Debug data for listed repositories'
+    });
+  } catch (error) {
+    console.error('💥 Debug endpoint error:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message,
+      debug: true
     });
   }
 });
@@ -153,29 +223,87 @@ router.post('/:repoId/issues/:issueId/bounty', requireAuth, async (req, res) => 
     };
 
     // Use bounty service to create bounty and store in Filecoin + blockchain
-    const result = await bountyService.createBounty(bountyData, privateKey);
+    // Check if user is admin to determine approach
+    const userIsAdmin = isAdmin(req.user);
+    
+    let result;
+    if (userIsAdmin) {
+      // Admin can always create bounties using admin override
+      console.log(`Admin user ${req.user.username} creating bounty with admin privileges`);
+      result = await bountyService.createBounty(bountyData, privateKey || null, true);
+    } else {
+      // Regular user - try normal creation first, then admin override if owner check fails
+      result = await bountyService.createBounty(bountyData, privateKey);
+      
+      // If bounty creation failed due to ownership, try with admin override as fallback
+      if (!result.success && result.error && result.error.includes('Not repo owner') && !privateKey) {
+        console.log('User is not repo owner, trying with admin override as fallback...');
+        result = await bountyService.createBounty(bountyData, null, true);
+      }
+    }
     
     if (result.success) {
+      const responseMessage = result.data.bounty.adminCreated 
+        ? (userIsAdmin 
+           ? 'Bounty created by admin and stored in Filecoin successfully'
+           : 'Bounty created with admin assistance and stored in Filecoin successfully')
+        : 'Bounty created and stored in Filecoin successfully';
+        
       res.json({
         success: true,
         bounty: result.data.bounty,
         metadataCID: result.data.metadataCID,
         ipfsUrl: result.data.ipfsUrl,
-        transactionHash: result.data.transactionHash,
-        message: 'Bounty created and stored in Filecoin successfully'
+        assignTransactionHash: result.data.assignTransactionHash,
+        fundTransactionHash: result.data.fundTransactionHash,
+        adminCreated: result.data.bounty.adminCreated,
+        userIsAdmin: userIsAdmin,
+        githubRepoId: result.data.bounty.githubRepoId,
+        blockchainRepoId: result.data.bounty.blockchainRepoId,
+        message: responseMessage
       });
     } else {
+      console.error('Bounty creation failed:', {
+        githubRepoId: repoId,
+        issueId,
+        amount,
+        error: result.error,
+        message: result.message,
+        user: req.user.username
+      });
+      
+      // Provide helpful error messages for common issues
+      let userFriendlyMessage = result.message;
+      if (result.error && result.error.includes('not found on blockchain')) {
+        userFriendlyMessage = `Repository not found on blockchain. Please make sure the repository is listed first. ${result.error}`;
+      } else if (result.error && result.error.includes('Insufficient funds')) {
+        userFriendlyMessage = `Insufficient funds in project pool. Please donate to the project first. ${result.error}`;
+      } else if (result.error && result.error.includes('Not repo owner')) {
+        userFriendlyMessage = 'You are not the owner of this repository. Only repository owners can create bounties.';
+      }
+      
       res.status(500).json({
         success: false,
-        message: result.message,
-        error: result.error
+        message: userFriendlyMessage,
+        error: result.error,
+        githubRepoId: repoId,
+        debugInfo: result.availableRepos ? `Available repositories: ${JSON.stringify(result.availableRepos)}` : undefined
       });
     }
   } catch (error) {
-    console.error('Create bounty error:', error);
+    console.error('Create bounty error:', {
+      repoId: req.params.repoId,
+      issueId: req.params.issueId,
+      amount: req.body.amount,
+      user: req.user?.username,
+      error: error.message,
+      stack: error.stack
+    });
     res.status(500).json({
       success: false,
-      message: 'Failed to create bounty'
+      message: 'Failed to create bounty',
+      error: error.message,
+      details: process.env.NODE_ENV === 'development' ? error.stack : undefined
     });
   }
 });
@@ -315,20 +443,108 @@ router.get('/:repoId/bounties', optionalAuth, async (req, res) => {
   try {
     const { repoId } = req.params;
     
-    // Get project pool balance
-    const poolResult = await bountyService.getProjectPool(repoId);
+    // Validate repoId is a number
+    if (!repoId || isNaN(parseInt(repoId))) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid repository ID'
+      });
+    }
     
-    res.json({
-      success: true,
-      repoId: parseInt(repoId),
-      projectPool: poolResult.success ? poolResult.data : null,
-      message: 'Repository bounty information retrieved'
-    });
+    // Get repository bounties and pool information
+    const result = await bountyService.getRepositoryBounties(parseInt(repoId));
+    
+    if (result.success) {
+      res.json(result);
+    } else {
+      res.status(500).json(result);
+    }
   } catch (error) {
     console.error('Get repository bounties error:', error);
     res.status(500).json({
       success: false,
       message: 'Failed to retrieve repository bounties'
+    });
+  }
+});
+
+// Register repository on blockchain
+router.post('/:repoId/register', requireAuth, async (req, res) => {
+  try {
+    const { repoId } = req.params;
+    const { cid, isPublic, issueIds } = req.body;
+    
+    // Validate input
+    if (!repoId || isNaN(parseInt(repoId))) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid repository ID'
+      });
+    }
+
+    if (!cid) {
+      return res.status(400).json({
+        success: false,
+        message: 'IPFS CID is required'
+      });
+    }
+    
+    // Register repository on blockchain
+    const result = await bountyService.registerRepository({
+      repoId: parseInt(repoId),
+      cid,
+      isPublic: isPublic || true,
+      issueIds: issueIds || []
+    });
+    
+    if (result.success) {
+      res.json(result);
+    } else {
+      res.status(500).json(result);
+    }
+  } catch (error) {
+    console.error('Register repository error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to register repository'
+    });
+  }
+});
+
+// Donate to project pool
+router.post('/:repoId/donate', requireAuth, async (req, res) => {
+  try {
+    const { repoId } = req.params;
+    const { amount } = req.body;
+    
+    // Validate input
+    if (!repoId || isNaN(parseInt(repoId))) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid repository ID'
+      });
+    }
+
+    if (!amount || isNaN(parseFloat(amount)) || parseFloat(amount) <= 0) {
+      return res.status(400).json({
+        success: false,
+        message: 'Valid amount is required'
+      });
+    }
+    
+    // Donate to project pool
+    const result = await bountyService.donateToProject(parseInt(repoId), parseFloat(amount));
+    
+    if (result.success) {
+      res.json(result);
+    } else {
+      res.status(500).json(result);
+    }
+  } catch (error) {
+    console.error('Donate to project error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to donate to project'
     });
   }
 });

@@ -2,6 +2,7 @@ import express from 'express';
 import { ethers } from 'ethers';
 import User from '../models/User.js';
 import { validateEthSignature } from '../middleware/auth.js';
+import { getAdminStatus } from '../utils/adminUtils.js';
 
 const router = express.Router();
 
@@ -338,7 +339,10 @@ router.get('/me', async (req, res) => {
 
     res.json({
       success: true,
-      user: user.fullProfile,
+      user: {
+        ...user.fullProfile,
+        ...getAdminStatus(user) // Add admin status
+      },
       authMethod: req.session.authMethod
     });
     
