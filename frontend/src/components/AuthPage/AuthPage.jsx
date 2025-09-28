@@ -257,8 +257,8 @@ const AuthPage = () => {
     <div className="auth-page">
       <div className="auth-container">
         <div className="auth-header">
-          <img src="/vite.svg" alt="GolGappe Logo" className="auth-logo" />
-          <h1 className="auth-title">Welcome to GolGappe</h1>
+          <img src="/dog.png" alt="GitBountys Logo" className="auth-logo" />
+          <h1 className="auth-title">Welcome to GitBountys</h1>
           <p className="auth-subtitle">
             Connect your wallet first, then authorize with GitHub
           </p>

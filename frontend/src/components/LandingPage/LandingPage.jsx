@@ -13,8 +13,8 @@ const LandingPage = () => {
     <div className="landing-page">
       <div className="landing-container">
         <div className="landing-header">
-          <img src="/vite.svg" alt="GolGappe Logo" className="landing-logo" />
-          <h1 className="landing-title">GolGappe</h1>
+          <img src="/dog.png" alt="GitBountys Logo" className="landing-logo" />
+          <h1 className="landing-title">GitBountys</h1>
           <p className="landing-subtitle">
             Connect developers with bounty opportunities and build the future together
           </p>

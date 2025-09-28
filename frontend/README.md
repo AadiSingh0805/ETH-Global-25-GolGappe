@@ -1,6 +1,8 @@
-# React + Vite
+# GitBountys Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+GitBountys - GitHub Repository Bounty Management Platform built with React + Vite.
+
+This project provides a modern frontend for managing GitHub repository bounties and contributions.
 
 Currently, two official plugins are available:
 

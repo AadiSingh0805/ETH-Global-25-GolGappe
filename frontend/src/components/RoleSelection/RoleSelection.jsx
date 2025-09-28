@@ -31,8 +31,8 @@ const RoleSelection = () => {
     <div className="role-selection-page">
       <div className="role-selection-container">
         <div className="role-selection-header">
-          <img src="/vite.svg" alt="GolGappe Logo" className="role-selection-logo" />
-          <h1 className="role-selection-title">Welcome to GolGappe</h1>
+          <img src="/dog.png" alt="GitBountys Logo" className="role-selection-logo" />
+          <h1 className="role-selection-title">Welcome to GitBountys</h1>
           <p className="role-selection-subtitle">
             Hi {user.name || user.username}! Choose your role to get started
           </p>

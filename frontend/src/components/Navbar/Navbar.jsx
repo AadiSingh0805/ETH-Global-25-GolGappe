@@ -19,8 +19,8 @@ const Navbar = () => {
       <div className="navbar-container">
         <div className="navbar-left">
           <div className="navbar-logo">
-            <img src="/vite.svg" alt="Logo" className="logo-icon" />
-            <span className="app-name">GolGappe</span>
+            <img src="/dog.png" alt="Logo" className="logo-icon" />
+            <span className="app-name">GitBountys</span>
           </div>
         </div>
         <div className="navbar-right">

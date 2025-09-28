@@ -90,12 +90,12 @@ const AuthPage = () => {
     <div className="auth-page">
       <div className="auth-container">
         <div className="auth-header">
-          <img src="/vite.svg" alt="GolGappe Logo" className="auth-logo" />
+          <img src="/dog.png" alt="GitBountys Logo" className="auth-logo" />
           <h1 className="auth-title">
             {userType === 'creator' ? 'Creator' : 'Contributor'} Sign Up
           </h1>
           <p className="auth-subtitle">
-            Connect your accounts to get started with GolGappe
+            Connect your accounts to get started with GitBountys
           </p>
         </div>
 

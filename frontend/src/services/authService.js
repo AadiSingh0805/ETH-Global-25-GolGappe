@@ -116,7 +116,7 @@ class AuthService {
       const signer = await provider.getSigner();
       
       // Create message to sign
-      const message = `Link wallet ${address} to GolGappe account at ${new Date().toISOString()}`;
+      const message = `Link wallet ${address} to GitBountys account at ${new Date().toISOString()}`;
       const signature = await signer.signMessage(message);
 
       return await api.post('/users/link/wallet', {
