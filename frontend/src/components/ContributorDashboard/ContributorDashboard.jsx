@@ -1,5 +1,7 @@
 import TopSection from '../TopSection/TopSection'
 import MainContent from '../MainContent/MainContent'
+import BountyRedemption from '../BountyRedemption/BountyRedemption'
+import AIRecommendations from '../AIRecommendations/AIRecommendations'
 import './ContributorDashboard.css'
 
 const ContributorDashboard = () => {
@@ -13,6 +15,8 @@ const ContributorDashboard = () => {
       </div>
       <TopSection />
       <MainContent />
+      <BountyRedemption />
+      <AIRecommendations />
     </div>
   )
 }

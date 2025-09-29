@@ -1,0 +1,283 @@
+.bounty-redemption {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+  color: #ffffff;
+  padding: 40px 20px;
+}
+
+.bounty-redemption .container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.bounty-redemption h2 {
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 12px;
+  text-align: center;
+  background: linear-gradient(90deg, #1DB954, #1ed760);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.bounty-redemption .description {
+  text-align: center;
+  color: #b0b0b0;
+  margin-bottom: 40px;
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+/* Form Styles */
+.redemption-form {
+  background: linear-gradient(135deg, #2b2b2b 0%, #252525 100%);
+  border-radius: 16px;
+  padding: 24px;
+  margin-bottom: 32px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: #ffffff;
+  font-size: 14px;
+}
+
+.form-input {
+  width: 100%;
+  padding: 12px 16px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  color: #ffffff;
+  font-size: 14px;
+  transition: all 0.3s ease;
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: #1DB954;
+  box-shadow: 0 0 0 2px rgba(29, 185, 84, 0.2);
+}
+
+.form-input::placeholder {
+  color: #666;
+}
+
+.form-help {
+  display: block;
+  margin-top: 6px;
+  color: #888;
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+/* Message Styles */
+.loading-message,
+.error-message,
+.success-message {
+  text-align: center;
+  padding: 16px;
+  border-radius: 8px;
+  margin-bottom: 24px;
+  font-weight: 500;
+}
+
+.loading-message {
+  background: rgba(29, 185, 84, 0.1);
+  border: 1px solid rgba(29, 185, 84, 0.2);
+  color: #1DB954;
+}
+
+.error-message {
+  background: rgba(255, 71, 87, 0.1);
+  border: 1px solid rgba(255, 71, 87, 0.2);
+  color: #ff4757;
+}
+
+.success-message {
+  background: rgba(29, 185, 84, 0.1);
+  border: 1px solid rgba(29, 185, 84, 0.2);
+  color: #1DB954;
+}
+
+/* Empty State */
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  color: #888;
+}
+
+.empty-state p {
+  margin: 8px 0;
+  font-size: 16px;
+}
+
+.empty-state p:first-child {
+  color: #bbb;
+  font-weight: 500;
+  font-size: 18px;
+}
+
+/* Bounties Grid */
+.bounties-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  gap: 24px;
+}
+
+.bounty-card {
+  background: linear-gradient(135deg, #2b2b2b 0%, #252525 100%);
+  border-radius: 16px;
+  padding: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.bounty-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #1DB954, #1ed760);
+}
+
+.bounty-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.6);
+  border-color: rgba(29, 185, 84, 0.2);
+}
+
+.bounty-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 16px;
+  gap: 16px;
+}
+
+.bounty-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0;
+  line-height: 1.4;
+  flex: 1;
+}
+
+.bounty-amount {
+  background: linear-gradient(135deg, #1DB954, #1ed760);
+  color: #ffffff;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-weight: 700;
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+.bounty-details {
+  margin-bottom: 20px;
+}
+
+.bounty-details p {
+  margin: 8px 0;
+  line-height: 1.5;
+  color: #b0b0b0;
+}
+
+.bounty-details strong {
+  color: #ffffff;
+}
+
+.bounty-repo {
+  color: #1DB954 !important;
+  font-weight: 500;
+}
+
+.bounty-description {
+  font-style: italic;
+  color: #888 !important;
+}
+
+.bounty-actions {
+  display: flex;
+  justify-content: flex-end;
+  padding-top: 16px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.redeem-button {
+  background: linear-gradient(135deg, #1DB954, #1ed760);
+  color: #ffffff;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 14px;
+}
+
+.redeem-button:hover:not(:disabled) {
+  background: linear-gradient(135deg, #1ed760, #17a049);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(29, 185, 84, 0.3);
+}
+
+.redeem-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .bounty-redemption {
+    padding: 20px 16px;
+  }
+  
+  .bounties-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .redemption-form {
+    padding: 20px;
+  }
+  
+  .bounty-header {
+    flex-direction: column;
+    gap: 12px;
+  }
+  
+  .bounty-amount {
+    align-self: flex-start;
+  }
+}
+
+@media (max-width: 480px) {
+  .bounty-redemption h2 {
+    font-size: 24px;
+  }
+  
+  .bounty-card {
+    padding: 20px;
+  }
+  
+  .form-input {
+    padding: 10px 14px;
+  }
+}

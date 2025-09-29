@@ -11,6 +11,29 @@
   align-items: start;
 }
 
+/* Loading and Error States */
+.loading-message,
+.error-message {
+  text-align: center;
+  padding: 60px 20px;
+  color: #ffffff;
+  font-size: 16px;
+  grid-column: 1 / -1;
+}
+
+.loading-message {
+  color: #1DB954;
+}
+
+.error-message {
+  color: #ff4757;
+  background: rgba(255, 71, 87, 0.1);
+  border: 1px solid rgba(255, 71, 87, 0.2);
+  border-radius: 12px;
+  margin: 0 auto;
+  max-width: 400px;
+}
+
 .top-contributors-card,
 .top-bounties-card {
   background: linear-gradient(135deg, #2b2b2b 0%, #252525 100%);
@@ -279,6 +302,28 @@
   .priority-badge {
     align-self: flex-start;
   }
+}
+
+/* Empty State Styles */
+.empty-state {
+  text-align: center;
+  padding: 40px 20px;
+  color: #888;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  margin: 10px 0;
+}
+
+.empty-state p {
+  margin: 8px 0;
+  font-size: 14px;
+}
+
+.empty-state p:first-child {
+  color: #bbb;
+  font-weight: 500;
+  font-size: 16px;
 }
 
 @media (max-width: 480px) {

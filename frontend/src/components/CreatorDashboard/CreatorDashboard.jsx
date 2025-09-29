@@ -186,30 +186,41 @@ const CreatorDashboard = () => {
         if (!repo) return null;
 
         try {
-          // Upload repository metadata to Lighthouse
-          const metadataResult = await blockchainAPI.uploadRepoMetadata({
+          console.log(`🔗 Registering repository ${repo.name} on blockchain...`);
+          
+          // Use the repositoryAPI.listRepository to register on blockchain
+          const registrationResult = await repositoryAPI.listRepository({
             repoId: repo.id,
             name: repo.name,
-            fullName: repo.fullName,
             description: repo.description,
-            owner: repo.owner,
-            stars: repo.stars,
-            forks: repo.forks,
+            fullName: repo.fullName,
+            html_url: repo.htmlUrl,
             language: repo.language,
-            openIssues: repo.openIssues,
-            htmlUrl: repo.htmlUrl,
-            lastUpdated: repo.lastUpdated
+            open_issues_count: repo.openIssues,
+            stargazers_count: repo.stars,
+            forks_count: repo.forks
           });
 
-          if (metadataResult.success) {
-            console.log(`Repository ${repo.name} metadata uploaded to IPFS:`, metadataResult.data.ipfsUrl);
+          if (registrationResult.success) {
+            console.log(`✅ Repository ${repo.name} registered successfully:`, registrationResult);
+            
+            // Show detailed success message
+            if (registrationResult.blockchain?.transactionHash) {
+              console.log(`🎉 Blockchain registration successful for ${repo.name}:`, {
+                transactionHash: registrationResult.blockchain.transactionHash,
+                cid: registrationResult.filecoin?.cid
+              });
+            }
+            
             return repo.id;
           } else {
-            console.error(`Failed to upload metadata for ${repo.name}:`, metadataResult.message);
+            console.error(`❌ Failed to register ${repo.name}:`, registrationResult.message);
+            alert(`Failed to register repository ${repo.name}: ${registrationResult.message}`);
             return null;
           }
         } catch (error) {
-          console.error(`Error uploading metadata for ${repo.name}:`, error);
+          console.error(`💥 Error registering ${repo.name}:`, error);
+          alert(`Error registering repository ${repo.name}: ${error.message}`);
           return null;
         }
       });
@@ -222,10 +233,12 @@ const CreatorDashboard = () => {
       setSelectedRepos(new Set());
       
       if (successfullyListed.length > 0) {
-        alert(`${successfullyListed.length} repositories successfully listed with metadata stored in Filecoin!`);
+        alert(`🎉 ${successfullyListed.length} repositories successfully registered on blockchain and metadata stored in Filecoin!`);
+      } else {
+        alert('⚠️ No repositories were successfully registered. Please check console for details.');
       }
     } catch (error) {
-      console.error('Error listing repositories:', error);
+      console.error('💥 Error listing repositories:', error);
       alert('Failed to list some repositories. Please try again.');
     } finally {
       setLoading(false);

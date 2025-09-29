@@ -10,7 +10,7 @@ async function createTempBounty() {
   // Since we know:
   // - Blockchain repository ID 1 exists
   // - GitHub repository 1044183499 is what you want to create bounty for
-  // - The owner address matches (0x4cAd382572C51bF90a0402E00B7882D25a161ae0)
+  // - The owner address matches (0x260EcDd9e8bd7254a5d16eA5Dc2a3A56391FBd26)
   
   // Let's manually create the bounty using blockchain repo ID 1
   const testBountyData = {

@@ -6,6 +6,7 @@ import AuthPage from './components/AuthPage/AuthPage'
 import RoleSelection from './components/RoleSelection/RoleSelection'
 import CreatorDashboard from './components/CreatorDashboard/CreatorDashboard'
 import ContributorDashboard from './components/ContributorDashboard/ContributorDashboard'
+import BountyRedemption from './components/BountyRedemption/BountyRedemption'
 import Navbar from './components/Navbar/Navbar'
 
 function App() {
@@ -38,6 +39,16 @@ function App() {
                 <Navbar />
                 <div className="app-content">
                   <ContributorDashboard />
+                </div>
+              </>
+            } />
+
+            {/* Standalone bounty redemption page */}
+            <Route path="/bounties/redeem" element={
+              <>
+                <Navbar />
+                <div className="app-content">
+                  <BountyRedemption />
                 </div>
               </>
             } />

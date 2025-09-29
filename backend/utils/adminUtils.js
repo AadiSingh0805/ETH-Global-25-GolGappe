@@ -7,7 +7,10 @@ export const isAdmin = (user) => {
   // Define admin criteria - you can expand this logic
   const adminUsernames = ['vedaXD', 'admin']; // Add more admin usernames as needed
   const adminGithubIds = []; // Add GitHub IDs if needed
-  const adminWalletAddresses = []; // Add wallet addresses if needed
+  const adminWalletAddresses = [
+    '0x260EcDd9e8bd7254a5d16eA5Dc2a3A56391FBd26'.toLowerCase(), // Your wallet address
+    '0x4cAd382572C51bF90a0402E00B7882D25a161ae0'.toLowerCase()  // Another admin address
+  ]; // Add wallet addresses if needed
   
   if (!user) {
     return false;

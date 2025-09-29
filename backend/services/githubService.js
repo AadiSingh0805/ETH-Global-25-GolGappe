@@ -203,6 +203,90 @@ class GitHubService {
       };
     }
   }
+
+  /**
+   * Check if a user owns a specific repository
+   */
+  async checkRepositoryOwnership(repositoryId, accessToken) {
+    try {
+      // First get user's repositories
+      const userRepos = await this.getUserRepositories(accessToken);
+      
+      if (!userRepos.success) {
+        return {
+          success: false,
+          error: 'Failed to fetch user repositories',
+          isOwner: false
+        };
+      }
+
+      // Check if the repository ID exists in user's repositories
+      const ownsRepo = userRepos.data.some(repo => repo.id == repositoryId);
+      
+      return {
+        success: true,
+        isOwner: ownsRepo,
+        repositoryId: parseInt(repositoryId)
+      };
+    } catch (error) {
+      console.error('Repository ownership check error:', error.message);
+      return {
+        success: false,
+        error: error.message,
+        isOwner: false
+      };
+    }
+  }
+
+  /**
+   * Get specific repository details by owner and name
+   */
+  async getRepository(owner, repo, accessToken = null) {
+    try {
+      const response = await axios.get(`${this.baseURL}/repos/${owner}/${repo}`, {
+        headers: {
+          'Authorization': accessToken ? `Bearer ${accessToken}` : undefined,
+          'Accept': 'application/vnd.github.v3+json',
+          'User-Agent': 'ETH-Global-GolGappe'
+        }
+      });
+
+      return {
+        success: true,
+        data: {
+          id: response.data.id,
+          name: response.data.name,
+          fullName: response.data.full_name,
+          description: response.data.description || '',
+          stars: response.data.stargazers_count,
+          forks: response.data.forks_count,
+          language: response.data.language,
+          isPrivate: response.data.private,
+          htmlUrl: response.data.html_url,
+          cloneUrl: response.data.clone_url,
+          defaultBranch: response.data.default_branch,
+          openIssues: response.data.open_issues_count,
+          lastUpdated: response.data.updated_at,
+          createdAt: response.data.created_at,
+          topics: response.data.topics || [],
+          hasIssues: response.data.has_issues,
+          size: response.data.size,
+          owner: {
+            login: response.data.owner.login,
+            id: response.data.owner.id,
+            avatar: response.data.owner.avatar_url
+          }
+        }
+      };
+    } catch (error) {
+      console.error('GitHub Repository API Error:', error.response?.data || error.message);
+      return {
+        success: false,
+        error: error.response?.data?.message || 'Failed to fetch repository',
+        status: error.response?.status
+      };
+    }
+  }
 }
 
 export default new GitHubService();

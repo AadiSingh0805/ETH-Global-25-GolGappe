@@ -1,97 +1,114 @@
+import { useState, useEffect } from 'react'
+import { repositoryAPI } from '../../services/api'
 import './MainContent.css'
 
 const MainContent = () => {
-  const companies = [
-    {
-      id: 1,
-      name: 'TechCorp',
-      description: 'Leading fintech solutions for modern businesses',
-      repoLink: 'https://github.com/techcorp/auth-service',
-      activeIssues: 12,
-      topBounties: [
-        { title: 'Fix OAuth integration bug', amount: '$500' },
-        { title: 'Add two-factor authentication', amount: '$350' },
-        { title: 'Optimize login performance', amount: '$200' }
-      ],
-      category: 'Fintech'
-    },
-    {
-      id: 2,
-      name: 'StartupXYZ',
-      description: 'Innovative e-commerce platform revolutionizing retail',
-      repoLink: 'https://github.com/startupxyz/frontend',
-      activeIssues: 8,
-      topBounties: [
-        { title: 'Implement dark mode', amount: '$300' },
-        { title: 'Mobile checkout optimization', amount: '$250' },
-        { title: 'Add product filters', amount: '$150' }
-      ],
-      category: 'E-commerce'
-    },
-    {
-      id: 3,
-      name: 'DataCorp',
-      description: 'Big data analytics and machine learning solutions',
-      repoLink: 'https://github.com/datacorp/user-service',
-      activeIssues: 15,
-      topBounties: [
-        { title: 'Database query optimization', amount: '$750' },
-        { title: 'Add data visualization', amount: '$400' },
-        { title: 'Fix memory leak in analytics', amount: '$300' }
-      ],
-      category: 'Analytics'
-    },
-    {
-      id: 4,
-      name: 'OldTech',
-      description: 'Modernizing legacy systems for enterprise clients',
-      repoLink: 'https://github.com/oldtech/main-app',
-      activeIssues: 23,
-      topBounties: [
-        { title: 'Migrate to TypeScript', amount: '$600' },
-        { title: 'Update deprecated dependencies', amount: '$400' },
-        { title: 'Add API documentation', amount: '$200' }
-      ],
-      category: 'Enterprise'
-    },
-    {
-      id: 5,
-      name: 'MobileFirst',
-      description: 'Mobile-first development and responsive design experts',
-      repoLink: 'https://github.com/mobilefirst/web-app',
-      activeIssues: 6,
-      topBounties: [
-        { title: 'Responsive navigation menu', amount: '$250' },
-        { title: 'Touch gesture support', amount: '$200' },
-        { title: 'PWA implementation', amount: '$180' }
-      ],
-      category: 'Mobile'
-    },
-    {
-      id: 6,
-      name: 'CloudNative',
-      description: 'Kubernetes and containerization specialists',
-      repoLink: 'https://github.com/cloudnative/k8s-tools',
-      activeIssues: 19,
-      topBounties: [
-        { title: 'Helm chart optimization', amount: '$800' },
-        { title: 'Add monitoring dashboard', amount: '$500' },
-        { title: 'Fix pod scaling issues', amount: '$350' }
-      ],
-      category: 'DevOps'
+  const [repositories, setRepositories] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
+
+  useEffect(() => {
+    const fetchRepositories = async () => {
+      try {
+        setLoading(true)
+        const response = await repositoryAPI.getListedRepositories()
+        
+        if (response.success) {
+          // Transform the API response to match the component structure
+          const transformedRepos = response.listedRepos.map(repo => ({
+            id: repo.blockchainId,
+            name: repo.metadata?.name || repo.name || 'Unknown Repository',
+            description: repo.metadata?.description || 'No description available',
+            repoLink: repo.metadata?.html_url || `https://github.com/${repo.owner}/${repo.name}`,
+            activeIssues: repo.metadata?.open_issues_count || 0,
+            topBounties: [], // Will be populated with actual bounty data
+            category: repo.metadata?.language || 'Other',
+            owner: repo.owner
+          }))
+          
+          // Fetch bounties for each repository
+          const reposWithBounties = await Promise.all(
+            transformedRepos.map(async (repo) => {
+              try {
+                const bountyResponse = await repositoryAPI.getRepositoryBounties(repo.id)
+                if (bountyResponse.success && bountyResponse.bounties) {
+                  repo.topBounties = bountyResponse.bounties.slice(0, 3).map(bounty => ({
+                    title: bounty.title || `Issue #${bounty.issueId}`,
+                    amount: bounty.amount ? `${bounty.amount} FIL` : '0 FIL',
+                    currency: bounty.currency || 'FIL'
+                  }))
+                }
+              } catch (error) {
+                console.error(`Error fetching bounties for repo ${repo.id}:`, error)
+              }
+              return repo
+            })
+          )
+          
+          setRepositories(reposWithBounties)
+        }
+      } catch (error) {
+        console.error('Error fetching repositories:', error)
+        setError('Failed to load repositories')
+      } finally {
+        setLoading(false)
+      }
     }
-  ]
+
+    fetchRepositories()
+  }, [])
 
   const getCategoryColor = (category) => {
     const colors = {
-      'Fintech': '#1DB954',
-      'E-commerce': '#ff6b6b',
-      'Analytics': '#4ecdc4',
-      'Enterprise': '#45b7d1',
-      'Mobile': '#f9ca24',
-      'DevOps': '#6c5ce7'
+      'JavaScript': '#f39c12',
+      'TypeScript': '#3498db',
+      'Python': '#e74c3c',
+      'Java': '#e67e22',
+      'Go': '#1abc9c',
+      'Rust': '#9b59b6',
+      'C++': '#34495e',
+      'C#': '#8e44ad',
+      'PHP': '#3498db',
+      'Ruby': '#e74c3c',
+      'Other': '#95a5a6'
     }
-    return colors[category] || '#1DB954'
+    return colors[category] || '#95a5a6'
+  }
+
+  if (loading) {
+    return (
+      <section className="main-content">
+        <div className="main-content-container">
+          <h2 className="section-title">Companies & Repositories</h2>
+          <div className="loading-message">Loading repositories...</div>
+        </div>
+      </section>
+    )
+  }
+
+  if (error) {
+    return (
+      <section className="main-content">
+        <div className="main-content-container">
+          <h2 className="section-title">Companies & Repositories</h2>
+          <div className="error-message">{error}</div>
+        </div>
+      </section>
+    )
+  }
+
+  if (repositories.length === 0) {
+    return (
+      <section className="main-content">
+        <div className="main-content-container">
+          <h2 className="section-title">Companies & Repositories</h2>
+          <div className="empty-state">
+            <p>No repositories with bounties found.</p>
+            <p>Be the first to create a bounty!</p>
+          </div>
+        </div>
+      </section>
+    )
   }
 
   return (
@@ -99,40 +116,44 @@ const MainContent = () => {
       <div className="main-content-container">
         <h2 className="section-title">Companies & Repositories</h2>
         <div className="companies-grid">
-          {companies.map((company) => (
-            <div key={company.id} className="company-card">
+          {repositories.map((repo) => (
+            <div key={repo.id} className="company-card">
               <div className="company-header">
                 <div className="company-info">
                   <div className="company-name-row">
-                    <h3 className="company-name">{company.name}</h3>
+                    <h3 className="company-name">{repo.name}</h3>
                     <span 
                       className="category-badge"
-                      style={{ backgroundColor: getCategoryColor(company.category) }}
+                      style={{ backgroundColor: getCategoryColor(repo.category) }}
                     >
-                      {company.category}
+                      {repo.category}
                     </span>
                   </div>
                   <div className="active-issues-badge">
-                    {company.activeIssues} active issues
+                    {repo.activeIssues} active issues
                   </div>
                 </div>
               </div>
-              <p className="company-description">{company.description}</p>
+              <p className="company-description">{repo.description}</p>
               
               <div className="top-bounties">
                 <h4 className="bounties-title">Top Bounties</h4>
                 <div className="bounties-list">
-                  {company.topBounties.map((bounty, index) => (
-                    <div key={index} className="bounty-item">
-                      <span className="bounty-title">{bounty.title}</span>
-                      <span className="bounty-amount">{bounty.amount}</span>
-                    </div>
-                  ))}
+                  {repo.topBounties.length > 0 ? (
+                    repo.topBounties.map((bounty, index) => (
+                      <div key={index} className="bounty-item">
+                        <span className="bounty-title">{bounty.title}</span>
+                        <span className="bounty-amount">{bounty.amount}</span>
+                      </div>
+                    ))
+                  ) : (
+                    <div className="no-bounties">No active bounties</div>
+                  )}
                 </div>
               </div>
               
               <div className="company-actions">
-                <a href={company.repoLink} target="_blank" rel="noopener noreferrer" className="repo-link">
+                <a href={repo.repoLink} target="_blank" rel="noopener noreferrer" className="repo-link">
                   View Repository
                 </a>
               </div>

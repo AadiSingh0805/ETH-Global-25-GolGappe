@@ -22,7 +22,7 @@ async function checkRepositoryOwnership(repoId) {
     console.log(`Issue IDs: ${issueIds.map(id => Number(id))}`);
     
     // Check if this matches the user's wallet
-    const userWallet = '0x4cAd382572C51bF90a0402E00B7882D25a161ae0';
+    const userWallet = '0x260EcDd9e8bd7254a5d16eA5Dc2a3A56391FBd26';
     console.log(`\nUser Wallet: ${userWallet}`);
     console.log(`Matches Owner: ${owner.toLowerCase() === userWallet.toLowerCase()}`);
     

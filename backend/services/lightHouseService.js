@@ -62,10 +62,21 @@ export const uploadRepoMetadata = async (repoData) => {
       type: 'repository-metadata'
     };
     
-    return await uploadJSON(metadata);
+    const result = await uploadJSON(metadata);
+    
+    return {
+      success: true,
+      cid: result.Hash,
+      data: result,
+      message: 'Repository metadata uploaded successfully'
+    };
   } catch (error) {
     console.error('Error uploading repo metadata:', error);
-    throw error;
+    return {
+      success: false,
+      error: error.message,
+      message: 'Failed to upload repository metadata'
+    };
   }
 };
 
@@ -79,9 +90,13 @@ export const fetchByCID = async (cid) => {
     if (!axios) {
       // Fallback: return mock data for development
       return {
-        message: 'Mock data - Lighthouse SDK not available',
-        cid: cid,
-        timestamp: new Date().toISOString()
+        success: true,
+        data: {
+          message: 'Mock data - Lighthouse SDK not available',
+          cid: cid,
+          timestamp: new Date().toISOString()
+        },
+        cid: cid
       };
     }
     
@@ -94,12 +109,20 @@ export const fetchByCID = async (cid) => {
       }
     });
     
-    return response.data;
+    return {
+      success: true,
+      data: response.data,
+      cid: cid
+    };
   } catch (error) {
     console.error('Error fetching from Lighthouse:', error);
     
     if (!axios) {
-      throw new Error('Axios not available for fallback gateway');
+      return {
+        success: false,
+        error: 'Axios not available for fallback gateway',
+        cid: cid
+      };
     }
     
     // Try alternative IPFS gateway
@@ -112,9 +135,18 @@ export const fetchByCID = async (cid) => {
         }
       });
       
-      return fallbackResponse.data;
+      return {
+        success: true,
+        data: fallbackResponse.data,
+        cid: cid,
+        source: 'fallback-gateway'
+      };
     } catch (fallbackError) {
-      throw new Error(`Failed to fetch CID ${cid}: ${error.message}`);
+      return {
+        success: false,
+        error: `Failed to fetch CID ${cid}: ${error.message}`,
+        cid: cid
+      };
     }
   }
 };
