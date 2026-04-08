@@ -7,6 +7,7 @@ import rateLimit from 'express-rate-limit';
 import session from 'express-session';
 import cookieParser from 'cookie-parser';
 import mongoose from 'mongoose';
+import MongoStore from 'connect-mongo';
 
 // Import routes
 import authRoutes from './routes/auth.js';
@@ -36,12 +37,22 @@ mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/golgappe'
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: 100, // limit each IP to 100 requests per windowMs
-  message: 'Too many requests from this IP, please try again later.'
+  message: 'Too many requests from this IP, please try again later.',
+  standardHeaders: true,
+  legacyHeaders: false,
+  skip: (req) => {
+    // Keep auth/OAuth smooth in local development.
+    if ((process.env.NODE_ENV || 'development') === 'development') {
+      return true;
+    }
+
+    // Do not rate-limit auth endpoints in any environment.
+    return req.path.startsWith('/api/auth');
+  }
 });
 
 // Security middleware
 app.use(helmet());
-app.use(limiter);
 
 // CORS configuration
 app.use(cors({
@@ -51,6 +62,8 @@ app.use(cors({
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
+app.use(limiter);
+
 // Body parsing middleware
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
@@ -58,13 +71,18 @@ app.use(cookieParser());
 
 // Session configuration
 app.use(session({
+  name: 'golgappe.sid',
   secret: process.env.SESSION_SECRET || 'your-secret-key',
   resave: false,
   saveUninitialized: false,
+  store: MongoStore.create({
+    mongoUrl: process.env.MONGODB_URI || 'mongodb://localhost:27017/golgappe',
+    ttl: 24 * 60 * 60 // 1 day in seconds
+  }),
   cookie: {
     secure: process.env.NODE_ENV === 'production',
-    httpOnly: true,
-    maxAge: 24 * 60 * 60 * 1000 // 24 hours
+    sameSite: 'lax',
+    httpOnly: true
   }
 }));
 

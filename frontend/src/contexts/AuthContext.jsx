@@ -32,15 +32,18 @@ function AuthProvider({ children }) {
         setUser(response.user);
         setIsAuthenticated(true);
         console.log('Auth check successful:', response.user);
+        return response;
       } else {
         setUser(null);
         setIsAuthenticated(false);
         console.log('Auth check failed: no user data');
+        return response;
       }
     } catch (error) {
       console.error('Auth check failed:', error);
       setUser(null);
       setIsAuthenticated(false);
+      return { success: false, error };
     } finally {
       setLoading(false);
     }
@@ -96,9 +99,11 @@ function AuthProvider({ children }) {
 
   const githubLogin = async () => {
     try {
-      // This should only happen after MetaMask connection
-      await authService.githubLogin();
-      // Redirect will happen automatically
+      const response = await authService.githubLogin();
+
+      if (response?.success === false) {
+        throw new Error(response.message || 'GitHub OAuth is not configured');
+      }
     } catch (error) {
       console.error('GitHub login failed:', error);
       throw error;

@@ -14,12 +14,28 @@ const AuthPage = () => {
   const [error, setError] = useState('')
   const [showDebug, setShowDebug] = useState(false) // New state for debug panel
 
-  // Check if user is already authenticated and redirect to role selection
+  // Per-tab flag: this resets when tab/window closes, which is ideal for demos.
   useEffect(() => {
-    if (isAuthenticated && user) {
-      navigate('/role-selection')
+    setGithubConnected(sessionStorage.getItem('githubAuthDone') === '1')
+    setMetamaskConnected(sessionStorage.getItem('metamaskAuthDone') === '1')
+
+    // If we just returned from GitHub OAuth and query params are missing,
+    // force a user refresh to recover state.
+    if (sessionStorage.getItem('githubAuthPending') === '1') {
+      // Clear first so StrictMode re-mount doesn't trigger repeated calls.
+      sessionStorage.removeItem('githubAuthPending')
+
+      checkAuth().then((response) => {
+        const hasGithub = response?.success && (response?.user?.hasGithub || response?.user?.github?.id)
+        if (hasGithub) {
+          setGithubConnected(true)
+          sessionStorage.setItem('githubAuthDone', '1')
+        }
+      }).catch(() => {
+        // User can retry GitHub auth manually.
+      })
     }
-  }, [isAuthenticated, user, navigate])
+  }, [])
 
   // Check for authentication success/error from URL params
   useEffect(() => {
@@ -28,16 +44,21 @@ const AuthPage = () => {
     
     if (authParam === 'github_success' || authParam === 'success') {
       console.log('GitHub auth detected, refreshing user data...');
-      // Refresh user data after GitHub auth - this should populate user data
+      setGithubConnected(true)
+      sessionStorage.setItem('githubAuthDone', '1')
+      sessionStorage.removeItem('githubAuthPending')
+
+      // Refresh user data after GitHub auth
       checkAuth().then(() => {
         console.log('User data refreshed after GitHub auth');
       });
     }
     
     if (errorParam) {
+      sessionStorage.removeItem('githubAuthPending')
       setError(`Authentication error: ${errorParam}`)
     }
-  }, [searchParams, checkAuth])
+  }, [searchParams])
 
   // Update connection states based on user data
   useEffect(() => {
@@ -47,18 +68,14 @@ const AuthPage = () => {
       
       console.log('User data updated:', { user, hasGithub, hasWallet });
       
-      setGithubConnected(hasGithub);
-      setMetamaskConnected(hasWallet);
-      
-      // If both are connected, redirect to role selection
-      if (hasGithub && hasWallet) {
-        console.log('Both connections detected, redirecting to role selection');
-        navigate('/role-selection');
+      if (hasWallet) {
+        setMetamaskConnected(true)
+        sessionStorage.setItem('metamaskAuthDone', '1')
       }
     } else {
       console.log('No user data available');
     }
-  }, [user, navigate])
+  }, [user])
 
   const handleMetamaskConnect = async () => {
     try {
@@ -66,11 +83,10 @@ const AuthPage = () => {
       setError('')
       await metamaskLogin()
       setMetamaskConnected(true)
-      
-      // Automatically trigger GitHub login after MetaMask success
-      console.log('MetaMask connected successfully, starting GitHub authorization...')
-      await githubLogin()
-      
+      sessionStorage.setItem('metamaskAuthDone', '1')
+
+      // MetaMask connection is complete. GitHub connection is optional and should be
+      // initiated explicitly by the user.
     } catch (error) {
       console.error('MetaMask connection failed:', error)
       setError(error.message || 'Failed to connect MetaMask')
@@ -89,8 +105,10 @@ const AuthPage = () => {
     try {
       setLoading(true)
       setError('')
+      sessionStorage.setItem('githubAuthPending', '1')
       await githubLogin()
     } catch (error) {
+      sessionStorage.removeItem('githubAuthPending')
       console.error('GitHub connection failed:', error)
       setError(error.message || 'Failed to connect GitHub')
     } finally {

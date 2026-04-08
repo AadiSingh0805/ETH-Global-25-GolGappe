@@ -47,9 +47,29 @@ export const BOUNTY_ESCROW_ABI = [
 ];
 
 // Setup provider
+let providerInstance = null;
+
 export const getProvider = () => {
+  if (providerInstance) {
+    return providerInstance;
+  }
+
   const rpcUrl = process.env.RPC_URL || 'http://localhost:8545';
-  return new ethers.JsonRpcProvider(rpcUrl);
+  const chainId = Number(process.env.CHAIN_ID || 314159);
+  const network = ethers.Network.from({
+    name: process.env.CHAIN_NAME || 'filecoin-calibration',
+    chainId
+  });
+
+  // staticNetwork prevents ethers from repeatedly probing chainId on bad RPC URLs,
+  // which avoids terminal spam like "failed to detect network; retry in 1s".
+  providerInstance = new ethers.JsonRpcProvider(
+    rpcUrl,
+    network,
+    { staticNetwork: network }
+  );
+
+  return providerInstance;
 };
 
 // Get contract instances

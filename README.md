@@ -51,12 +51,6 @@ GitBountys transforms the way open-source development is incentivized by creatin
 │   ├── User authentication & authorization
 │   └── RESTful API endpoints
 │
-├── 🤖 Agentic System (AI-Powered)
-│   ├── Hedera Hashgraph integration
-│   ├── Automated workflow management
-│   ├── AI-driven bounty matching
-│   └── Smart analytics and insights
-│
 └── 🔗 Blockchain Integration
     ├── Filecoin Calibration Testnet
     ├── Smart contract: 0xE865690eCAc3547dA4e87e648F7Fbb10778C6050
@@ -95,16 +89,7 @@ cd ../frontend
 npm install
 ```
 
-### 4. Agentic System Setup
-```bash
-cd ../agentic
-npm install
-
-# Configure Hedera credentials
-cp .env.example .env
-```
-
-### 5. Start Development Servers
+### 4. Start Development Servers
 ```bash
 # Terminal 1: Backend
 cd backend
@@ -113,10 +98,6 @@ npm run dev
 # Terminal 2: Frontend  
 cd frontend
 npm run dev
-
-# Terminal 3: Agentic System
-cd agentic
-npm start
 ```
 
 Open [http://localhost:5173](http://localhost:5173) to view the application.
@@ -133,13 +114,6 @@ MONGODB_URI=mongodb://localhost:27017/golgappe
 GITHUB_CLIENT_ID=your-github-client-id
 GITHUB_CLIENT_SECRET=your-github-client-secret
 SESSION_SECRET=your-session-secret
-```
-
-#### Agentic System (`agentic/.env`)
-```env
-HEDERA_ACCOUNT_ID=your-hedera-account-id
-HEDERA_PRIVATE_KEY=your-hedera-private-key
-HEDERA_NETWORK=testnet
 ```
 
 For detailed setup instructions, see [SETUP.md](./SETUP.md).
@@ -194,11 +168,6 @@ For detailed setup instructions, see [SETUP.md](./SETUP.md).
 - **Smart Contracts** - Automated escrow system
 - **Web3** - Blockchain connectivity
 
-### AI/ML
-- **Hedera Hashgraph** - Distributed ledger technology
-- **AI Agents** - Automated workflow management
-- **Machine Learning** - Bounty matching algorithms
-
 ## 📊 Smart Contract
 
 **Contract Address**: `0xE865690eCAc3547dA4e87e648F7Fbb10778C6050`  
@@ -252,7 +221,6 @@ For detailed troubleshooting, see [TROUBLESHOOTING.md](./TROUBLESHOOTING.md).
 
 ### Phase 2 (Q2 2025)
 - 🔄 Multi-blockchain support
-- 🔄 Advanced AI matching
 - 🔄 Reputation system
 - 🔄 Mobile app
 

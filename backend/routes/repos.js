@@ -73,17 +73,26 @@ router.get('/listed', optionalAuth, async (req, res) => {
       });
     } else {
       console.error('❌ Failed to fetch listed repositories:', listedReposResult);
-      res.status(500).json({
-        success: false,
-        message: listedReposResult.message || 'Failed to fetch listed repositories',
-        error: listedReposResult.error
+      // Fail-soft so the UI can still load other sections even if blockchain data is unavailable.
+      res.json({
+        success: true,
+        listedRepos: [],
+        total: 0,
+        warning: listedReposResult.message || 'Blockchain repository listing is temporarily unavailable',
+        error: listedReposResult.error || null,
+        message: 'No listed repositories available right now'
       });
     }
   } catch (error) {
     console.error('💥 Get listed repositories error:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Failed to get listed repositories'
+    // Keep API contract stable for frontend consumers.
+    res.json({
+      success: true,
+      listedRepos: [],
+      total: 0,
+      warning: 'Failed to get listed repositories',
+      error: error.message,
+      message: 'No listed repositories available right now'
     });
   }
 });
@@ -111,7 +120,7 @@ router.get('/listed/debug', async (req, res) => {
 });
 
 // Get specific repository with issues
-router.get('/:owner/:repo', requireAuth, async (req, res) => {
+router.get('/github/:owner/:repo', requireAuth, async (req, res) => {
   try {
     const { owner, repo } = req.params;
     
@@ -611,7 +620,7 @@ router.post('/:repoId/donate', requireAuth, async (req, res) => {
 });
 
 // Get repository issues
-router.get('/:owner/:repo/issues', requireAuth, async (req, res) => {
+router.get('/github/:owner/:repo/issues', requireAuth, async (req, res) => {
   try {
     const { owner, repo } = req.params;
     

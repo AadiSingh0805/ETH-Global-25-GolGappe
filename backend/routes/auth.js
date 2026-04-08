@@ -6,11 +6,37 @@ import { getAdminStatus } from '../utils/adminUtils.js';
 
 const router = express.Router();
 
+const saveSession = (req) =>
+  new Promise((resolve, reject) => {
+    req.session.save((err) => {
+      if (err) {
+        reject(err);
+        return;
+      }
+      resolve();
+    });
+  });
+
 // GitHub OAuth login
 router.get('/github', (req, res) => {
   const clientId = process.env.GITHUB_CLIENT_ID;
   const redirectUri = process.env.GITHUB_CALLBACK_URL;
   const scope = 'user:email';
+
+  const hasValidClientId =
+    clientId &&
+    clientId !== 'your-github-client-id' &&
+    clientId.trim().length > 0;
+  const hasValidRedirectUri =
+    redirectUri &&
+    redirectUri.trim().length > 0;
+
+  if (!hasValidClientId || !hasValidRedirectUri) {
+    return res.status(500).json({
+      success: false,
+      message: 'GitHub OAuth is not configured. Set GITHUB_CLIENT_ID and GITHUB_CALLBACK_URL in backend/.env'
+    });
+  }
   
   const githubAuthUrl = `https://github.com/login/oauth/authorize?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&scope=${scope}`;
   
@@ -23,6 +49,15 @@ router.get('/github', (req, res) => {
 // GitHub OAuth callback
 router.get('/github/callback', async (req, res) => {
   try {
+    if (
+      !process.env.GITHUB_CLIENT_ID ||
+      !process.env.GITHUB_CLIENT_SECRET ||
+      process.env.GITHUB_CLIENT_ID === 'your-github-client-id' ||
+      process.env.GITHUB_CLIENT_SECRET === 'your-github-client-secret'
+    ) {
+      return res.redirect(`${process.env.FRONTEND_URL}/auth?error=github_oauth_not_configured`);
+    }
+
     const { code, error } = req.query;
     
     if (error) {
@@ -94,6 +129,17 @@ router.get('/github/callback', async (req, res) => {
         }
       }
 
+      // Fallback: if session was lost during OAuth, use wallet cookie from prior MetaMask auth
+      if (!user) {
+        const walletFromCookie = req.cookies?.wallet_auth;
+        if (walletFromCookie && /^0x[a-fA-F0-9]{40}$/.test(walletFromCookie)) {
+          const walletUser = await User.findOne({ 'wallet.address': walletFromCookie.toLowerCase() });
+          if (walletUser) {
+            user = walletUser;
+          }
+        }
+      }
+
       if (!user) {
         user = await User.findOne(existingQuery);
       }
@@ -152,6 +198,8 @@ router.get('/github/callback', async (req, res) => {
     req.session.userId = user._id;
     req.session.authMethod = user.wallet?.address ? 'both' : 'github';
 
+    await saveSession(req);
+
     // Check if user has both MetaMask and GitHub connected
     const hasBothConnections = user.wallet?.address && user.github?.id;
     
@@ -209,7 +257,15 @@ router.post('/metamask/verify', validateEthSignature, async (req, res) => {
     const { address, signature, message } = req.body;
     
     // Verify the signature
-    const recoveredAddress = ethers.verifyMessage(message, signature);
+    let recoveredAddress;
+    try {
+      recoveredAddress = ethers.verifyMessage(message, signature);
+    } catch (signatureError) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid signature format'
+      });
+    }
     
     if (recoveredAddress.toLowerCase() !== address.toLowerCase()) {
       return res.status(400).json({
@@ -234,6 +290,13 @@ router.post('/metamask/verify', validateEthSignature, async (req, res) => {
     }
 
     let user;
+
+    const generateWalletUsername = (ethAddress) => {
+      // Deterministic prefix + random suffix to avoid collisions
+      const prefix = ethAddress.slice(2, 8);
+      const suffix = Math.random().toString(16).slice(2, 6);
+      return `wallet_${prefix}_${suffix}`;
+    };
 
     // Check if user is already logged in (GitHub first, then MetaMask)
     if (req.session.userId) {
@@ -278,7 +341,7 @@ router.post('/metamask/verify', validateEthSignature, async (req, res) => {
         console.log(`Creating new user for wallet ${address.toLowerCase()}`);
         const shortAddress = address.slice(0, 6) + '...' + address.slice(-4);
         user = new User({
-          username: `wallet_${address.slice(2, 8)}`,
+          username: generateWalletUsername(address),
           displayName: `User ${shortAddress}`,
           wallet: {
             address: address.toLowerCase(),
@@ -290,7 +353,26 @@ router.post('/metamask/verify', validateEthSignature, async (req, res) => {
       }
     }
 
-    await user.save();
+    try {
+      await user.save();
+    } catch (saveError) {
+      // If username collided, retry with a new username a few times
+      if (saveError?.code === 11000 && saveError?.keyValue?.username) {
+        for (let attempt = 0; attempt < 5; attempt++) {
+          user.username = generateWalletUsername(address);
+          try {
+            await user.save();
+            break;
+          } catch (retryError) {
+            if (!(retryError?.code === 11000 && retryError?.keyValue?.username)) {
+              throw retryError;
+            }
+          }
+        }
+      } else {
+        throw saveError;
+      }
+    }
     await user.updateLastLogin();
 
     // Set/update session
@@ -300,6 +382,15 @@ router.post('/metamask/verify', validateEthSignature, async (req, res) => {
     // Clear MetaMask session data
     delete req.session.metamaskNonce;
     delete req.session.metamaskAddress;
+
+    await saveSession(req);
+
+    // Cookie fallback for GitHub OAuth linking if session continuity is lost
+    res.cookie('wallet_auth', address.toLowerCase(), {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax'
+    });
 
     res.json({
       success: true,
@@ -312,7 +403,10 @@ router.post('/metamask/verify', validateEthSignature, async (req, res) => {
     console.error('MetaMask verification error:', error);
     res.status(500).json({
       success: false,
-      message: 'MetaMask authentication failed'
+      message: 'MetaMask authentication failed',
+      ...(process.env.NODE_ENV === 'development' && {
+        error: error?.message || String(error)
+      })
     });
   }
 });
@@ -365,6 +459,8 @@ router.post('/logout', (req, res) => {
         message: 'Failed to logout'
       });
     }
+
+    res.clearCookie('wallet_auth');
     
     res.json({
       success: true,

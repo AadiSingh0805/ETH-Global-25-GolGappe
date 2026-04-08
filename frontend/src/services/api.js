@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_BASE_URL = 'http://localhost:5001/api';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api';
 
 // Create axios instance with default config
 const api = axios.create({
@@ -45,10 +45,10 @@ export const repositoryAPI = {
   getListedRepositories: () => api.get('/repos/listed'),
   
   // Get specific repository with issues
-  getRepository: (owner, repo) => api.get(`/repos/${owner}/${repo}`),
+  getRepository: (owner, repo) => api.get(`/repos/github/${owner}/${repo}`),
   
   // Get repository issues
-  getRepositoryIssues: (owner, repo) => api.get(`/repos/${owner}/${repo}/issues`),
+  getRepositoryIssues: (owner, repo) => api.get(`/repos/github/${owner}/${repo}/issues`),
   
   // List repository (create metadata entry)
   listRepository: (repoData) => api.post('/repos', repoData),
