@@ -16,7 +16,7 @@ class GitHubService {
         params: {
           sort: 'updated',
           per_page: 100,
-          type: 'owner' // Only repositories owned by the user
+          type: 'all' // Include user + organization/member repositories
         }
       });
 

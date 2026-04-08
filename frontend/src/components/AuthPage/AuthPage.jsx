@@ -68,6 +68,11 @@ const AuthPage = () => {
       
       console.log('User data updated:', { user, hasGithub, hasWallet });
       
+      if (hasGithub) {
+        setGithubConnected(true)
+        sessionStorage.setItem('githubAuthDone', '1')
+      }
+
       if (hasWallet) {
         setMetamaskConnected(true)
         sessionStorage.setItem('metamaskAuthDone', '1')

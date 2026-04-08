@@ -72,45 +72,4 @@ export const repositoryAPI = {
   getRepositoryBounties: (repoId) => api.get(`/repos/${repoId}/bounties`)
 };
 
-// Blockchain API endpoints
-export const blockchainAPI = {
-  // Upload repository metadata to Lighthouse
-  uploadRepoMetadata: (repoData) => api.post('/repos-blockchain/upload', { repoData }),
-  
-  // Get metadata by CID
-  getMetadataByCID: (cid) => api.get(`/repos-blockchain/${cid}`),
-  
-  // Upload file to Lighthouse
-  uploadFile: (fileData, fileName) => 
-    api.post('/repos-blockchain/upload-file', { fileData, fileName })
-};
-
-// Escrow API endpoints  
-export const escrowAPI = {
-  // Get project pool balance
-  getProjectPool: (repoId) => api.get(`/escrow/projects/${repoId}/pool`),
-  
-  // Donate to project pool
-  donateToProject: (repoId, amount, privateKey) =>
-    api.post(`/escrow/projects/${repoId}/donate`, { amount, privateKey }),
-  
-  // Get bounty details from blockchain
-  getBountyDetails: (repoId, issueId) => 
-    api.get(`/escrow/projects/${repoId}/issues/${issueId}/bounty`),
-  
-  // Fund bounty from project pool
-  fundBounty: (repoId, issueId, amount, privateKey) =>
-    api.post(`/escrow/projects/${repoId}/issues/${issueId}/fund`, { 
-      amount, 
-      privateKey 
-    }),
-  
-  // Release bounty payment
-  releaseBounty: (repoId, issueId, contributorAddress, privateKey) =>
-    api.post(`/escrow/projects/${repoId}/issues/${issueId}/release`, {
-      contributorAddress,
-      privateKey
-    })
-};
-
 export default api;

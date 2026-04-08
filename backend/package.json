@@ -13,7 +13,6 @@
     "lint:fix": "eslint . --fix"
   },
   "dependencies": {
-    "@lighthouse-web3/sdk": "^0.4.3",
     "@octokit/rest": "^20.0.2",
     "@octokit/auth-app": "^6.0.1",
     "axios": "^1.12.2",
@@ -54,7 +53,6 @@
     "socket.io": "^4.7.4",
     "uuid": "^9.0.1",
     "validator": "^13.11.0",
-    "web3": "^4.3.0",
     "winston": "^3.11.0"
   },
   "devDependencies": {
@@ -76,15 +74,11 @@
     "npm": ">=9.0.0"
   },
   "keywords": [
-    "ethereum",
-    "web3",
     "authentication",
     "github",
     "metamask",
-    "filecoin",
-    "ipfs",
     "bounty",
-    "decentralized"
+    "collaboration"
   ],
   "author": "ETH Global GolGappe Team",
   "license": "MIT"

@@ -13,11 +13,7 @@ import MongoStore from 'connect-mongo';
 import authRoutes from './routes/auth.js';
 import userRoutes from './routes/users.js';
 import projectRoutes from './routes/projects.js';
-import blockchainRoutes from './routes/blockchain.js';
-import blockchainRoutesAlt from './routes/blockchainRoutes.js';
-import escrowRoutes from './routes/escrow.js';
 import reposRoutes from './routes/repos.js';
-import reposBlockchainRoutes from './routes/reposBlockchain.js';
 
 // Import middleware
 import { errorHandler } from './middleware/errorHandler.js';
@@ -104,11 +100,7 @@ app.get('/health', (req, res) => {
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/projects', projectRoutes);
-app.use('/api/blockchain', blockchainRoutes);
-app.use('/api/blockchain-alt', blockchainRoutesAlt);
-app.use('/api/escrow', escrowRoutes);
 app.use('/api/repos', reposRoutes);
-app.use('/api/repos-blockchain', reposBlockchainRoutes);
 
 // 404 handler
 app.use('*', (req, res) => {

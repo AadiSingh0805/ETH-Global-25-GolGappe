@@ -2,9 +2,8 @@ import React, { useState, useEffect } from 'react';
 import './CreatorDashboard.css';
 import Navbar from '../Navbar/Navbar';
 import RepoList from './RepoList';
-import { repositoryAPI, blockchainAPI } from '../../services/api';
+import { repositoryAPI } from '../../services/api';
 import { useAuth } from '../../contexts/AuthContext';
-import web3Service from '../../services/web3Service';
 
 const CreatorDashboard = () => {
   const [repositories, setRepositories] = useState([]);
@@ -50,13 +49,13 @@ const CreatorDashboard = () => {
   // Load bounty information for a specific repository
   const loadBountyInfo = async (repoId) => {
     try {
-      // Use Web3 service to get project pool balance directly from blockchain
-      const poolInfo = await web3Service.getProjectPool(repoId);
-      
-      if (poolInfo.success) {
+      const bountyInfoResp = await repositoryAPI.getRepositoryBounties(repoId)
+
+      if (bountyInfoResp.success) {
+        const pool = bountyInfoResp?.data?.projectPool?.balance || '0'
         const bountyInfo = {
-          balance: poolInfo.balance,
-          balanceWei: poolInfo.balanceWei
+          balance: pool,
+          balanceWei: null
         };
         
         setRepositories(prev => prev.map(repo => 
@@ -141,30 +140,7 @@ const CreatorDashboard = () => {
   }, [repositories, listedRepos]);
 
   const handleDonate = async (repoId, amount) => {
-    try {
-      if (!amount || parseFloat(amount) <= 0) {
-        alert('Please enter a valid donation amount');
-        return;
-      }
-
-      console.log(`Starting donation: ${amount} ETH to repo ${repoId}`);
-      
-      // Use Web3 service for MetaMask-based donation
-      const result = await web3Service.donateToProject(repoId, parseFloat(amount));
-      
-      console.log('Donation result:', result);
-      
-      if (result.success) {
-        alert(`Successfully donated ${amount} tFIL to project!\n\nTransaction Hash: ${result.transactionHash}\nBlock Number: ${result.blockNumber}`);
-        // Refresh bounty info for this repo
-        await loadBountyInfo(repoId);
-      } else {
-        alert(`Donation failed: ${result.message}`);
-      }
-    } catch (error) {
-      console.error('Donation error:', error);
-      alert(`Donation failed: ${error.message}`);
-    }
+    alert('Donations are disabled in non-blockchain mode.');
   };
 
   const handleRepoToggle = (repoId) => {
@@ -246,55 +222,8 @@ const CreatorDashboard = () => {
   };
 
   const handleListAll = async () => {
-    try {
-      setLoading(true);
-      const allRepoIds = repositories.map(repo => repo.id);
-      
-      // Upload metadata for all repositories
-      const listingPromises = repositories.map(async (repo) => {
-        try {
-          const metadataResult = await blockchainAPI.uploadRepoMetadata({
-            repoId: repo.id,
-            name: repo.name,
-            fullName: repo.fullName,
-            description: repo.description,
-            owner: repo.owner,
-            stars: repo.stars,
-            forks: repo.forks,
-            language: repo.language,
-            openIssues: repo.openIssues,
-            htmlUrl: repo.htmlUrl,
-            lastUpdated: repo.lastUpdated
-          });
-
-          if (metadataResult.success) {
-            console.log(`Repository ${repo.name} metadata uploaded to IPFS:`, metadataResult.data.ipfsUrl);
-            return repo.id;
-          } else {
-            console.error(`Failed to upload metadata for ${repo.name}:`, metadataResult.message);
-            return null;
-          }
-        } catch (error) {
-          console.error(`Error uploading metadata for ${repo.name}:`, error);
-          return null;
-        }
-      });
-
-      const results = await Promise.all(listingPromises);
-      const successfullyListed = results.filter(id => id !== null);
-      
-      setListedRepos(new Set(successfullyListed));
-      setSelectedRepos(new Set());
-      
-      if (successfullyListed.length > 0) {
-        alert(`${successfullyListed.length} repositories successfully listed with metadata stored in Filecoin!`);
-      }
-    } catch (error) {
-      console.error('Error listing all repositories:', error);
-      alert('Failed to list repositories. Please try again.');
-    } finally {
-      setLoading(false);
-    }
+    setSelectedRepos(new Set(repositories.map((repo) => repo.id)));
+    await handleListSelected();
   };
 
   const handleRemoveAll = () => {

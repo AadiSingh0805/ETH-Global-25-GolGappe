@@ -16,10 +16,11 @@ function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  // Initialize as not authenticated
   useEffect(() => {
-    // Remove automatic auth check on mount
-    setLoading(false);
+    // Rehydrate authentication from the server session on first load.
+    checkAuth().catch(() => {
+      setLoading(false);
+    });
   }, []);
 
   const checkAuth = async () => {

@@ -276,7 +276,7 @@ const RepoCard = ({ repo, isListed, isSelected, onToggle, onLoadBountyInfo, onDo
           >
             Manage Issues & Bounties
           </button>
-          {isListed && (
+          {isListed && onDonate && (
             <button 
               className="donate-btn"
               onClick={handleDonate}

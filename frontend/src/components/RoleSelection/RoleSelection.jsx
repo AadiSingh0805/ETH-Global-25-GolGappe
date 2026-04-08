@@ -5,17 +5,24 @@ import './RoleSelection.css'
 
 const RoleSelection = () => {
   const navigate = useNavigate()
-  const { isAuthenticated, user } = useAuth()
+  const { isAuthenticated, user, loading, checkAuth } = useAuth()
 
-  // Redirect to auth if not authenticated
   useEffect(() => {
-    if (!isAuthenticated || !user) {
+    if (!loading && !isAuthenticated && !user) {
       navigate('/auth')
     }
-  }, [isAuthenticated, user, navigate])
+  }, [isAuthenticated, loading, user, navigate])
 
-  // Don't render anything while redirecting
-  if (!isAuthenticated || !user) {
+  useEffect(() => {
+    if (!user && !isAuthenticated) {
+      checkAuth().catch(() => {
+        // Redirect logic above will handle the unauthenticated case.
+      })
+    }
+  }, [checkAuth, isAuthenticated, user])
+
+  // Don't render anything while redirecting or hydrating session state
+  if (loading || !isAuthenticated || !user) {
     return <div>Loading...</div>
   }
 

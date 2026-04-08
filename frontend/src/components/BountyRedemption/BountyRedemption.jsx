@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { escrowAPI, repositoryAPI } from '../../services/api'
+import { repositoryAPI } from '../../services/api'
 import './BountyRedemption.css'
 
 const BountyRedemption = () => {
@@ -9,7 +9,6 @@ const BountyRedemption = () => {
   const [redeeming, setRedeeming] = useState(null) // ID of bounty being redeemed
   const [success, setSuccess] = useState(null)
   const [contributorAddress, setContributorAddress] = useState('')
-  const [privateKey, setPrivateKey] = useState('')
 
   useEffect(() => {
     fetchAvailableBounties()
@@ -23,35 +22,25 @@ const BountyRedemption = () => {
       if (reposResponse.success) {
         const bountiesData = []
         
-        // Get bounties from all repositories
+            // Get bounties from all listed repositories
         for (const repo of reposResponse.listedRepos) {
           try {
-            // For each repository, check its issues for bounties
-            if (repo.issueIds && repo.issueIds.length > 0) {
-              for (const issueId of repo.issueIds) {
-                try {
-                  // Check if this issue has a bounty
-                  const bountyDetails = await escrowAPI.getBountyDetails(repo.blockchainId, issueId)
-                  if (bountyDetails.success && 
-                      parseFloat(bountyDetails.data.amount) > 0 && 
-                      !bountyDetails.data.paid) {
-                    
+                const repoBounties = await repositoryAPI.getRepositoryBounties(repo.blockchainId)
+                if (repoBounties.success && repoBounties.bounties) {
+                  const active = repoBounties.bounties.filter(b => !b.paid && b.status !== 'completed')
+                  active.forEach((bounty) => {
                     bountiesData.push({
-                      id: `${repo.blockchainId}-${issueId}`,
+                      id: `${repo.blockchainId}-${bounty.issueId}`,
                       repoId: repo.blockchainId,
-                      issueId: issueId,
-                      title: `Issue #${issueId}`,
-                      amount: bountyDetails.data.amount,
+                      issueId: bounty.issueId,
+                      title: bounty.title || `Issue #${bounty.issueId}`,
+                      amount: bounty.amount,
                       repoName: repo.metadata?.name || repo.name || 'Unknown Repository',
                       repoOwner: repo.owner,
-                      description: `Bounty for issue #${issueId} in ${repo.metadata?.name || repo.name}`
+                      description: bounty.description || `Bounty for issue #${bounty.issueId}`
                     })
-                  }
-                } catch (issueError) {
-                  console.error(`Error checking bounty for issue ${issueId}:`, issueError)
+                  })
                 }
-              }
-            }
           } catch (error) {
             console.error(`Error fetching bounties for repo ${repo.blockchainId}:`, error)
           }
@@ -68,8 +57,8 @@ const BountyRedemption = () => {
   }
 
   const handleRedeemBounty = async (bounty) => {
-    if (!contributorAddress || !privateKey) {
-      setError('Please provide both contributor address and private key')
+    if (!contributorAddress) {
+      setError('Please provide your contributor address')
       return
     }
 
@@ -81,8 +70,7 @@ const BountyRedemption = () => {
       // Complete the bounty
       const completionData = {
         contributorAddress,
-        metadataCID: null, // Could be enhanced to include proof of work
-        privateKey
+        metadataCID: null
       }
 
       const result = await repositoryAPI.completeBounty(
@@ -92,12 +80,11 @@ const BountyRedemption = () => {
       )
 
       if (result.success) {
-        setSuccess(`Successfully redeemed bounty! Transaction hash: ${result.transactionHash}`)
+            setSuccess(`Successfully redeemed bounty! Claim reference: ${result.transactionHash}`)
         // Refresh the bounties list
         await fetchAvailableBounties()
         // Clear form
         setContributorAddress('')
-        setPrivateKey('')
       } else {
         setError(result.message || 'Failed to redeem bounty')
       }
@@ -144,29 +131,20 @@ const BountyRedemption = () => {
 
         <div className="redemption-form">
           <div className="form-group">
-            <label htmlFor="contributorAddress">Your Wallet Address:</label>
+                <label htmlFor="contributorAddress">Your Contributor Address:</label>
             <input
               type="text"
               id="contributorAddress"
               value={contributorAddress}
               onChange={(e) => setContributorAddress(e.target.value)}
-              placeholder="0x..."
+                  placeholder="Enter your payout address or identifier"
               className="form-input"
             />
           </div>
 
           <div className="form-group">
-            <label htmlFor="privateKey">Private Key (for transaction signing):</label>
-            <input
-              type="password"
-              id="privateKey"
-              value={privateKey}
-              onChange={(e) => setPrivateKey(e.target.value)}
-              placeholder="Your private key"
-              className="form-input"
-            />
             <small className="form-help">
-              Your private key is used locally to sign transactions and is not stored.
+              In simplified mode, claiming a bounty updates its status in-app (no blockchain signing required).
             </small>
           </div>
         </div>
@@ -182,7 +160,7 @@ const BountyRedemption = () => {
               <div key={bounty.id} className="bounty-card">
                 <div className="bounty-header">
                   <h3 className="bounty-title">{bounty.title}</h3>
-                  <div className="bounty-amount">{bounty.amount} ETH</div>
+                  <div className="bounty-amount">${bounty.amount}</div>
                 </div>
                 
                 <div className="bounty-details">
@@ -199,7 +177,7 @@ const BountyRedemption = () => {
                   <button
                     className="redeem-button"
                     onClick={() => handleRedeemBounty(bounty)}
-                    disabled={redeeming === bounty.id || !contributorAddress || !privateKey}
+                    disabled={redeeming === bounty.id || !contributorAddress}
                   >
                     {redeeming === bounty.id ? 'Redeeming...' : 'Redeem Bounty'}
                   </button>

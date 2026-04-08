@@ -2,7 +2,6 @@ import express from 'express';
 import { requireAuth, optionalAuth } from '../middleware/auth.js';
 import githubService from '../services/githubService.js';
 import bountyService from '../services/bountyService.js';
-import { uploadRepoMetadata } from '../services/lightHouseService.js';
 import { isAdmin } from '../utils/adminUtils.js';
 
 const router = express.Router();
@@ -41,12 +40,12 @@ router.get('/', requireAuth, async (req, res) => {
   }
 });
 
-// Get already listed repositories from blockchain
+// Get already listed repositories
 router.get('/listed', optionalAuth, async (req, res) => {
   try {
-    console.log('🔍 Fetching listed repositories from blockchain...');
+    console.log('🔍 Fetching listed repositories...');
     const listedReposResult = await bountyService.getListedRepositories();
-    console.log('📊 Blockchain query result:', {
+    console.log('📊 Repository listing query result:', {
       success: listedReposResult.success,
       total: listedReposResult.total,
       dataLength: listedReposResult.data?.length
@@ -73,12 +72,12 @@ router.get('/listed', optionalAuth, async (req, res) => {
       });
     } else {
       console.error('❌ Failed to fetch listed repositories:', listedReposResult);
-      // Fail-soft so the UI can still load other sections even if blockchain data is unavailable.
+      // Fail-soft so the UI can still load other sections even if listing data is unavailable.
       res.json({
         success: true,
         listedRepos: [],
         total: 0,
-        warning: listedReposResult.message || 'Blockchain repository listing is temporarily unavailable',
+        warning: listedReposResult.message || 'Repository listing is temporarily unavailable',
         error: listedReposResult.error || null,
         message: 'No listed repositories available right now'
       });
@@ -161,10 +160,10 @@ router.get('/github/:owner/:repo', requireAuth, async (req, res) => {
   }
 });
 
-// Create/List repository with bounty metadata and register on blockchain
+// Create/List repository with bounty metadata
 router.post('/', requireAuth, async (req, res) => {
   try {
-    const { repoId, name, description, bountyData, privateKey } = req.body;
+    const { repoId, name, description, bountyData } = req.body;
     
     if (!repoId || !name) {
       return res.status(400).json({
@@ -173,7 +172,7 @@ router.post('/', requireAuth, async (req, res) => {
       });
     }
 
-    // Create metadata object for storing in Filecoin
+    // Create metadata object for local storage
     const repoMetadata = {
       repoId: parseInt(repoId),
       name,
@@ -194,42 +193,30 @@ router.post('/', requireAuth, async (req, res) => {
       forks_count: req.body.forks_count || 0
     };
 
-    console.log(`📝 Registering repository on blockchain:`, {
+    console.log(`📝 Registering repository in local listing:`, {
       repoId: repoMetadata.repoId,
       name: repoMetadata.name,
       owner: req.user.username
     });
 
-    // Upload metadata to Filecoin first
-    const uploadResult = await uploadRepoMetadata(repoMetadata);
-    
-    if (!uploadResult.success) {
-      return res.status(500).json({
-        success: false,
-        message: uploadResult.message || 'Failed to upload repository metadata',
-        error: uploadResult.error
-      });
-    }
+    // Local metadata ID (no Lighthouse/IPFS dependency)
+    const localCid = `local-repo-${repoMetadata.repoId}-${Date.now()}`;
+    bountyService.setRepoMetadata(localCid, repoMetadata);
+    console.log(`✅ Stored repository metadata locally with ID: ${localCid}`);
 
-    console.log(`✅ Metadata uploaded to Filecoin with CID: ${uploadResult.cid}`);
-
-    // Register repository on blockchain using bounty service
+    // Register repository in local service
     const registrationData = {
       repoId: repoMetadata.repoId,
-      cid: uploadResult.cid,
+      cid: localCid,
       isPublic: true,
       issueIds: [] // Will be populated when issues are added
     };
 
-    const userIsAdmin = isAdmin(req.user);
-    const registrationResult = await bountyService.registerRepository(
-      registrationData, 
-      privateKey || (userIsAdmin ? process.env.PRIVATE_KEY : null)
-    );
+    const registrationResult = await bountyService.registerRepository(registrationData);
 
     if (registrationResult.success) {
-      console.log(`🎉 Repository registered successfully on blockchain:`, {
-        blockchainRepoId: registrationResult.data.repoId,
+      console.log(`🎉 Repository listed successfully:`, {
+        repoId: registrationResult.data.repoId,
         transactionHash: registrationResult.data.transactionHash,
         cid: registrationResult.data.cid
       });
@@ -237,30 +224,30 @@ router.post('/', requireAuth, async (req, res) => {
       res.json({
         success: true,
         repo: repoMetadata,
-        blockchain: registrationResult.data,
-        filecoin: {
-          cid: uploadResult.cid,
-          url: uploadResult.url
+        registration: registrationResult.data,
+        storage: {
+          cid: localCid,
+          type: 'local-memory'
         },
-        message: 'Repository registered on blockchain and metadata stored in Filecoin successfully'
+        message: 'Repository listed successfully'
       });
     } else {
-      console.error('❌ Blockchain registration failed:', registrationResult.error);
+      console.error('❌ Repository listing failed:', registrationResult.error);
       
-      // Even if blockchain registration fails, we still have the metadata in Filecoin
+      // Even if listing fails, metadata is kept locally
       res.json({
         success: true,
         repo: repoMetadata,
-        filecoin: {
-          cid: uploadResult.cid,
-          url: uploadResult.url
+        storage: {
+          cid: localCid,
+          type: 'local-memory'
         },
-        blockchain: {
+        registration: {
           error: registrationResult.error,
           message: registrationResult.message
         },
-        message: 'Repository metadata stored in Filecoin. Blockchain registration failed but can be retried.',
-        warning: 'Blockchain registration failed - repository may not appear in listings until registered'
+        message: 'Repository metadata stored locally. Listing can be retried.',
+        warning: 'Repository listing failed - repository may not appear in listings until registration succeeds'
       });
     }
 
@@ -278,7 +265,7 @@ router.post('/', requireAuth, async (req, res) => {
 router.post('/:repoId/issues/:issueId/bounty', requireAuth, async (req, res) => {
   try {
     const { repoId, issueId } = req.params;
-    const { amount, description, deadline, requirements, privateKey } = req.body;
+    const { amount, description, deadline, requirements } = req.body;
 
     if (!amount || amount <= 0) {
       return res.status(400).json({
@@ -310,14 +297,14 @@ router.post('/:repoId/issues/:issueId/bounty', requireAuth, async (req, res) => 
 
     // Always use admin override to bypass all ownership checks
     console.log(`✅ User ${req.user.username} creating bounty with admin override (ownership validation skipped)`);
-    const result = await bountyService.createBounty(bountyData, privateKey || null, true);
+    const result = await bountyService.createBounty(bountyData);
     
     if (result.success) {
-      const responseMessage = result.data.bounty.adminCreated 
-        ? (userIsAdmin 
-           ? 'Bounty created by admin and stored in Filecoin successfully'
-           : 'Bounty created with admin assistance and stored in Filecoin successfully')
-        : 'Bounty created and stored in Filecoin successfully';
+      const responseMessage = result.data.bounty.adminCreated
+        ? (userIsAdmin
+          ? 'Bounty created by admin successfully'
+          : 'Bounty created with admin assistance successfully')
+        : 'Bounty created successfully';
         
       res.json({
         success: true,
@@ -344,26 +331,19 @@ router.post('/:repoId/issues/:issueId/bounty', requireAuth, async (req, res) => 
       
       // Provide helpful error messages for common issues
       let userFriendlyMessage = result.message;
-      if (result.error && result.error.includes('not found on blockchain')) {
-        userFriendlyMessage = `Repository not found on blockchain. Please make sure the repository is listed first. ${result.error}`;
+      if (result.error && result.error.includes('not found')) {
+        userFriendlyMessage = `Repository not found. Please make sure the repository is listed first. ${result.error}`;
       } else if (result.error && result.error.includes('Insufficient funds')) {
         userFriendlyMessage = `Insufficient funds in project pool. Please donate to the project first. ${result.error}`;
       } else if (result.error && result.error.includes('Not repo owner')) {
         userFriendlyMessage = 'You are not the owner of this repository. Only repository owners can create bounties.';
       }
       
-      const isConfigError =
-        result.error?.includes('private key') ||
-        result.message?.includes('Blockchain configuration error');
-
-      res.status(isConfigError ? 400 : 500).json({
+      res.status(500).json({
         success: false,
         message: userFriendlyMessage,
         error: result.error,
         githubRepoId: repoId,
-        hint: isConfigError
-          ? 'Set PRIVATE_KEY and RPC_URL in backend/.env for blockchain write operations.'
-          : undefined,
         debugInfo: result.availableRepos ? `Available repositories: ${JSON.stringify(result.availableRepos)}` : undefined
       });
     }
@@ -443,21 +423,19 @@ router.post('/:repoId/issues/:issueId/assign', requireAuth, async (req, res) => 
 router.post('/:repoId/issues/:issueId/complete', requireAuth, async (req, res) => {
   try {
     const { repoId, issueId } = req.params;
-    const { contributorAddress, metadataCID, privateKey } = req.body;
+    const { contributorAddress } = req.body;
 
-    if (!contributorAddress || !metadataCID) {
+    if (!contributorAddress) {
       return res.status(400).json({
         success: false,
-        message: 'Contributor address and metadata CID are required'
+        message: 'Contributor address is required'
       });
     }
 
     const result = await bountyService.completeBounty(
       repoId,
       issueId,
-      contributorAddress,
-      metadataCID,
-      privateKey
+      contributorAddress
     );
 
     if (result.success) {
@@ -466,7 +444,7 @@ router.post('/:repoId/issues/:issueId/complete', requireAuth, async (req, res) =
         bounty: result.data.bounty,
         transactionHash: result.data.transactionHash,
         contributorAddress,
-        message: 'Bounty completed and payment released'
+        message: 'Bounty completed successfully'
       });
     } else {
       res.status(500).json({
@@ -515,7 +493,7 @@ router.get('/bounty/:cid', optionalAuth, async (req, res) => {
   }
 });
 
-// Get repository bounties (blockchain data)
+// Get repository bounties
 router.get('/:repoId/bounties', optionalAuth, async (req, res) => {
   try {
     const { repoId } = req.params;
@@ -545,7 +523,7 @@ router.get('/:repoId/bounties', optionalAuth, async (req, res) => {
   }
 });
 
-// Register repository on blockchain
+// Register repository
 router.post('/:repoId/register', requireAuth, async (req, res) => {
   try {
     const { repoId } = req.params;
@@ -562,11 +540,11 @@ router.post('/:repoId/register', requireAuth, async (req, res) => {
     if (!cid) {
       return res.status(400).json({
         success: false,
-        message: 'IPFS CID is required'
+        message: 'Repository metadata ID is required'
       });
     }
     
-    // Register repository on blockchain
+    // Register repository
     const result = await bountyService.registerRepository({
       repoId: parseInt(repoId),
       cid,
