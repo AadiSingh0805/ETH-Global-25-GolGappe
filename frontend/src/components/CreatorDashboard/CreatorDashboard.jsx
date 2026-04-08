@@ -181,10 +181,10 @@ const CreatorDashboard = () => {
             console.log(`✅ Repository ${repo.name} registered successfully:`, registrationResult);
             
             // Show detailed success message
-            if (registrationResult.blockchain?.transactionHash) {
+            if (registrationResult.registration?.transactionHash) {
               console.log(`🎉 Blockchain registration successful for ${repo.name}:`, {
-                transactionHash: registrationResult.blockchain.transactionHash,
-                cid: registrationResult.filecoin?.cid
+                transactionHash: registrationResult.registration.transactionHash,
+                metadataId: registrationResult.storage?.cid
               });
             }
             
@@ -209,7 +209,7 @@ const CreatorDashboard = () => {
       setSelectedRepos(new Set());
       
       if (successfullyListed.length > 0) {
-        alert(`🎉 ${successfullyListed.length} repositories successfully registered on blockchain and metadata stored in Filecoin!`);
+        alert(`🎉 ${successfullyListed.length} repositories successfully registered on blockchain.`);
       } else {
         alert('⚠️ No repositories were successfully registered. Please check console for details.');
       }

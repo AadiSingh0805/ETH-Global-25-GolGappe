@@ -26,11 +26,11 @@ const TopSection = () => {
               const bountyResponse = await repositoryAPI.getRepositoryBounties(repo.blockchainId)
               if (bountyResponse.success && bountyResponse.bounties) {
                 const repoName = repo.metadata?.full_name || `${repo.owner}/${repo.name}`
-                const formattedBounties = bountyResponse.bounties.map(bounty => ({
+                  const formattedBounties = bountyResponse.bounties.map(bounty => ({
                   id: `${repo.blockchainId}-${bounty.issueId}`,
                   title: bounty.title || `Issue #${bounty.issueId}`,
                   company: repoName,
-                  reward: bounty.amount ? `${bounty.amount} FIL` : '0 FIL',
+                  reward: bounty.amount ? `${bounty.amount} ETH` : '0 ETH',
                   priority: bounty.amount > 50 ? 'High' : bounty.amount > 20 ? 'Medium' : 'Low'
                 }))
                 allBounties.push(...formattedBounties)
@@ -42,10 +42,10 @@ const TopSection = () => {
           
           // Sort bounties by reward amount and take top 5
           const sortedBounties = allBounties
-            .filter(bounty => bounty.reward !== '0 FIL')
+            .filter(bounty => bounty.reward !== '0 ETH')
             .sort((a, b) => {
-              const amountA = parseFloat(a.reward.replace(' FIL', ''))
-              const amountB = parseFloat(b.reward.replace(' FIL', ''))
+              const amountA = parseFloat(a.reward.replace(' ETH', ''))
+              const amountB = parseFloat(b.reward.replace(' ETH', ''))
               return amountB - amountA
             })
             .slice(0, 5)

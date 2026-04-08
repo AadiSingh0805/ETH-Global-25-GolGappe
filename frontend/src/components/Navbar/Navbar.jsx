@@ -26,6 +26,7 @@ const Navbar = () => {
         <div className="navbar-right">
           <div className="navbar-links">
             <a href="#" className="nav-link">Browse</a>
+            <a href="/bounties/redeem" className="nav-link">Bounties</a>
             <a href="#" className="nav-link">Leaderboard</a>
           </div>
           <div className="profile-section">

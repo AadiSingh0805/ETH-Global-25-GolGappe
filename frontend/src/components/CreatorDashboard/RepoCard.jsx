@@ -17,7 +17,7 @@ const DonateModal = ({ repo, onDonate, onClose }) => {
     }
 
     if (parseFloat(amount) < 0.001) {
-      setError('Minimum donation amount is 0.001 tFIL');
+      setError('Minimum donation amount is 0.001 ETH');
       return;
     }
 
@@ -44,13 +44,13 @@ const DonateModal = ({ repo, onDonate, onClose }) => {
             <p>{repo.description}</p>
             {repo.bountyInfo && (
               <p className="current-pool">
-                Current Pool: <strong>{repo.bountyInfo.balance || '0'} tFIL</strong>
+                Current Pool: <strong>{repo.bountyInfo.balance || '0'} ETH</strong>
               </p>
             )}
           </div>
           <form onSubmit={handleSubmit}>
             <div className="form-group">
-              <label htmlFor="amount">Donation Amount (tFIL)</label>
+              <label htmlFor="amount">Donation Amount (ETH)</label>
               <input
                 type="number"
                 id="amount"
@@ -76,7 +76,7 @@ const DonateModal = ({ repo, onDonate, onClose }) => {
                 className="btn-donate" 
                 disabled={donating}
               >
-                {donating ? 'Donating...' : `Donate ${amount || '0'} tFIL`}
+                {donating ? 'Donating...' : `Donate ${amount || '0'} ETH`}
               </button>
             </div>
           </form>
@@ -242,7 +242,7 @@ const RepoCard = ({ repo, isListed, isSelected, onToggle, onLoadBountyInfo, onDo
             </div>
           ) : repo.bountyInfo ? (
             <div className="issue-stat bounty-stat">
-              <span className="issue-count">{repo.bountyInfo.balance} tFIL</span>
+              <span className="issue-count">{repo.bountyInfo.balance} ETH</span>
               <span className="issue-label">Pool</span>
             </div>
           ) : null}
