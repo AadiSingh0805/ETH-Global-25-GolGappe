@@ -71,15 +71,21 @@ const IssueCard = ({ issue, repo, onBountyUpdate }) => {
         repoId: repo.id,
         issueNumber: issue.number,
         error: error.message,
-        response: error.response?.data
+        response: error.response?.data || error
       });
       
       let errorMessage = 'Failed to create bounty';
-      
-      if (error.response?.data?.message) {
-        errorMessage = error.response.data.message;
-        if (error.response.data.error) {
-          errorMessage += `: ${error.response.data.error}`;
+
+      // api.js interceptor may reject with plain response object (no error.response)
+      const serverError = error?.response?.data || error;
+
+      if (serverError?.message) {
+        errorMessage = serverError.message;
+        if (serverError.error) {
+          errorMessage += `: ${serverError.error}`;
+        }
+        if (serverError.hint) {
+          errorMessage += `\n\n${serverError.hint}`;
         }
       } else if (error.message) {
         errorMessage = error.message;

@@ -352,11 +352,18 @@ router.post('/:repoId/issues/:issueId/bounty', requireAuth, async (req, res) => 
         userFriendlyMessage = 'You are not the owner of this repository. Only repository owners can create bounties.';
       }
       
-      res.status(500).json({
+      const isConfigError =
+        result.error?.includes('private key') ||
+        result.message?.includes('Blockchain configuration error');
+
+      res.status(isConfigError ? 400 : 500).json({
         success: false,
         message: userFriendlyMessage,
         error: result.error,
         githubRepoId: repoId,
+        hint: isConfigError
+          ? 'Set PRIVATE_KEY and RPC_URL in backend/.env for blockchain write operations.'
+          : undefined,
         debugInfo: result.availableRepos ? `Available repositories: ${JSON.stringify(result.availableRepos)}` : undefined
       });
     }
