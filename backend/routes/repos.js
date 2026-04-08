@@ -1,10 +1,34 @@
 import express from 'express';
+import { ethers } from 'ethers';
 import { requireAuth, optionalAuth } from '../middleware/auth.js';
 import githubService from '../services/githubService.js';
 import bountyService from '../services/bountyService.js';
 import { isAdmin } from '../utils/adminUtils.js';
 
 const router = express.Router();
+
+const resolvePayoutAddress = () => {
+  const directAddress = String(process.env.PAYOUT_WALLET_ADDRESS || '').trim();
+  const privateKey = String(process.env.PAYOUT_WALLET_PRIVATE_KEY || '').trim();
+
+  if (privateKey) {
+    const formattedKey = privateKey.startsWith('0x') ? privateKey : `0x${privateKey}`;
+    return new ethers.Wallet(formattedKey).address;
+  }
+
+  if (directAddress) {
+    if (ethers.isAddress(directAddress)) {
+      return directAddress;
+    }
+
+    if (/^(0x)?[0-9a-fA-F]{64}$/.test(directAddress)) {
+      const formattedKey = directAddress.startsWith('0x') ? directAddress : `0x${directAddress}`;
+      return new ethers.Wallet(formattedKey).address;
+    }
+  }
+
+  return null;
+};
 
 // Get user repositories from GitHub
 router.get('/', requireAuth, async (req, res) => {
@@ -265,7 +289,7 @@ router.post('/', requireAuth, async (req, res) => {
 router.post('/:repoId/issues/:issueId/bounty', requireAuth, async (req, res) => {
   try {
     const { repoId, issueId } = req.params;
-    const { amount, description, deadline, requirements } = req.body;
+    const { amount, description, deadline, requirements, issueUrl, title } = req.body;
 
     if (!amount || amount <= 0) {
       return res.status(400).json({
@@ -284,6 +308,8 @@ router.post('/:repoId/issues/:issueId/bounty', requireAuth, async (req, res) => 
       repoId: parseInt(repoId),
       issueId: parseInt(issueId),
       amount: parseFloat(amount),
+      title: title || `Issue #${issueId}`,
+      issueUrl: issueUrl || null,
       description: description || '',
       deadline: deadline || null,
       requirements: requirements || [],
@@ -425,17 +451,25 @@ router.post('/:repoId/issues/:issueId/complete', requireAuth, async (req, res) =
     const { repoId, issueId } = req.params;
     const { contributorAddress } = req.body;
 
-    if (!contributorAddress) {
+    const forcePayoutWallet = String(process.env.FORCE_PAYOUT_WALLET || 'false') === 'true';
+    const envPayoutWallet = resolvePayoutAddress();
+    const payoutAddress = forcePayoutWallet && envPayoutWallet
+      ? envPayoutWallet
+      : contributorAddress;
+
+    if (!payoutAddress) {
       return res.status(400).json({
         success: false,
-        message: 'Contributor address is required'
+        message: forcePayoutWallet
+          ? 'PAYOUT_WALLET_ADDRESS must be set in backend/.env when FORCE_PAYOUT_WALLET=true'
+          : 'Contributor address is required'
       });
     }
 
     const result = await bountyService.completeBounty(
       repoId,
       issueId,
-      contributorAddress
+      payoutAddress
     );
 
     if (result.success) {
@@ -443,7 +477,8 @@ router.post('/:repoId/issues/:issueId/complete', requireAuth, async (req, res) =
         success: true,
         bounty: result.data.bounty,
         transactionHash: result.data.transactionHash,
-        contributorAddress,
+        contributorAddress: payoutAddress,
+        payoutSource: forcePayoutWallet ? 'env:PAYOUT_WALLET_ADDRESS' : 'request:contributorAddress',
         message: 'Bounty completed successfully'
       });
     } else {

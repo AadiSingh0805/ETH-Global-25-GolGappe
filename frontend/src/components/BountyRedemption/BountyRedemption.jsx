@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react'
 import { repositoryAPI } from '../../services/api'
+import { useAuth } from '../../contexts/AuthContext'
 import './BountyRedemption.css'
 
 const BountyRedemption = () => {
+  const { user } = useAuth()
   const [availableBounties, setAvailableBounties] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
@@ -13,6 +15,41 @@ const BountyRedemption = () => {
   useEffect(() => {
     fetchAvailableBounties()
   }, [])
+
+  useEffect(() => {
+    const saved = sessionStorage.getItem('claimContributorAddress')
+    if (saved) {
+      setContributorAddress(saved)
+      return
+    }
+
+    if (user?.wallet?.address) {
+      setContributorAddress(user.wallet.address)
+      sessionStorage.setItem('claimContributorAddress', user.wallet.address)
+    }
+  }, [user])
+
+  const connectWalletForClaim = async () => {
+    try {
+      if (!window.ethereum) {
+        setError('MetaMask not found. Please install MetaMask.')
+        return
+      }
+
+      const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' })
+      const address = accounts?.[0] || ''
+      if (!address) {
+        setError('No wallet address found from MetaMask')
+        return
+      }
+
+      setContributorAddress(address)
+      sessionStorage.setItem('claimContributorAddress', address)
+      setError(null)
+    } catch (walletError) {
+      setError(walletError?.message || 'Failed to connect wallet')
+    }
+  }
 
   const fetchAvailableBounties = async () => {
     try {
@@ -136,15 +173,26 @@ const BountyRedemption = () => {
               type="text"
               id="contributorAddress"
               value={contributorAddress}
-              onChange={(e) => setContributorAddress(e.target.value)}
+              onChange={(e) => {
+                setContributorAddress(e.target.value)
+                sessionStorage.setItem('claimContributorAddress', e.target.value)
+              }}
                   placeholder="Enter your payout address or identifier"
               className="form-input"
             />
+            <button
+              type="button"
+              className="redeem-button"
+              style={{ marginTop: '8px' }}
+              onClick={connectWalletForClaim}
+            >
+              Use Connected MetaMask Address
+            </button>
           </div>
 
           <div className="form-group">
             <small className="form-help">
-              In simplified mode, claiming a bounty updates its status in-app (no blockchain signing required).
+              Claim triggers an on-chain payout to the address you provide.
             </small>
           </div>
         </div>
@@ -160,7 +208,7 @@ const BountyRedemption = () => {
               <div key={bounty.id} className="bounty-card">
                 <div className="bounty-header">
                   <h3 className="bounty-title">{bounty.title}</h3>
-                  <div className="bounty-amount">${bounty.amount}</div>
+                  <div className="bounty-amount">{bounty.amount} ETH</div>
                 </div>
                 
                 <div className="bounty-details">

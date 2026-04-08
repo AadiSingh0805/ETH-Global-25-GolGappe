@@ -2,6 +2,7 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 import authService from '../services/authService';
 
 const AuthContext = createContext();
+const TAB_AUTH_KEY = 'tabAuthActive';
 
 function useAuth() {
   const context = useContext(AuthContext);
@@ -17,11 +18,26 @@ function AuthProvider({ children }) {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
-    // Rehydrate authentication from the server session on first load.
-    checkAuth().catch(() => {
-      setLoading(false);
-    });
+    // Only rehydrate auth for the current tab if this tab has already authenticated.
+    if (sessionStorage.getItem(TAB_AUTH_KEY) === '1') {
+      checkAuth().catch(() => {
+        setLoading(false);
+      });
+      return;
+    }
+
+    setUser(null);
+    setIsAuthenticated(false);
+    setLoading(false);
   }, []);
+
+  const markTabAuthenticated = () => {
+    sessionStorage.setItem(TAB_AUTH_KEY, '1');
+  };
+
+  const clearTabAuthentication = () => {
+    sessionStorage.removeItem(TAB_AUTH_KEY);
+  };
 
   const checkAuth = async () => {
     // Manual auth check - can be called after successful login
@@ -32,11 +48,13 @@ function AuthProvider({ children }) {
       if (response.success && response.user) {
         setUser(response.user);
         setIsAuthenticated(true);
+        markTabAuthenticated();
         console.log('Auth check successful:', response.user);
         return response;
       } else {
         setUser(null);
         setIsAuthenticated(false);
+        clearTabAuthentication();
         console.log('Auth check failed: no user data');
         return response;
       }
@@ -44,6 +62,7 @@ function AuthProvider({ children }) {
       console.error('Auth check failed:', error);
       setUser(null);
       setIsAuthenticated(false);
+      clearTabAuthentication();
       return { success: false, error };
     } finally {
       setLoading(false);
@@ -88,6 +107,7 @@ function AuthProvider({ children }) {
       if (response.success && response.user) {
         setUser(response.user);
         setIsAuthenticated(true);
+        markTabAuthenticated();
         return response;
       } else {
         throw response;
@@ -116,11 +136,13 @@ function AuthProvider({ children }) {
       await authService.logout();
       setUser(null);
       setIsAuthenticated(false);
+      clearTabAuthentication();
     } catch (error) {
       console.error('Logout failed:', error);
       // Force local logout even if API call fails
       setUser(null);
       setIsAuthenticated(false);
+      clearTabAuthentication();
     }
   };
 

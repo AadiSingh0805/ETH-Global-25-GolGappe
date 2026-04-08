@@ -24,6 +24,8 @@ const IssueCard = ({ issue, repo, onBountyUpdate }) => {
 
       const bountyData = {
         amount: parseFloat(bountyAmount),
+        title: issue.title,
+        issueUrl: issue.htmlUrl,
         description: bountyDescription.trim(),
         deadline: deadline || null,
         requirements: requirements.trim() ? requirements.trim().split('\n').filter(req => req.trim()) : []
@@ -41,7 +43,7 @@ const IssueCard = ({ issue, repo, onBountyUpdate }) => {
         setDeadline('');
         setRequirements('');
         
-        alert(`Bounty created successfully! Metadata stored in Filecoin: ${response.ipfsUrl}`);
+        alert(`Bounty created successfully on-chain. Tx: ${response.assignTransactionHash || response.fundTransactionHash || 'submitted'}`);
       } else {
         console.error('Bounty creation failed:', {
           repoId: repo.id,
@@ -56,9 +58,9 @@ const IssueCard = ({ issue, repo, onBountyUpdate }) => {
           if (response.error.includes('Not repo owner')) {
             errorMessage = `❌ Repository Ownership Error\n\nYou can only create bounties for repositories you own on the blockchain.\n\nPossible solutions:\n• Use the same wallet that listed the repository\n• Ask the repository owner to create the bounty\n• Check if repository ${repo.id} is registered correctly\n\nError: ${response.error}`;
           } else if (response.error.includes('Repository') && response.error.includes('not found')) {
-            errorMessage = `❌ Repository Not Found\n\nRepository ${repo.id} is not registered on the blockchain.\n\nPlease list the repository first before creating bounties.\n\nError: ${response.error}`;
+            errorMessage = `❌ Repository Not Found\n\nRepository ${repo.id} is not registered on-chain.\n\nPlease list the repository first before creating bounties.\n\nError: ${response.error}`;
           } else if (response.error.includes('Insufficient funds')) {
-            errorMessage = `❌ Insufficient Project Pool Funds\n\nThe project pool doesn't have enough tFIL to fund this bounty.\n\nPlease donate to the project pool first.\n\nError: ${response.error}`;
+            errorMessage = `❌ Insufficient Project Pool Funds\n\nThe project pool doesn't have enough ETH to fund this bounty.\n\nPlease donate to the project pool first.\n\nError: ${response.error}`;
           } else {
             errorMessage = `${response.message}: ${response.error}`;
           }
@@ -299,7 +301,7 @@ const IssueCard = ({ issue, repo, onBountyUpdate }) => {
                       <p><strong>💡 Suggestion:</strong> Donate to the project pool before creating bounties.</p>
                     </div>
                   )}
-                  {error.includes('Filecoin') && (
+                  {error.includes('IPFS') && (
                     <div className="error-suggestion">
                       <p><strong>💡 Suggestion:</strong> Check your internet connection and try again.</p>
                     </div>
