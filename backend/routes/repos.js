@@ -445,11 +445,41 @@ router.post('/:repoId/issues/:issueId/assign', requireAuth, async (req, res) => 
   }
 });
 
+// Quote bounty payout amount for a given currency before claim
+router.get('/:repoId/issues/:issueId/payout-quote', requireAuth, async (req, res) => {
+  try {
+    const { repoId, issueId } = req.params;
+    const payoutCurrency = req.query.payoutCurrency || 'ETH';
+
+    const result = await bountyService.estimateBountyPayout(repoId, issueId, payoutCurrency);
+
+    if (result.success) {
+      res.json({
+        success: true,
+        quote: result.data,
+        message: result.message
+      });
+    } else {
+      res.status(500).json({
+        success: false,
+        message: result.message,
+        error: result.error
+      });
+    }
+  } catch (error) {
+    console.error('Quote bounty payout error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to quote bounty payout'
+    });
+  }
+});
+
 // Complete bounty and release payment
 router.post('/:repoId/issues/:issueId/complete', requireAuth, async (req, res) => {
   try {
     const { repoId, issueId } = req.params;
-    const { contributorAddress } = req.body;
+    const { contributorAddress, payoutCurrency } = req.body;
 
     const forcePayoutWallet = String(process.env.FORCE_PAYOUT_WALLET || 'false') === 'true';
     const envPayoutWallet = resolvePayoutAddress();
@@ -469,7 +499,8 @@ router.post('/:repoId/issues/:issueId/complete', requireAuth, async (req, res) =
     const result = await bountyService.completeBounty(
       repoId,
       issueId,
-      payoutAddress
+      payoutAddress,
+      payoutCurrency || 'ETH'
     );
 
     if (result.success) {
@@ -478,6 +509,7 @@ router.post('/:repoId/issues/:issueId/complete', requireAuth, async (req, res) =
         bounty: result.data.bounty,
         transactionHash: result.data.transactionHash,
         contributorAddress: payoutAddress,
+        payoutCurrency: result.data.bounty?.payoutCurrency || String(payoutCurrency || 'ETH').toUpperCase(),
         payoutSource: forcePayoutWallet ? 'env:PAYOUT_WALLET_ADDRESS' : 'request:contributorAddress',
         message: 'Bounty completed successfully'
       });

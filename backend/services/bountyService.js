@@ -1,8 +1,12 @@
 import {
   formatEth,
+  formatTokenAmount,
+  getTokenDecimals,
   getBountyBoardContract,
+  getLocalSwapContracts,
   getProvider,
   getSigner,
+  getSwapTargetForCurrency,
   maybeAutofundSigner,
   isBlockchainEnabled,
   parseEth
@@ -594,7 +598,7 @@ class BountyService {
     }
   }
 
-  async completeBounty(repoId, issueId, contributorAddress) {
+  async completeBounty(repoId, issueId, contributorAddress, payoutCurrency = 'ETH') {
     if (isBlockchainEnabled()) {
       try {
         await this.ensureBountyBoardDeployed();
@@ -602,10 +606,97 @@ class BountyService {
           throw new Error('Contributor address is required');
         }
 
+        const normalizedPayoutCurrency = String(payoutCurrency || 'ETH').trim().toUpperCase();
         const signer = await maybeAutofundSigner(0n);
+        const signerAddress = await signer.getAddress();
         const contract = getBountyBoardContract(signer);
-        const tx = await contract.claimBounty(Number(repoId), Number(issueId), contributorAddress);
-        const receipt = await tx.wait();
+
+        const [exists, , amountWei, , , claimed] = await contract.getBounty(Number(repoId), Number(issueId));
+        if (!exists) {
+          throw new Error('Bounty not found on-chain');
+        }
+        if (claimed) {
+          throw new Error('Bounty already claimed');
+        }
+
+        if (normalizedPayoutCurrency === 'ETH') {
+          const tx = await contract.claimBounty(Number(repoId), Number(issueId), contributorAddress);
+          const receipt = await tx.wait();
+
+          return {
+            success: true,
+            data: {
+              bounty: {
+                repoId: Number(repoId),
+                issueId: Number(issueId),
+                assignee: contributorAddress,
+                status: 'completed',
+                paid: true,
+                payoutCurrency: 'ETH'
+              },
+              metadataCID: null,
+              ipfsUrl: null,
+              transactionHash: tx.hash,
+              blockNumber: receipt.blockNumber,
+              gasUsed: receipt.gasUsed?.toString() || null
+            },
+            message: 'Bounty claimed and transferred on-chain'
+          };
+        }
+
+        // For token payout: claim ETH to signer first, then swap ETH->token and transfer token.
+        const claimTx = await contract.claimBounty(Number(repoId), Number(issueId), signerAddress);
+        const claimReceipt = await claimTx.wait();
+
+        const swapContracts = getLocalSwapContracts(signer);
+        const swapTarget = getSwapTargetForCurrency(normalizedPayoutCurrency);
+        if (!swapTarget.tokenKey || !swapTarget.poolKey) {
+          throw new Error(`Unsupported payout currency: ${normalizedPayoutCurrency}`);
+        }
+
+        const payoutToken = swapContracts[swapTarget.tokenKey];
+        const pool = swapContracts[swapTarget.poolKey];
+        if (!payoutToken || !pool) {
+          throw new Error(`Swap contracts unavailable for ${swapTarget.symbol}. Re-run local deployment.`);
+        }
+
+        const wethAddress = await swapContracts.weth.getAddress();
+        const tokenAddress = await payoutToken.getAddress();
+        const token0 = await pool.token0();
+        const token1 = await pool.token1();
+
+        let token0ToToken1;
+        if (token0.toLowerCase() === wethAddress.toLowerCase() && token1.toLowerCase() === tokenAddress.toLowerCase()) {
+          token0ToToken1 = true;
+        } else if (token1.toLowerCase() === wethAddress.toLowerCase() && token0.toLowerCase() === tokenAddress.toLowerCase()) {
+          token0ToToken1 = false;
+        } else {
+          throw new Error(`Selected pool does not match WETH/${swapTarget.symbol}`);
+        }
+
+        const tokenBalanceBefore = await payoutToken.balanceOf(signerAddress);
+
+        await (await swapContracts.weth.deposit({ value: amountWei })).wait();
+        await (await swapContracts.weth.approve(await pool.getAddress(), amountWei)).wait();
+
+        const quotedOut = await pool.getAmountOut(amountWei, token0ToToken1);
+        const minAmountOut = (quotedOut * 99n) / 100n;
+
+        if (token0ToToken1) {
+          await (await pool.swapToken0ForToken1(amountWei, minAmountOut)).wait();
+        } else {
+          await (await pool.swapToken1ForToken0(amountWei, minAmountOut)).wait();
+        }
+
+        const tokenBalanceAfter = await payoutToken.balanceOf(signerAddress);
+        const tokenOutAmount = tokenBalanceAfter - tokenBalanceBefore;
+        if (tokenOutAmount <= 0n) {
+          throw new Error(`Swap output is zero for ${swapTarget.symbol}`);
+        }
+
+        const payoutTokenDecimals = await getTokenDecimals(payoutToken);
+
+        await (await payoutToken.transfer(contributorAddress, tokenOutAmount)).wait();
 
         return {
           success: true,
@@ -615,15 +706,18 @@ class BountyService {
               issueId: Number(issueId),
               assignee: contributorAddress,
               status: 'completed',
-              paid: true
+              paid: true,
+              payoutCurrency: swapTarget.symbol,
+              payoutTokenAmount: tokenOutAmount.toString(),
+              payoutTokenAmountDisplay: formatTokenAmount(tokenOutAmount, payoutTokenDecimals)
             },
             metadataCID: null,
             ipfsUrl: null,
-            transactionHash: tx.hash,
-            blockNumber: receipt.blockNumber,
-            gasUsed: receipt.gasUsed?.toString() || null
+            transactionHash: claimTx.hash,
+            blockNumber: claimReceipt.blockNumber,
+            gasUsed: claimReceipt.gasUsed?.toString() || null
           },
-          message: 'Bounty claimed and transferred on-chain'
+          message: `Bounty claimed, swapped to ${swapTarget.symbol}, and transferred on-chain`
         };
       } catch (error) {
         return {
@@ -667,6 +761,116 @@ class BountyService {
         success: false,
         error: error.message,
         message: 'Failed to complete bounty and release payment'
+      };
+    }
+  }
+
+  async estimateBountyPayout(repoId, issueId, payoutCurrency = 'ETH') {
+    if (isBlockchainEnabled()) {
+      try {
+        await this.ensureBountyBoardDeployed();
+
+        const normalizedPayoutCurrency = String(payoutCurrency || 'ETH').trim().toUpperCase();
+        const contract = getBountyBoardContract(getProvider());
+        const [exists, , amountWei, , , claimed] = await contract.getBounty(Number(repoId), Number(issueId));
+
+        if (!exists) {
+          throw new Error('Bounty not found on-chain');
+        }
+
+        const estimate = {
+          repoId: Number(repoId),
+          issueId: Number(issueId),
+          payoutCurrency: normalizedPayoutCurrency,
+          bountyEth: amountWei.toString(),
+          bountyEthDisplay: formatEth(amountWei),
+          estimatedOutput: amountWei.toString(),
+          estimatedOutputDisplay: formatEth(amountWei),
+          isPaid: claimed
+        };
+
+        if (normalizedPayoutCurrency === 'ETH') {
+          return {
+            success: true,
+            data: estimate,
+            message: 'ETH payout estimate retrieved'
+          };
+        }
+
+        const swapContracts = getLocalSwapContracts(getProvider());
+        const swapTarget = getSwapTargetForCurrency(normalizedPayoutCurrency);
+
+        if (!swapTarget.tokenKey || !swapTarget.poolKey) {
+          throw new Error(`Unsupported payout currency: ${normalizedPayoutCurrency}`);
+        }
+
+        const payoutToken = swapContracts[swapTarget.tokenKey];
+        const pool = swapContracts[swapTarget.poolKey];
+        if (!payoutToken || !pool) {
+          throw new Error(`Swap contracts unavailable for ${swapTarget.symbol}. Re-run local deployment.`);
+        }
+
+        const payoutTokenDecimals = await getTokenDecimals(payoutToken);
+
+        const wethAddress = await swapContracts.weth.getAddress();
+        const tokenAddress = await payoutToken.getAddress();
+        const token0 = await pool.token0();
+        const token1 = await pool.token1();
+
+        let token0ToToken1;
+        if (token0.toLowerCase() === wethAddress.toLowerCase() && token1.toLowerCase() === tokenAddress.toLowerCase()) {
+          token0ToToken1 = true;
+        } else if (token1.toLowerCase() === wethAddress.toLowerCase() && token0.toLowerCase() === tokenAddress.toLowerCase()) {
+          token0ToToken1 = false;
+        } else {
+          throw new Error(`Selected pool does not match WETH/${swapTarget.symbol}`);
+        }
+
+        const quotedOut = await pool.getAmountOut(amountWei, token0ToToken1);
+
+        estimate.estimatedOutput = quotedOut.toString();
+        estimate.estimatedOutputDisplay = formatTokenAmount(quotedOut, payoutTokenDecimals);
+
+        return {
+          success: true,
+          data: estimate,
+          message: `${swapTarget.symbol} payout estimate retrieved`
+        };
+      } catch (error) {
+        return {
+          success: false,
+          error: error.message,
+          message: 'Failed to estimate bounty payout'
+        };
+      }
+    }
+
+    try {
+      const repoMap = this.getRepoBountyMap(Number(repoId));
+      const bounty = repoMap.get(Number(issueId));
+      if (!bounty) {
+        throw new Error('Bounty not found');
+      }
+
+      return {
+        success: true,
+        data: {
+          repoId: Number(repoId),
+          issueId: Number(issueId),
+          payoutCurrency: String(payoutCurrency || 'ETH').toUpperCase(),
+          bountyEth: bounty.amount.toString(),
+          bountyEthDisplay: String(bounty.amount),
+          estimatedOutput: bounty.amount.toString(),
+          estimatedOutputDisplay: String(bounty.amount),
+          isPaid: bounty.paid
+        },
+        message: 'Bounty payout estimate retrieved'
+      };
+    } catch (error) {
+      return {
+        success: false,
+        error: error.message,
+        message: 'Failed to estimate bounty payout'
       };
     }
   }

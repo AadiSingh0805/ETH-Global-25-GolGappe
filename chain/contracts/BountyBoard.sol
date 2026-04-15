@@ -68,20 +68,22 @@ contract BountyBoard {
         require(msg.value > 0, 'Bounty amount must be > 0');
 
         bytes32 key = _key(repoId, issueId);
-        require(!bounties[key].exists, 'Bounty already exists');
+        Bounty storage bounty = bounties[key];
+        bool isNewBounty = !bounty.exists;
+        require(isNewBounty || bounty.claimed, 'Bounty already exists');
 
-        bounties[key] = Bounty({
-            repoId: repoId,
-            issueId: issueId,
-            issueUrl: issueUrl,
-            amount: msg.value,
-            creator: msg.sender,
-            recipient: address(0),
-            claimed: false,
-            exists: true
-        });
+        bounty.repoId = repoId;
+        bounty.issueId = issueId;
+        bounty.issueUrl = issueUrl;
+        bounty.amount = msg.value;
+        bounty.creator = msg.sender;
+        bounty.recipient = address(0);
+        bounty.claimed = false;
+        bounty.exists = true;
 
-        repos[repoId].issueIds.push(issueId);
+        if (isNewBounty) {
+            repos[repoId].issueIds.push(issueId);
+        }
 
         emit BountyCreated(repoId, issueId, issueUrl, msg.value, msg.sender);
     }

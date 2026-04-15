@@ -60,6 +60,12 @@ export const repositoryAPI = {
   // Assign bounty to contributor
   assignBounty: (repoId, issueId, assignmentData) =>
     api.post(`/repos/${repoId}/issues/${issueId}/assign`, assignmentData),
+
+  // Quote bounty payout for selected currency
+  getBountyPayoutQuote: (repoId, issueId, payoutCurrency) =>
+    api.get(`/repos/${repoId}/issues/${issueId}/payout-quote`, {
+      params: { payoutCurrency }
+    }),
   
   // Complete bounty and release payment
   completeBounty: (repoId, issueId, completionData) =>

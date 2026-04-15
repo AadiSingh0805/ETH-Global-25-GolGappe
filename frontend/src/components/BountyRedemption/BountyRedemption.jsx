@@ -5,16 +5,62 @@ import './BountyRedemption.css'
 
 const BountyRedemption = () => {
   const { user } = useAuth()
+  const payoutOptions = [
+    { value: 'ETH', label: 'ETH' },
+    { value: 'BTC', label: 'BTC' },
+    { value: 'USDC', label: 'USDC' },
+  ]
   const [availableBounties, setAvailableBounties] = useState([])
+  const [payoutEstimates, setPayoutEstimates] = useState({})
   const [loading, setLoading] = useState(true)
+  const [estimating, setEstimating] = useState(false)
   const [error, setError] = useState(null)
   const [redeeming, setRedeeming] = useState(null) // ID of bounty being redeemed
   const [success, setSuccess] = useState(null)
   const [contributorAddress, setContributorAddress] = useState('')
+  const [payoutCurrency, setPayoutCurrency] = useState('ETH')
 
   useEffect(() => {
     fetchAvailableBounties()
   }, [])
+
+  useEffect(() => {
+    const fetchPayoutEstimates = async () => {
+      if (availableBounties.length === 0) {
+        setPayoutEstimates({})
+        return
+      }
+
+      try {
+        setEstimating(true)
+        const quoteResults = await Promise.all(
+          availableBounties.map(async (bounty) => {
+            try {
+              const quote = await repositoryAPI.getBountyPayoutQuote(
+                bounty.repoId,
+                bounty.issueId,
+                payoutCurrency
+              )
+
+              if (quote.success && quote.quote) {
+                return [bounty.id, quote.quote]
+              }
+            } catch (quoteError) {
+              console.error(`Quote error for bounty ${bounty.id}:`, quoteError)
+            }
+
+            return [bounty.id, null]
+          })
+        )
+
+        setPayoutEstimates(Object.fromEntries(quoteResults))
+      } finally {
+        setEstimating(false)
+      }
+    }
+
+    fetchPayoutEstimates()
+  }, [availableBounties, payoutCurrency])
 
   useEffect(() => {
     const saved = sessionStorage.getItem('claimContributorAddress')
@@ -107,6 +153,7 @@ const BountyRedemption = () => {
       // Complete the bounty
       const completionData = {
         contributorAddress,
+        payoutCurrency,
         metadataCID: null
       }
 
@@ -117,7 +164,7 @@ const BountyRedemption = () => {
       )
 
       if (result.success) {
-            setSuccess(`Successfully redeemed bounty! Claim reference: ${result.transactionHash}`)
+        setSuccess(`Successfully redeemed bounty in ${result.payoutCurrency || payoutCurrency}! Claim reference: ${result.transactionHash}`)
         // Refresh the bounties list
         await fetchAvailableBounties()
         // Clear form
@@ -195,6 +242,26 @@ const BountyRedemption = () => {
               Claim triggers an on-chain payout to the address you provide.
             </small>
           </div>
+
+          <div className="form-group">
+            <label htmlFor="payoutCurrency">Claim Currency:</label>
+            <select
+              id="payoutCurrency"
+              value={payoutCurrency}
+              onChange={(e) => setPayoutCurrency(e.target.value)}
+              className="form-input token-select"
+              aria-label="Select claim currency"
+            >
+              {payoutOptions.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
+            <small className="form-help">
+              Choose ETH, BTC, or USDC before transfer.
+            </small>
+          </div>
         </div>
 
         {availableBounties.length === 0 ? (
@@ -208,7 +275,7 @@ const BountyRedemption = () => {
               <div key={bounty.id} className="bounty-card">
                 <div className="bounty-header">
                   <h3 className="bounty-title">{bounty.title}</h3>
-                  <div className="bounty-amount">{bounty.amount} ETH</div>
+                  <div className="bounty-amount">{bounty.amount} ETH ({payoutCurrency} payout)</div>
                 </div>
                 
                 <div className="bounty-details">
@@ -219,6 +286,14 @@ const BountyRedemption = () => {
                   <p className="bounty-issue">
                     <strong>Issue ID:</strong> {bounty.issueId}
                   </p>
+                  <p className="bounty-estimate">
+                    <strong>Estimated payout:</strong>{' '}
+                    {estimating
+                      ? 'Calculating...'
+                      : payoutEstimates[bounty.id]
+                        ? `${payoutEstimates[bounty.id].estimatedOutputDisplay} ${payoutEstimates[bounty.id].payoutCurrency}`
+                        : `~${bounty.amount} ${payoutCurrency}`}
+                  </p>
                 </div>
 
                 <div className="bounty-actions">
@@ -227,7 +302,7 @@ const BountyRedemption = () => {
                     onClick={() => handleRedeemBounty(bounty)}
                     disabled={redeeming === bounty.id || !contributorAddress}
                   >
-                    {redeeming === bounty.id ? 'Redeeming...' : 'Redeem Bounty'}
+                    {redeeming === bounty.id ? 'Redeeming...' : `Redeem as ${payoutCurrency}`}
                   </button>
                 </div>
               </div>
