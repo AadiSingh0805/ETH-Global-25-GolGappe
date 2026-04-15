@@ -98,7 +98,7 @@ export const maybeAutofundSigner = async (requiredWei = 0n) => {
 };
 
 export const getBountyBoardContract = (signerOrProvider = null) => {
-  const contractAddress = process.env.BOUNTY_BOARD_ADDRESS;
+  const contractAddress = getBountyBoardAddress();
   if (!contractAddress) {
     throw new Error('BOUNTY_BOARD_ADDRESS is not configured');
   }
@@ -119,6 +119,22 @@ export const getLocalDeployment = () => {
 
   const raw = fs.readFileSync(deploymentPath, 'utf-8');
   return JSON.parse(raw);
+};
+
+export const getBountyBoardAddress = () => {
+  const deployment = getLocalDeployment();
+  const deploymentAddress = deployment?.bountyBoard;
+
+  if (deploymentAddress && ethers.isAddress(deploymentAddress)) {
+    return deploymentAddress;
+  }
+
+  const envAddress = String(process.env.BOUNTY_BOARD_ADDRESS || '').trim();
+  if (envAddress && ethers.isAddress(envAddress)) {
+    return envAddress;
+  }
+
+  return null;
 };
 
 export const getLocalSwapContracts = (signerOrProvider = null) => {

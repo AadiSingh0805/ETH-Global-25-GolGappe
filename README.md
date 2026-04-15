@@ -100,6 +100,11 @@ cd frontend
 npm run dev
 ```
 
+If you are using the Hardhat localhost flow, you can start everything with one command from the repo root:
+```bash
+bash ./start-local.sh
+```
+
 Open [http://localhost:5173](http://localhost:5173) to view the application.
 
 ## 🔧 Configuration

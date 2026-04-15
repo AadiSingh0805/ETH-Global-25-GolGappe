@@ -2,6 +2,7 @@ import {
   formatEth,
   formatTokenAmount,
   getTokenDecimals,
+  getBountyBoardAddress,
   getBountyBoardContract,
   getLocalSwapContracts,
   getProvider,
@@ -64,7 +65,7 @@ class BountyService {
   }
 
   async ensureBountyBoardDeployed() {
-    const address = process.env.BOUNTY_BOARD_ADDRESS;
+    const address = getBountyBoardAddress();
     if (!address) {
       throw new Error('BOUNTY_BOARD_ADDRESS is not configured');
     }
@@ -72,7 +73,7 @@ class BountyService {
     const code = await getProvider().getCode(address);
     if (!code || code === '0x') {
       throw new Error(
-        'BountyBoard contract is not deployed at BOUNTY_BOARD_ADDRESS. If Hardhat node was restarted, run `cd chain && npm run deploy:local` and update backend/.env with the new address.'
+        'BountyBoard contract is not deployed at the resolved address. If Hardhat node was restarted, run the local launcher again so it redeploys and refreshes chain/deployments/localhost.json.'
       );
     }
   }

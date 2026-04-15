@@ -448,6 +448,11 @@ router.post('/:repoId/issues/:issueId/assign', requireAuth, async (req, res) => 
 // Quote bounty payout amount for a given currency before claim
 router.get('/:repoId/issues/:issueId/payout-quote', requireAuth, async (req, res) => {
   try {
+    // Quote must always be fresh because pool reserves change after swaps.
+    res.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+    res.set('Pragma', 'no-cache');
+    res.set('Expires', '0');
+
     const { repoId, issueId } = req.params;
     const payoutCurrency = req.query.payoutCurrency || 'ETH';
 

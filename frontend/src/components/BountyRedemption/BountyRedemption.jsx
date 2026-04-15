@@ -164,7 +164,11 @@ const BountyRedemption = () => {
       )
 
       if (result.success) {
-        setSuccess(`Successfully redeemed bounty in ${result.payoutCurrency || payoutCurrency}! Claim reference: ${result.transactionHash}`)
+        const actualPaid = result.bounty?.payoutTokenAmountDisplay
+        const paidSuffix = actualPaid
+          ? ` Paid: ${actualPaid} ${result.payoutCurrency || payoutCurrency}.`
+          : ''
+        setSuccess(`Successfully redeemed bounty in ${result.payoutCurrency || payoutCurrency}!${paidSuffix} Claim reference: ${result.transactionHash}`)
         // Refresh the bounties list
         await fetchAvailableBounties()
         // Clear form

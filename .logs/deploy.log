@@ -1,3 +1,8 @@
+
+> golgappe-chain@1.0.0 deploy:local
+> hardhat run scripts/deploy.js --network localhost
+
+Deployment complete:
 {
   "network": "localhost",
   "deployer": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
@@ -17,3 +22,4 @@
   "wethBusdPool": "0xa513E6E4b8f2a923D98304ec87F64353C4D5C853",
   "ggpBusdPool": "0x5FC8d32690cc91D4c39d9d3abcBD16989F875707"
 }
+Saved deployment file: /home/aadi/Repos/ETH-Global-25-GolGappe/chain/deployments/localhost.json
