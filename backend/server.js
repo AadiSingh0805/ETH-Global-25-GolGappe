@@ -6,8 +6,6 @@ import morgan from 'morgan';
 import rateLimit from 'express-rate-limit';
 import session from 'express-session';
 import cookieParser from 'cookie-parser';
-import mongoose from 'mongoose';
-import MongoStore from 'connect-mongo';
 
 // Import routes
 import authRoutes from './routes/auth.js';
@@ -23,11 +21,6 @@ dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 5000;
-
-// Database connection
-mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/golgappe')
-  .then(() => console.log('MongoDB connected successfully'))
-  .catch(err => console.error('MongoDB connection error:', err));
 
 // Rate limiting
 const limiter = rateLimit({
@@ -71,10 +64,6 @@ app.use(session({
   secret: process.env.SESSION_SECRET || 'your-secret-key',
   resave: false,
   saveUninitialized: false,
-  store: MongoStore.create({
-    mongoUrl: process.env.MONGODB_URI || 'mongodb://localhost:27017/golgappe',
-    ttl: 24 * 60 * 60 // 1 day in seconds
-  }),
   cookie: {
     secure: process.env.NODE_ENV === 'production',
     sameSite: 'lax',

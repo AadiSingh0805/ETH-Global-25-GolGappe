@@ -26,7 +26,7 @@ router.get('/profile/:username?', optionalAuth, async (req, res) => {
     }
 
     // Return public profile or full profile if it's the user's own profile
-    const isOwnProfile = req.user && req.user._id.equals(user._id);
+    const isOwnProfile = req.user && String(req.user._id) === String(user._id);
     
     res.json({
       success: true,
@@ -158,7 +158,7 @@ router.post('/link/wallet', requireAuth, async (req, res) => {
 
     // Check if wallet is already linked to another account
     const existingUser = await User.findOne({ 'wallet.address': address.toLowerCase() });
-    if (existingUser && !existingUser._id.equals(req.user._id)) {
+    if (existingUser && String(existingUser._id) !== String(req.user._id)) {
       return res.status(400).json({
         success: false,
         message: 'This wallet is already linked to another account'

@@ -1,224 +1,273 @@
-import mongoose from 'mongoose';
+import crypto from 'crypto';
 
-const userSchema = new mongoose.Schema({
-  // Basic user information
-  email: {
-    type: String,
-    sparse: true,
-    lowercase: true,
-    trim: true
-  },
-  
-  username: {
-    type: String,
-    required: true,
-    unique: true,
-    trim: true,
-    minlength: 3,
-    maxlength: 30
-  },
+const userStore = new Map();
 
-  displayName: {
-    type: String,
-    trim: true,
-    maxlength: 50
-  },
-
-  avatar: {
-    type: String,
-    default: ''
-  },
-
-  bio: {
-    type: String,
-    maxlength: 500,
-    default: ''
-  },
-
-  // GitHub authentication
+const defaultUser = () => ({
+  email: null,
+  username: null,
+  displayName: null,
+  avatar: '',
+  bio: '',
   github: {
-    id: {
-      type: String,
-      sparse: true,
-      unique: true
-    },
-    username: String,
-    email: String,
-    avatar: String,
-    profileUrl: String,
-    accessToken: String
+    id: null,
+    username: null,
+    email: null,
+    avatar: null,
+    profileUrl: null,
+    accessToken: null
   },
-
-  // MetaMask/Ethereum authentication
   wallet: {
-    address: {
-      type: String,
-      sparse: true,
-      unique: true,
-      lowercase: true
-    },
-    ensName: String,
-    isVerified: {
-      type: Boolean,
-      default: false
-    },
-    lastSignInMessage: String,
-    nonce: String
+    address: null,
+    ensName: null,
+    isVerified: false,
+    lastSignInMessage: null,
+    nonce: null
   },
-
-  // User preferences and settings
   preferences: {
     notifications: {
-      email: {
-        type: Boolean,
-        default: true
-      },
-      push: {
-        type: Boolean,
-        default: true
-      }
+      email: true,
+      push: true
     },
     privacy: {
-      showEmail: {
-        type: Boolean,
-        default: false
+      showEmail: false,
+      showWallet: false
+    },
+    theme: 'auto'
+  },
+  role: 'contributor',
+  stats: {
+    projectsCreated: 0,
+    contributionsCount: 0,
+    reputation: 0
+  },
+  isActive: true,
+  isVerified: false,
+  lastLoginAt: null,
+  createdAt: new Date(),
+  updatedAt: new Date()
+});
+
+const mergeDefaults = (data = {}) => {
+  const base = defaultUser();
+  return {
+    ...base,
+    ...data,
+    email: data.email ? String(data.email).toLowerCase().trim() : base.email,
+    username: data.username ? String(data.username).trim() : base.username,
+    github: {
+      ...base.github,
+      ...(data.github || {})
+    },
+    wallet: {
+      ...base.wallet,
+      ...(data.wallet || {}),
+      address: data.wallet?.address ? String(data.wallet.address).toLowerCase() : base.wallet.address
+    },
+    preferences: {
+      ...base.preferences,
+      ...(data.preferences || {}),
+      notifications: {
+        ...base.preferences.notifications,
+        ...(data.preferences?.notifications || {})
       },
-      showWallet: {
-        type: Boolean,
-        default: false
+      privacy: {
+        ...base.preferences.privacy,
+        ...(data.preferences?.privacy || {})
       }
     },
-    theme: {
-      type: String,
-      enum: ['light', 'dark', 'auto'],
-      default: 'auto'
+    stats: {
+      ...base.stats,
+      ...(data.stats || {})
     }
-  },
-
-  // User role and permissions
-  role: {
-    type: String,
-    enum: ['creator', 'contributor', 'admin'],
-    default: 'contributor'
-  },
-
-  // User stats
-  stats: {
-    projectsCreated: {
-      type: Number,
-      default: 0
-    },
-    contributionsCount: {
-      type: Number,
-      default: 0
-    },
-    reputation: {
-      type: Number,
-      default: 0
-    }
-  },
-
-  // Account status
-  isActive: {
-    type: Boolean,
-    default: true
-  },
-
-  isVerified: {
-    type: Boolean,
-    default: false
-  },
-
-  lastLoginAt: Date,
-
-  // Timestamps
-  createdAt: {
-    type: Date,
-    default: Date.now
-  },
-
-  updatedAt: {
-    type: Date,
-    default: Date.now
-  }
-}, {
-  timestamps: true
-});
-
-// Indexes for better query performance
-userSchema.index({ 'github.id': 1 });
-userSchema.index({ 'wallet.address': 1 });
-userSchema.index({ username: 1 });
-userSchema.index({ email: 1 });
-userSchema.index({ createdAt: -1 });
-
-// Virtual for full name
-userSchema.virtual('fullProfile').get(function() {
-  return {
-    id: this._id,
-    username: this.username,
-    displayName: this.displayName,
-    avatar: this.avatar || this.github?.avatar || '',
-    bio: this.bio,
-    role: this.role,
-    stats: this.stats,
-    isVerified: this.isVerified,
-    hasGithub: !!this.github?.id,
-    hasWallet: !!this.wallet?.address,
-    walletAddress: this.wallet?.address || null,
-    preferences: this.preferences
   };
-});
-
-// Method to update last login
-userSchema.methods.updateLastLogin = function() {
-  this.lastLoginAt = new Date();
-  return this.save();
 };
 
-// Method to increment contribution count
-userSchema.methods.incrementContributions = function(count = 1) {
-  this.stats.contributionsCount += count;
-  this.updatedAt = new Date();
-  return this.save();
+const getByPath = (obj, path) => path.split('.').reduce((acc, key) => (acc == null ? undefined : acc[key]), obj);
+
+const matchField = (user, key, expected) => {
+  const actual = getByPath(user, key);
+  if (actual == null && expected == null) {
+    return true;
+  }
+
+  // Keep ID comparisons lenient for string/number mismatches.
+  if (key === 'github.id') {
+    return String(actual) === String(expected);
+  }
+
+  return actual === expected;
 };
 
-// Method to increment reputation
-userSchema.methods.incrementReputation = function(points = 1) {
-  this.stats.reputation += points;
-  this.updatedAt = new Date();
-  return this.save();
-};
+const matchesQuery = (user, query = {}) => {
+  if (!query || Object.keys(query).length === 0) {
+    return true;
+  }
 
-// Static method to find user by any identifier
-userSchema.statics.findByAnyIdentifier = function(identifier) {
-  return this.findOne({
-    $or: [
-      { username: identifier },
-      { email: identifier },
-      { 'github.username': identifier },
-      { 'wallet.address': identifier.toLowerCase() }
-    ]
+  if (Array.isArray(query.$or)) {
+    return query.$or.some((q) => matchesQuery(user, q));
+  }
+
+  return Object.entries(query).every(([key, value]) => {
+    if (key === '$or') {
+      return true;
+    }
+    return matchField(user, key, value);
   });
 };
 
-// Middleware to update the updatedAt field
-userSchema.pre('save', function(next) {
-  if (this.isModified() && !this.isNew) {
+class User {
+  constructor(data = {}) {
+    const merged = mergeDefaults(data);
+    this._id = data._id ? String(data._id) : crypto.randomUUID();
+    Object.assign(this, merged);
+  }
+
+  get fullProfile() {
+    return {
+      id: this._id,
+      username: this.username,
+      displayName: this.displayName,
+      avatar: this.avatar || this.github?.avatar || '',
+      bio: this.bio,
+      role: this.role,
+      stats: this.stats,
+      isVerified: this.isVerified,
+      hasGithub: !!this.github?.id,
+      hasWallet: !!this.wallet?.address,
+      walletAddress: this.wallet?.address || null,
+      preferences: this.preferences
+    };
+  }
+
+  toJSON() {
+    return {
+      _id: this._id,
+      email: this.email,
+      username: this.username,
+      displayName: this.displayName,
+      avatar: this.avatar,
+      bio: this.bio,
+      github: {
+        id: this.github?.id || null,
+        username: this.github?.username || null,
+        email: this.github?.email || null,
+        avatar: this.github?.avatar || null,
+        profileUrl: this.github?.profileUrl || null
+      },
+      wallet: {
+        address: this.wallet?.address || null,
+        ensName: this.wallet?.ensName || null,
+        isVerified: !!this.wallet?.isVerified
+      },
+      preferences: this.preferences,
+      role: this.role,
+      stats: this.stats,
+      isActive: this.isActive,
+      isVerified: this.isVerified,
+      lastLoginAt: this.lastLoginAt,
+      createdAt: this.createdAt,
+      updatedAt: this.updatedAt
+    };
+  }
+
+  async save() {
+    if (!this.username || String(this.username).trim().length < 3) {
+      throw new Error('Username is required and must be at least 3 characters');
+    }
+
+    const thisId = String(this._id);
+    const email = this.email ? String(this.email).toLowerCase().trim() : null;
+    const githubId = this.github?.id ? String(this.github.id) : null;
+    const walletAddress = this.wallet?.address ? String(this.wallet.address).toLowerCase() : null;
+
+    for (const existing of userStore.values()) {
+      if (String(existing._id) === thisId) {
+        continue;
+      }
+
+      if (existing.username === this.username) {
+        const err = new Error('Duplicate username');
+        err.code = 11000;
+        err.keyValue = { username: this.username };
+        throw err;
+      }
+
+      if (email && existing.email === email) {
+        const err = new Error('Duplicate email');
+        err.code = 11000;
+        err.keyValue = { email };
+        throw err;
+      }
+
+      if (githubId && String(existing.github?.id) === githubId) {
+        const err = new Error('Duplicate GitHub ID');
+        err.code = 11000;
+        err.keyValue = { 'github.id': githubId };
+        throw err;
+      }
+
+      if (walletAddress && String(existing.wallet?.address || '').toLowerCase() === walletAddress) {
+        const err = new Error('Duplicate wallet address');
+        err.code = 11000;
+        err.keyValue = { 'wallet.address': walletAddress };
+        throw err;
+      }
+    }
+
+    this.email = email;
+    this.wallet = {
+      ...(this.wallet || {}),
+      address: walletAddress
+    };
     this.updatedAt = new Date();
-  }
-  next();
-});
 
-// Transform JSON output
-userSchema.set('toJSON', {
-  transform: function(doc, ret) {
-    delete ret.__v;
-    delete ret.github?.accessToken;
-    delete ret.wallet?.nonce;
-    delete ret.wallet?.lastSignInMessage;
-    return ret;
+    userStore.set(thisId, this);
+    return this;
   }
-});
 
-export default mongoose.model('User', userSchema);
+  async updateLastLogin() {
+    this.lastLoginAt = new Date();
+    return this.save();
+  }
+
+  async incrementContributions(count = 1) {
+    this.stats.contributionsCount += count;
+    this.updatedAt = new Date();
+    return this.save();
+  }
+
+  async incrementReputation(points = 1) {
+    this.stats.reputation += points;
+    this.updatedAt = new Date();
+    return this.save();
+  }
+
+  static async findOne(query = {}) {
+    for (const user of userStore.values()) {
+      if (matchesQuery(user, query)) {
+        return user;
+      }
+    }
+    return null;
+  }
+
+  static async findById(id) {
+    if (!id) {
+      return null;
+    }
+    return userStore.get(String(id)) || null;
+  }
+
+  static async findByAnyIdentifier(identifier) {
+    return this.findOne({
+      $or: [
+        { username: identifier },
+        { email: String(identifier).toLowerCase() },
+        { 'github.username': identifier },
+        { 'wallet.address': String(identifier).toLowerCase() }
+      ]
+    });
+  }
+}
+
+export default User;

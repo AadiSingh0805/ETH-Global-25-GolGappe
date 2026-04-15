@@ -16,7 +16,6 @@ export const BOUNTY_BOARD_ABI = [
 ];
 
 let providerInstance = null;
-let signerInstance = null;
 
 export const isBlockchainEnabled = () => process.env.BLOCKCHAIN_ENABLED === 'true';
 
@@ -37,14 +36,9 @@ export const getSigner = () => {
   }
 
   const formattedKey = privateKey.startsWith('0x') ? privateKey : `0x${privateKey}`;
-
-  if (signerInstance) {
-    return signerInstance;
-  }
-
   const wallet = new ethers.Wallet(formattedKey, getProvider());
-  signerInstance = new ethers.NonceManager(wallet);
-  return signerInstance;
+  // Use a fresh nonce manager per call so local chain resets do not leave a stale cached nonce.
+  return new ethers.NonceManager(wallet);
 };
 
 export const maybeAutofundSigner = async (requiredWei = 0n) => {

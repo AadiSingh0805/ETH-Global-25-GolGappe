@@ -312,7 +312,7 @@ router.post('/metamask/verify', validateEthSignature, async (req, res) => {
 
       // Check if wallet is already linked to another account
       const existingWalletUser = await User.findOne({ 'wallet.address': address.toLowerCase() });
-      if (existingWalletUser && !existingWalletUser._id.equals(user._id)) {
+      if (existingWalletUser && String(existingWalletUser._id) !== String(user._id)) {
         return res.status(400).json({
           success: false,
           message: 'This wallet is already linked to another account'
