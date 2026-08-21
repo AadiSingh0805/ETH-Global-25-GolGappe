@@ -3,7 +3,9 @@
 > vite --host 0.0.0.0
 
 
-  VITE v7.3.2  ready in 121 ms
+  [32m[1mVITE[22m v7.3.2[39m  [2mready in [0m[1m509[22m[2m[0m ms[22m
 
-  ➜  Local:   http://localhost:5173/
-  ➜  Network: http://192.168.0.151:5173/
+  [32m➜[39m  [1mLocal[22m:   [36mhttp://localhost:[1m5173[22m/[39m
+  [32m➜[39m  [1mNetwork[22m: [36mhttp://192.168.56.1:[1m5173[22m/[39m
+  [32m➜[39m  [1mNetwork[22m: [36mhttp://192.168.0.232:[1m5173[22m/[39m
+^C
