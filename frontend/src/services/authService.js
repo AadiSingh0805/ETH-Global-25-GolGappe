@@ -1,5 +1,6 @@
 import api from './api.js';
 import { ethers } from 'ethers';
+import walletService from './walletService.js';
 
 // Authentication service
 class AuthService {
@@ -41,21 +42,7 @@ class AuthService {
   // Full MetaMask connection flow
   async connectMetaMask() {
     try {
-      // Check if MetaMask is installed
-      if (!window.ethereum) {
-        throw new Error('MetaMask is not installed. Please install MetaMask to continue.');
-      }
-
-      // Request account access
-      const accounts = await window.ethereum.request({
-        method: 'eth_requestAccounts'
-      });
-
-      if (!accounts || accounts.length === 0) {
-        throw new Error('No accounts found. Please connect your MetaMask wallet.');
-      }
-
-      const address = accounts[0];
+      const address = await walletService.connectMetaMask();
 
       // Get nonce
       const nonceResponse = await this.getMetaMaskNonce(address);
@@ -63,16 +50,35 @@ class AuthService {
         throw new Error(nonceResponse.message || 'Failed to generate nonce');
       }
 
-      // Sign message
-      const signature = await window.ethereum.request({
-        method: 'personal_sign',
-        params: [nonceResponse.message, address]
-      });
+      // Sign message using walletService signer
+      const signature = await walletService.signer.signMessage(nonceResponse.message);
 
       // Verify and authenticate
       return await this.verifyMetaMaskSignature(address, signature, nonceResponse.message);
     } catch (error) {
       console.error('MetaMask connection error:', error);
+      throw error;
+    }
+  }
+
+  // Full WalletConnect connection flow
+  async connectWalletConnect() {
+    try {
+      const address = await walletService.connectWalletConnect();
+
+      // Get nonce
+      const nonceResponse = await this.getMetaMaskNonce(address);
+      if (!nonceResponse.success) {
+        throw new Error(nonceResponse.message || 'Failed to generate nonce');
+      }
+
+      // Sign message using walletService signer
+      const signature = await walletService.signer.signMessage(nonceResponse.message);
+
+      // Verify and authenticate
+      return await this.verifyMetaMaskSignature(address, signature, nonceResponse.message);
+    } catch (error) {
+      console.error('WalletConnect connection error:', error);
       throw error;
     }
   }

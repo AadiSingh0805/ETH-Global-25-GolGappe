@@ -162,12 +162,30 @@ function AuthProvider({ children }) {
     }
   };
 
+  const walletConnectLogin = async () => {
+    try {
+      const response = await authService.connectWalletConnect();
+      if (response.success && response.user) {
+        setUser(response.user);
+        setIsAuthenticated(true);
+        markTabAuthenticated();
+        return response;
+      } else {
+        throw response;
+      }
+    } catch (error) {
+      console.error('WalletConnect login failed:', error);
+      throw error;
+    }
+  };
+
   const value = {
     user,
     isAuthenticated,
     loading,
     githubLogin,
     metamaskLogin,
+    walletConnectLogin,
     logout,
     linkWallet,
     checkAuth

@@ -5,6 +5,16 @@
     <link rel="icon" type="image/png" href="/dog.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>GitBountys</title>
+    <script>
+      window.global = window;
+      window.process = window.process || {
+        env: { DEBUG: undefined },
+        version: 'v18.0.0',
+        versions: { node: '18.0.0' },
+        nextTick: function (cb) { setTimeout(cb, 0); },
+        browser: true
+      };
+    </script>
   </head>
   <body>
     <div id="root"></div>

@@ -6,8 +6,8 @@ import './AuthPage.css'
 const AuthPage = () => {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
-  const { githubLogin, metamaskLogin, user, isAuthenticated, checkAuth } = useAuth()
-  
+  const { githubLogin, metamaskLogin, walletConnectLogin, user, isAuthenticated, checkAuth } = useAuth()
+
   const [githubConnected, setGithubConnected] = useState(false)
   const [metamaskConnected, setMetamaskConnected] = useState(false)
   const [loading, setLoading] = useState(false)
@@ -89,12 +89,24 @@ const AuthPage = () => {
       await metamaskLogin()
       setMetamaskConnected(true)
       sessionStorage.setItem('metamaskAuthDone', '1')
-
-      // MetaMask connection is complete. GitHub connection is optional and should be
-      // initiated explicitly by the user.
     } catch (error) {
       console.error('MetaMask connection failed:', error)
       setError(error.message || 'Failed to connect MetaMask')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const handleWalletConnect = async () => {
+    try {
+      setLoading(true)
+      setError('')
+      await walletConnectLogin()
+      setMetamaskConnected(true)
+      sessionStorage.setItem('metamaskAuthDone', '1')
+    } catch (error) {
+      console.error('WalletConnect connection failed:', error)
+      setError(error.message || 'Failed to connect via WalletConnect')
     } finally {
       setLoading(false)
     }
@@ -302,7 +314,7 @@ const AuthPage = () => {
 
         <div className="auth-form">
           <div className="connection-section">
-            {/* MetaMask button first */}
+            {/* MetaMask button */}
             <button 
               className={`connection-btn ${metamaskConnected ? 'connected' : ''}`}
               onClick={handleMetamaskConnect}
@@ -315,10 +327,38 @@ const AuthPage = () => {
               </div>
               <div className="btn-content">
                 <span className="btn-title">
-                  {metamaskConnected ? 'MetaMask Connected' : '1. Connect MetaMask'}
+                  {metamaskConnected ? 'MetaMask Connected' : '1a. Connect MetaMask'}
                 </span>
                 <span className="btn-subtitle">
-                  {metamaskConnected ? 'Successfully connected to your wallet' : 'Connect your wallet for payments'}
+                  {metamaskConnected ? 'Successfully connected to your wallet' : 'Connect browser wallet for payments'}
+                </span>
+              </div>
+              {metamaskConnected && (
+                <div className="success-icon">
+                  <svg width="20" height="20" fill="#1DB954" viewBox="0 0 24 24">
+                    <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+                  </svg>
+                </div>
+              )}
+            </button>
+
+            {/* WalletConnect button */}
+            <button 
+              className={`connection-btn ${metamaskConnected ? 'connected' : ''}`}
+              onClick={handleWalletConnect}
+              disabled={metamaskConnected || loading}
+            >
+              <div className="btn-icon">
+                <svg width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M6.5 8.5C9.5 5.5 14.5 5.5 17.5 8.5L18 9C18.2 9.2 18.2 9.5 18 9.7L16.2 11.5C16 11.7 15.7 11.7 15.5 11.5L15.2 11.2C13.4 9.4 10.6 9.4 8.8 11.2L8.5 11.5C8.3 11.7 8 11.7 7.8 11.5L6 9.7C5.8 9.5 5.8 9.2 6 9L6.5 8.5ZM3.5 11.5L5 13C5.2 13.2 5.2 13.5 5 13.7L3.2 15.5C3 15.7 2.7 15.7 2.5 15.5L1 14C0.8 13.8 0.8 13.5 1 13.3L3.1 11.5C3.2 11.4 3.4 11.4 3.5 11.5ZM20.5 11.5L23 13.9C23.2 14.1 23.2 14.4 23 14.6L21.5 16.1C21.3 16.3 21 16.3 20.8 16.1L19 14.3C18.8 14.1 18.8 13.8 19 13.6L20.5 11.5Z"/>
+                </svg>
+              </div>
+              <div className="btn-content">
+                <span className="btn-title">
+                  {metamaskConnected ? 'Wallet Connected' : '1b. Connect WalletConnect'}
+                </span>
+                <span className="btn-subtitle">
+                  {metamaskConnected ? 'Successfully connected via WalletConnect' : 'Connect mobile wallet via QR code'}
                 </span>
               </div>
               {metamaskConnected && (
