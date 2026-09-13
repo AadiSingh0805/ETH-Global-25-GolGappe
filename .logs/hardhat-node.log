@@ -123,11 +123,11 @@ Private Key: 0xdf57089febbacf7ba0bc227dafbffa9fc08a93fdc68e1e42411a14efcf23656e
 [32meth_sendTransaction[0m
   Contract deployment: BountyBoard
   Contract address:    0x5fbdb2315678afecb367f032d93f642f64180aa3
-  Transaction:         0xa73e28e896023df9a5730414f6c410e0c3667f4df784a0ebea2f93d5f0707b0d
+  Transaction:         0x6e91d47dfae3d642ac6be051b7c03d61a1449ff0c6a741c72a30961f5dc99db4
   From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
   Value:               0 ETH
-  Gas used:            1796431 of 16777216
-  Block #1:            0xc751edf49215a692260cc29302d46cc5cc3acff3eba8c4877e625dc04342852f
+  Gas used:            992331 of 16777216
+  Block #1:            0xdb4089704e2c28edbd092ddffcd0629314eab7463cce91b74b4f54d9a6b99d3e
 
 [32meth_getTransactionByHash[0m
 [32meth_getTransactionReceipt[0m
@@ -199,11 +199,11 @@ Private Key: 0xdf57089febbacf7ba0bc227dafbffa9fc08a93fdc68e1e42411a14efcf23656e
 [32meth_sendTransaction[0m
   Contract deployment: MockERC20
   Contract address:    0xe7f1725e7734ce288f8367e1bb143e90bb3f0512
-  Transaction:         0x2c5f6f78a7f399ac54f2a266dfc5e456067724248896767bcd0d225155bfc301
+  Transaction:         0xb861b34cf4f7ffc7b187b98da0a3195b0752f5ea1868eb49b14fcf53c0ce9c8d
   From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
   Value:               0 ETH
-  Gas used:            1022340 of 16777216
-  Block #2:            0x5f4d5a54de0ccf976323a24d4570a2ba2a084ac8ecf2ab7a288b2d377574d7f6
+  Gas used:            579835 of 16777216
+  Block #2:            0x1b50ff2e838f5a0c8441ca8dcf3d00f93b0cef51d82ed7d797eef00ed9fa7fe8
 
 [32meth_getTransactionByHash[0m
 [32meth_getTransactionReceipt[0m
@@ -212,11 +212,11 @@ Private Key: 0xdf57089febbacf7ba0bc227dafbffa9fc08a93fdc68e1e42411a14efcf23656e
 [32meth_sendTransaction[0m
   Contract deployment: MockERC20
   Contract address:    0x9fe46736679d2d9a65f0992f2272de9f3c7fa6e0
-  Transaction:         0x09c44de8a65c56da20197bd8a85d5b8fb30574ba75a686ae78d573038e3cceb6
+  Transaction:         0x16c04d8a3602bf9c066981d6dec18fa6b8f6a6d4c1d918489e529c1c9a95e0d7
   From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
   Value:               0 ETH
-  Gas used:            1022328 of 16777216
-  Block #3:            0x7b881df8f5be8559e103ccf7c36ea1caef1f22c360ffea45006086898a41f222
+  Gas used:            579823 of 16777216
+  Block #3:            0xaca325bc41433d3152e4b3680515495596d07d530225400cffcf910d20e8a4c9
 
 [32meth_getTransactionByHash[0m
 [32meth_getTransactionReceipt[0m
@@ -225,11 +225,11 @@ Private Key: 0xdf57089febbacf7ba0bc227dafbffa9fc08a93fdc68e1e42411a14efcf23656e
 [32meth_sendTransaction[0m
   Contract deployment: MockERC20
   Contract address:    0xcf7ed3acca5a467e9e704c703e8d87f634fb0fc9
-  Transaction:         0x4975fae7ce2552b3efec3b259e5bd64aaec95780e7f76cfdab1c3bd67fb4332f
+  Transaction:         0x167caa2e5a9519f16e2f3c3df5fc5f44c61f9082bcb5ebd2031f02b8bf320cc4
   From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
   Value:               0 ETH
-  Gas used:            1022304 of 16777216
-  Block #4:            0x97695cd804617d576159d19b7a8d353abb60a5c391ba05629cad9b99f8e7f748
+  Gas used:            579799 of 16777216
+  Block #4:            0x1f57af89620e196dac024e16026e3936fd63282b58aa09c179d592d96f373672
 
 [32meth_getTransactionByHash[0m
 [32meth_getTransactionReceipt[0m
@@ -238,11 +238,11 @@ Private Key: 0xdf57089febbacf7ba0bc227dafbffa9fc08a93fdc68e1e42411a14efcf23656e
 [32meth_sendTransaction[0m
   Contract deployment: WETH9
   Contract address:    0xdc64a140aa3e981100a9beca4e685f962f0cf6c9
-  Transaction:         0x7f049d84342690b5ae0fecdc90e6a673b9962233f4c9e3549ad8b5a9a2e3b960
+  Transaction:         0x001a3d100583dab068a471624121dab8e1b21a28be8923457f7b927af315b799
   From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
   Value:               0 ETH
-  Gas used:            1091238 of 16777216
-  Block #5:            0x1e96e75a65b99bf7cfdbe761fcdc4521813b2a52a3eb478a90a4677b73406b59
+  Gas used:            593053 of 16777216
+  Block #5:            0x0965eaca54a328af768bf19e6ea03b72989b1de329db3f2e534f34c0bca3317f
 
 [32meth_getTransactionByHash[0m
 [32meth_getTransactionReceipt[0m
@@ -251,11 +251,11 @@ Private Key: 0xdf57089febbacf7ba0bc227dafbffa9fc08a93fdc68e1e42411a14efcf23656e
 [32meth_sendTransaction[0m
   Contract deployment: LocalSwapPool
   Contract address:    0x5fc8d32690cc91d4c39d9d3abcbd16989f875707
-  Transaction:         0x9c8d07f3cebb01137afeb8b47f47a3d0c75e3ceaef3631ed4d38113fd781f3be
+  Transaction:         0x81d69fc1110455dae3a67b7aaa9a473a5f184f32869b4e22960aa76d3aea777c
   From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
   Value:               0 ETH
-  Gas used:            1145337 of 16777216
-  Block #6:            0x1ebf1beca85895a2a889440f781d5efd138c46795f7411a0fa72d4edc5f79a04
+  Gas used:            724196 of 16777216
+  Block #6:            0x2cbdc62c644b1d654e9d04f8be790b22a75e0636cc67c0c32813cef211d12597
 
 [32meth_getTransactionByHash[0m
 [32meth_getTransactionReceipt[0m
@@ -264,11 +264,11 @@ Private Key: 0xdf57089febbacf7ba0bc227dafbffa9fc08a93fdc68e1e42411a14efcf23656e
 [32meth_sendTransaction[0m
   Contract deployment: LocalSwapPool
   Contract address:    0x0165878a594ca255338adfa4d48449f69242eb8f
-  Transaction:         0x2802181f9fba444c9996e441f7efb24d22ad3fb91930c0bc97debf88613c07d9
+  Transaction:         0xdb99da7cf26c0095aefbdc40d21c7395be23c14d6d3436d0951b20b6181cc587
   From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
   Value:               0 ETH
-  Gas used:            1145337 of 16777216
-  Block #7:            0x17c4b161f9eae54d63ef2df654d81ddf3970b43128750e6678a6a55dd7dacfd5
+  Gas used:            724196 of 16777216
+  Block #7:            0xb877de237ebc0a0d42c992a3f8b6e8abc033ddb972bbf8c47b45ebcece5f055b
 
 [32meth_getTransactionByHash[0m
 [32meth_getTransactionReceipt[0m
@@ -277,11 +277,11 @@ Private Key: 0xdf57089febbacf7ba0bc227dafbffa9fc08a93fdc68e1e42411a14efcf23656e
 [32meth_sendTransaction[0m
   Contract deployment: LocalSwapPool
   Contract address:    0xa513e6e4b8f2a923d98304ec87f64353c4d5c853
-  Transaction:         0xe1226220beb1465e076c21eb6035261f3335129a35e37e786ebf88834d9d4d15
+  Transaction:         0x54b526bf61e40e851f4a017190c478dbac34b0ce0cb978a3b12774146e4e1078
   From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
   Value:               0 ETH
-  Gas used:            1145337 of 16777216
-  Block #8:            0x150cd50f877e25da3f9a6ac587a3211a5ab4bf43d6b12f48048c511b4813f4cf
+  Gas used:            724196 of 16777216
+  Block #8:            0x851f137fe07ba9106244491f3044b70cce53fedd301227a26c5836ecbf9321a7
 
 [32meth_getTransactionByHash[0m
 [32meth_getTransactionReceipt[0m
@@ -289,12 +289,12 @@ Private Key: 0xdf57089febbacf7ba0bc227dafbffa9fc08a93fdc68e1e42411a14efcf23656e
 [32meth_feeHistory[0m
 [32meth_sendTransaction[0m
   Contract call:       WETH9#deposit
-  Transaction:         0xe3d73c3b4849325c937f171e17cb7776b48b1181eb26b892478c3983c3b21ae9
+  Transaction:         0x8f4421eb1d0cc4f6c93edf1846c30065e42bfb982488378ecf3bc3582a7d60e0
   From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
   To:                  0xdc64a140aa3e981100a9beca4e685f962f0cf6c9
   Value:               50. ETH
-  Gas used:            67957 of 16777216
-  Block #9:            0x8d60b9580b10f374d097e0cd5f1ffe721ec86784021416fca1af885c55750e4e
+  Gas used:            67728 of 16777216
+  Block #9:            0x8e437fe4b05cf5f24ddf6df46ff334a516a8247c1de41bb6d9e50c6fe36d475f
 
 [32meth_getTransactionByHash[0m
 [32meth_getTransactionReceipt[0m
@@ -302,12 +302,12 @@ Private Key: 0xdf57089febbacf7ba0bc227dafbffa9fc08a93fdc68e1e42411a14efcf23656e
 [32meth_feeHistory[0m
 [32meth_sendTransaction[0m
   Contract call:       MockERC20#approve
-  Transaction:         0xc506eb382ec230946f49ce1cd45a2d509d24cf2369ba6220e150bd801a1f4a3e
+  Transaction:         0x5738863435faa1925ec7c1132552162305d6ae56c3588fbbf0a84d55c3a9f6d7
   From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
   To:                  0xe7f1725e7734ce288f8367e1bb143e90bb3f0512
   Value:               0 ETH
-  Gas used:            46976 of 16777216
-  Block #10:           0x2221b8ff992b3f2d7a285907e51a308b27eedb9303b4eb408538fc973d89714d
+  Gas used:            46391 of 16777216
+  Block #10:           0xa0808bdb39393788acd325b6a367d9057aa61bac8bb59cef7d9d29c43668f1ad
 
 [32meth_getTransactionByHash[0m
 [32meth_getTransactionReceipt[0m
@@ -315,12 +315,12 @@ Private Key: 0xdf57089febbacf7ba0bc227dafbffa9fc08a93fdc68e1e42411a14efcf23656e
 [32meth_feeHistory[0m
 [32meth_sendTransaction[0m
   Contract call:       WETH9#approve
-  Transaction:         0x69eb779644b527847f52b0c2e3114898f41b7391861808fa783e28b2f8d213db
+  Transaction:         0x15bb0d3b677ebe31619c3459ffb7b24a7633aa4d57120d575e13cad161904865
   From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
   To:                  0xdc64a140aa3e981100a9beca4e685f962f0cf6c9
   Value:               0 ETH
-  Gas used:            46964 of 16777216
-  Block #11:           0xf5dfb63b8644a86aa916839c0ebb8cc90067313d761301669cac66b54139fa93
+  Gas used:            46379 of 16777216
+  Block #11:           0x94208559fced49ce6fa07a840739f94d2a48bc89e2dbeecafe688c83e04ff788
 
 [32meth_getTransactionByHash[0m
 [32meth_getTransactionReceipt[0m
@@ -328,12 +328,12 @@ Private Key: 0xdf57089febbacf7ba0bc227dafbffa9fc08a93fdc68e1e42411a14efcf23656e
 [32meth_feeHistory[0m
 [32meth_sendTransaction[0m
   Contract call:       LocalSwapPool#addLiquidity
-  Transaction:         0xaab74a3d7729341f34a0a5a0dea0a1dab3ac5975e4b97e7ef8e65f265c3b4a6a
+  Transaction:         0x24ebbb5cf9309badb852b671df0e0ab26d7a82e4cbe67669a914c6d4d0d62788
   From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
   To:                  0x5fc8d32690cc91d4c39d9d3abcbd16989f875707
   Value:               0 ETH
-  Gas used:            134219 of 16777216
-  Block #12:           0x9983c6f13d20a3fca9b4fc1c0d47ef13caaf5fb4e977e135729f74325c027ce0
+  Gas used:            130987 of 16777216
+  Block #12:           0xa1bf9df9ff0c2e1e358ddbb2e658234925b1d81bd2460c162553795c74d5e85a
 
 [32meth_getTransactionByHash[0m
 [32meth_getTransactionReceipt[0m
@@ -341,12 +341,12 @@ Private Key: 0xdf57089febbacf7ba0bc227dafbffa9fc08a93fdc68e1e42411a14efcf23656e
 [32meth_feeHistory[0m
 [32meth_sendTransaction[0m
   Contract call:       WETH9#deposit
-  Transaction:         0xfb8d5c31a42cbfbd2f7d42310a7772188b8721c4ac1399b5403997acdaaa3801
+  Transaction:         0xc339083b1c4cf196a0ddeced173cf57fd0fcceb80e6353cbfb0c10ae39cda17b
   From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
   To:                  0xdc64a140aa3e981100a9beca4e685f962f0cf6c9
   Value:               300. ETH
-  Gas used:            50857 of 16777216
-  Block #13:           0x0785e3bb86d490aee0aac026bfe3c630d528d1b3803efe6d50900ca495646b06
+  Gas used:            50628 of 16777216
+  Block #13:           0x3130b7e2d61c0bd21c0bec297008058bcfed88873d5748ed02309cf8b0de05b6
 
 [32meth_getTransactionByHash[0m
 [32meth_getTransactionReceipt[0m
@@ -354,12 +354,12 @@ Private Key: 0xdf57089febbacf7ba0bc227dafbffa9fc08a93fdc68e1e42411a14efcf23656e
 [32meth_feeHistory[0m
 [32meth_sendTransaction[0m
   Contract call:       MockERC20#approve
-  Transaction:         0x2d5a02a4fd22fd6273e4ea3406c0aa03b4454ab39560649ff5a2862123ed8d7d
+  Transaction:         0x5f9fbe626fb288b8e7b80444aaf61451f3ce803cc47a235d7619aacd5d86c784
   From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
   To:                  0x9fe46736679d2d9a65f0992f2272de9f3c7fa6e0
   Value:               0 ETH
-  Gas used:            46916 of 16777216
-  Block #14:           0xd8551cb09002aaa0e688231b7e57ea9f9c9f1f4089dd715805210c98bbfa1565
+  Gas used:            46331 of 16777216
+  Block #14:           0x0eff3b1eb5f6d16325c2fce7489da19fc2f6c70e9921b4267aa52648f6aaec21
 
 [32meth_getTransactionByHash[0m
 [32meth_getTransactionReceipt[0m
@@ -367,12 +367,12 @@ Private Key: 0xdf57089febbacf7ba0bc227dafbffa9fc08a93fdc68e1e42411a14efcf23656e
 [32meth_feeHistory[0m
 [32meth_sendTransaction[0m
   Contract call:       WETH9#approve
-  Transaction:         0x67bc16a94df8dd5d6ed098c7a57c699148d6f38689a140f7498222f19fcd1a9b
+  Transaction:         0x868027ddec573f8ad3935a46a8cb453a645762ef53e6c658e4fbd2b7ce87572f
   From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
   To:                  0xdc64a140aa3e981100a9beca4e685f962f0cf6c9
   Value:               0 ETH
-  Gas used:            46964 of 16777216
-  Block #15:           0x6d5c9f4c594bb653088af5eeb9192f92403331aae21199d2b20165ac0748ddb8
+  Gas used:            46379 of 16777216
+  Block #15:           0x735bf4e5a419485441032161fe8d0bf6626bbc34a0ce5334ad656c67bdf7bd89
 
 [32meth_getTransactionByHash[0m
 [32meth_getTransactionReceipt[0m
@@ -380,12 +380,12 @@ Private Key: 0xdf57089febbacf7ba0bc227dafbffa9fc08a93fdc68e1e42411a14efcf23656e
 [32meth_feeHistory[0m
 [32meth_sendTransaction[0m
   Contract call:       LocalSwapPool#addLiquidity
-  Transaction:         0x8c5dcb03af3c2e3aa524baddb396b24572799dabdec883ff0be12077712a7f27
+  Transaction:         0xc3835d3d33681a2efd24a4c277dc7ec77b604c9578434ab215e64a2063755293
   From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
   To:                  0x0165878a594ca255338adfa4d48449f69242eb8f
   Value:               0 ETH
-  Gas used:            134159 of 16777216
-  Block #16:           0xb68b902f8b9130d1090d2751396a332a1174be06462a4ab12591978f417346e5
+  Gas used:            130927 of 16777216
+  Block #16:           0xc9ab601cdf33e76920dee7deeccefe745a4052b03c7f78bdf5bd94a64bb25cd6
 
 [32meth_getTransactionByHash[0m
 [32meth_getTransactionReceipt[0m
@@ -393,12 +393,12 @@ Private Key: 0xdf57089febbacf7ba0bc227dafbffa9fc08a93fdc68e1e42411a14efcf23656e
 [32meth_feeHistory[0m
 [32meth_sendTransaction[0m
   Contract call:       WETH9#deposit
-  Transaction:         0x2c4b8d7919e07582d4a39f5393c6f741b35f04796dca0579050be52e1a18b21a
+  Transaction:         0x7300d3776c2bda47d659617be484616395d284ba485a4cdcd7a1472ec85336d1
   From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
   To:                  0xdc64a140aa3e981100a9beca4e685f962f0cf6c9
   Value:               300. ETH
-  Gas used:            50857 of 16777216
-  Block #17:           0xc7e798d2636148fc00891a4a1312214c8c8d10f21463c8f0cf1e6c711a93c069
+  Gas used:            50628 of 16777216
+  Block #17:           0x2b1e376b0fee1d0543abd9e13b11c2988d809b444844ab933736ac7cd3532721
 
 [32meth_getTransactionByHash[0m
 [32meth_getTransactionReceipt[0m
@@ -406,12 +406,12 @@ Private Key: 0xdf57089febbacf7ba0bc227dafbffa9fc08a93fdc68e1e42411a14efcf23656e
 [32meth_feeHistory[0m
 [32meth_sendTransaction[0m
   Contract call:       MockERC20#approve
-  Transaction:         0x349065afc328c5959e90eea20d1f19222d0ead8befee670ba75e7b4347e497ac
+  Transaction:         0x8de5a77e9ccaa511aa0f51e9f0657b47db76b40b26f32dba06903df906b8781d
   From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
   To:                  0xcf7ed3acca5a467e9e704c703e8d87f634fb0fc9
   Value:               0 ETH
-  Gas used:            46928 of 16777216
-  Block #18:           0xa4de497f6f42906e078a7634150d49be50f8f64a0eef16b9f5c01ca5261351f6
+  Gas used:            46343 of 16777216
+  Block #18:           0xdcc992ea84c6dafc5e6f63733e5f90091b3dec6790faada670b4d37e6be99de0
 
 [32meth_getTransactionByHash[0m
 [32meth_getTransactionReceipt[0m
@@ -419,12 +419,12 @@ Private Key: 0xdf57089febbacf7ba0bc227dafbffa9fc08a93fdc68e1e42411a14efcf23656e
 [32meth_feeHistory[0m
 [32meth_sendTransaction[0m
   Contract call:       WETH9#approve
-  Transaction:         0xdfb42c9348e2568adfefc17aeb7c1f132c5e84ba9e6dd79edb9309be0dabf6e1
+  Transaction:         0x86df67585dcf060e53e328f93f0ba7d7d4dfcfa230f9b316e532fb443d67633b
   From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
   To:                  0xdc64a140aa3e981100a9beca4e685f962f0cf6c9
   Value:               0 ETH
-  Gas used:            46964 of 16777216
-  Block #19:           0xd065c0db788fb0eee9fd8e28770a3436546172bb0409bd56fa13101e311d2adc
+  Gas used:            46379 of 16777216
+  Block #19:           0x9b0bf73d5b8c82bdc1f5070b6fd44ceae53d2b166b7073435a6787bbbfc52c81
 
 [32meth_getTransactionByHash[0m
 [32meth_getTransactionReceipt[0m
@@ -432,12 +432,899 @@ Private Key: 0xdf57089febbacf7ba0bc227dafbffa9fc08a93fdc68e1e42411a14efcf23656e
 [32meth_feeHistory[0m
 [32meth_sendTransaction[0m
   Contract call:       LocalSwapPool#addLiquidity
-  Transaction:         0xb842b8571dfd973a37149dd156d0907eddffc5346ec843f58ad9d8e1fe509c87
+  Transaction:         0x0b434922c7602f3dd1ccdbf1f0e77829b0ab6120e1f117273a5ea332316afaa6
   From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
   To:                  0xa513e6e4b8f2a923d98304ec87f64353c4d5c853
   Value:               0 ETH
-  Gas used:            134171 of 16777216
-  Block #20:           0x0d1edd70f546a222ece5937e521caf9a97930493985d5bde7854c3235bf01dbc
+  Gas used:            130939 of 16777216
+  Block #20:           0x8782ee790cf20b64400883d530d8d7be90082a534601b5994b4eb2f491ad2820
 
 [32meth_getTransactionByHash[0m
 [32meth_getTransactionReceipt[0m
+[32meth_accounts[0m
+[32mhardhat_metadata[0m
+[32mhardhat_metadata (2)[0m
+[32mhardhat_metadata (3)[0m
+[32mhardhat_metadata (4)[0m
+[32mhardhat_metadata (5)[0m
+[32mhardhat_metadata (6)[0m
+[32mhardhat_metadata (7)[0m
+[32mhardhat_metadata (8)[0m
+[32mhardhat_metadata (9)[0m
+[32mhardhat_metadata (10)[0m
+[32mhardhat_metadata (11)[0m
+[32mhardhat_metadata (12)[0m
+[32mhardhat_metadata (13)[0m
+[32mhardhat_metadata (14)[0m
+[32mhardhat_metadata (15)[0m
+[32mhardhat_metadata (16)[0m
+[32mhardhat_metadata (17)[0m
+[32mhardhat_metadata (18)[0m
+[32mhardhat_metadata (19)[0m
+[32mhardhat_metadata (20)[0m
+[32meth_blockNumber[0m
+[32meth_feeHistory[0m
+[32meth_sendTransaction[0m
+  Contract deployment: BountyVault
+  Contract address:    0xc6e7df5e7b4f2a278906862b61205850344d4e7d
+  Transaction:         0xf02dc33429b7c66279fe7afcccd008c5c4ffb97854536291bb6a5698e7d1d31b
+  From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
+  Value:               0 ETH
+  Gas used:            1207855 of 16777216
+  Block #21:           0xf17aabc2317930d9326350fb3fc4e2e20512158a53e1966ee55d962bae3f6a86
+
+[32meth_getTransactionByHash[0m
+[32meth_getTransactionReceipt[0m
+[32meth_blockNumber[0m
+[32meth_getBalance[0m
+[32meth_blockNumber[0m
+[32meth_getBlockByNumber[0m
+[32meth_blockNumber[0m
+[32meth_accounts[0m
+[31meth_call[0m
+  Contract deployment: <UnrecognizedContract>
+  From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
+
+  TransactionExecutionError: StackOverflow
+
+[32meth_gasPrice[0m
+[32meth_chainId[0m
+[32meth_getCode[0m
+[32meth_chainId[0m
+[32meth_call[0m
+  Contract call:       BountyBoard#getRepoIds
+  From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
+  To:                  0x5fbdb2315678afecb367f032d93f642f64180aa3
+
+[32meth_call[0m
+  Contract call:       BountyBoard#getRepoIds
+  From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
+  To:                  0x5fbdb2315678afecb367f032d93f642f64180aa3
+
+[32meth_chainId[0m
+[32meth_getCode[0m
+[32meth_chainId[0m
+[32meth_call[0m
+  Contract call:       BountyBoard#getRepo
+  From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
+  To:                  0x5fbdb2315678afecb367f032d93f642f64180aa3
+
+[32meth_getCode[0m
+[32meth_chainId[0m
+[32meth_chainId (2)[0m
+[32meth_call[0m
+  Contract call:       BountyBoard#getRepo
+  From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
+  To:                  0x5fbdb2315678afecb367f032d93f642f64180aa3
+
+[32meth_getTransactionCount[0m
+[32meth_chainId[0m
+[32meth_estimateGas[0m
+[32meth_chainId[0m
+[32meth_chainId (2)[0m
+[32meth_gasPrice[0m
+[32meth_maxPriorityFeePerGas[0m
+[32meth_getBlockByNumber[0m
+[32meth_chainId[0m
+[32meth_blockNumber[0m
+[32meth_chainId[0m
+[32meth_sendRawTransaction[0m
+  Contract call:       BountyBoard#registerRepo
+  Transaction:         0xa12d72581906f7f41b002c69a9dbd306d54f604b8e10723f4cf94e0e908771cc
+  From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
+  To:                  0x5fbdb2315678afecb367f032d93f642f64180aa3
+  Value:               0 ETH
+  Gas used:            159209 of 159209
+  Block #22:           0xb2c80a8b866e2a14d22c84faf4543984acce45f2cd3e73d037a4097e68a80d46
+
+[32meth_chainId[0m
+[32meth_getTransactionReceipt[0m
+[32meth_chainId[0m
+[32meth_estimateGas[0m
+[32meth_chainId[0m
+[32meth_chainId (2)[0m
+[32meth_chainId (3)[0m
+[32meth_chainId (4)[0m
+[32meth_sendRawTransaction[0m
+  Contract call:       BountyBoard#createBounty
+  Transaction:         0x8f155a4a1a971cf60322b6f4c9526147fa2917c178cea2e4a727c97c4aeac1d0
+  From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
+  To:                  0x5fbdb2315678afecb367f032d93f642f64180aa3
+  Value:               100. ETH
+  Gas used:            251127 of 251127
+  Block #23:           0xa7e1d93e93f714e8f28fe9d25592987f94081869386363c4daa88ad29a1291d0
+
+[32meth_chainId[0m
+[32meth_getTransactionReceipt[0m
+[32meth_chainId[0m
+[32meth_getCode[0m
+[32meth_chainId[0m
+[32meth_call[0m
+  Contract call:       BountyBoard#getRepoIds
+  From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
+  To:                  0x5fbdb2315678afecb367f032d93f642f64180aa3
+
+[32meth_call[0m
+  Contract call:       BountyBoard#getRepoIds
+  From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
+  To:                  0x5fbdb2315678afecb367f032d93f642f64180aa3
+
+[32meth_call[0m
+  Contract call:       BountyBoard#getRepoIds
+  From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
+  To:                  0x5fbdb2315678afecb367f032d93f642f64180aa3
+
+[32meth_call[0m
+  Contract call:       BountyBoard#getRepoIds
+  From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
+  To:                  0x5fbdb2315678afecb367f032d93f642f64180aa3
+
+[32meth_chainId[0m
+[32meth_call[0m
+  Contract call:       BountyBoard#getRepo
+  From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
+  To:                  0x5fbdb2315678afecb367f032d93f642f64180aa3
+
+[32meth_call[0m
+  Contract call:       BountyBoard#getRepo
+  From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
+  To:                  0x5fbdb2315678afecb367f032d93f642f64180aa3
+
+[32meth_call[0m
+  Contract call:       BountyBoard#getRepo
+  From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
+  To:                  0x5fbdb2315678afecb367f032d93f642f64180aa3
+
+[32meth_call[0m
+  Contract call:       BountyBoard#getRepo
+  From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
+  To:                  0x5fbdb2315678afecb367f032d93f642f64180aa3
+
+[32meth_chainId[0m
+[32meth_chainId (2)[0m
+[32meth_call[0m
+  Contract call:       BountyBoard#getRepoIds
+  From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
+  To:                  0x5fbdb2315678afecb367f032d93f642f64180aa3
+
+[32meth_call[0m
+  Contract call:       BountyBoard#getRepoIds
+  From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
+  To:                  0x5fbdb2315678afecb367f032d93f642f64180aa3
+
+[32meth_call[0m
+  Contract call:       BountyBoard#getRepo
+  From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
+  To:                  0x5fbdb2315678afecb367f032d93f642f64180aa3
+
+[32meth_call[0m
+  Contract call:       BountyBoard#getRepo
+  From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
+  To:                  0x5fbdb2315678afecb367f032d93f642f64180aa3
+
+[32meth_call[0m
+  Contract call:       BountyBoard#getRepo
+  From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
+  To:                  0x5fbdb2315678afecb367f032d93f642f64180aa3
+
+[32meth_call[0m
+  Contract call:       BountyBoard#getRepo
+  From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
+  To:                  0x5fbdb2315678afecb367f032d93f642f64180aa3
+
+[32meth_call[0m
+  Contract call:       BountyBoard#getRepo
+  From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
+  To:                  0x5fbdb2315678afecb367f032d93f642f64180aa3
+
+[32meth_call[0m
+  Contract call:       BountyBoard#getBounty
+  From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
+  To:                  0x5fbdb2315678afecb367f032d93f642f64180aa3
+
+[32meth_call[0m
+  Contract call:       BountyBoard#getBounty
+  From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
+  To:                  0x5fbdb2315678afecb367f032d93f642f64180aa3
+
+[32meth_call[0m
+  Contract call:       BountyBoard#getBounty
+  From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
+  To:                  0x5fbdb2315678afecb367f032d93f642f64180aa3
+
+[32meth_chainId[0m
+[32meth_chainId (2)[0m
+[32meth_chainId (3)[0m
+[32meth_call[0m
+  Contract call:       BountyBoard#getRepo
+  From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
+  To:                  0x5fbdb2315678afecb367f032d93f642f64180aa3
+
+[32meth_chainId[0m
+[32meth_call[0m
+  Contract call:       BountyBoard#getRepo
+  From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
+  To:                  0x5fbdb2315678afecb367f032d93f642f64180aa3
+
+[32meth_call[0m
+  Contract call:       BountyBoard#getRepo
+  From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
+  To:                  0x5fbdb2315678afecb367f032d93f642f64180aa3
+
+[32meth_call[0m
+  Contract call:       BountyBoard#getBounty
+  From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
+  To:                  0x5fbdb2315678afecb367f032d93f642f64180aa3
+
+[32meth_call[0m
+  Contract call:       BountyBoard#getBounty
+  From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
+  To:                  0x5fbdb2315678afecb367f032d93f642f64180aa3
+
+[32meth_chainId[0m
+[32meth_call[0m
+  Contract call:       BountyBoard#getBounty
+  From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
+  To:                  0x5fbdb2315678afecb367f032d93f642f64180aa3
+
+[32meth_call[0m
+  Contract call:       BountyBoard#getBounty
+  From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
+  To:                  0x5fbdb2315678afecb367f032d93f642f64180aa3
+
+[32meth_chainId[0m
+[32meth_getCode[0m
+[32meth_chainId[0m
+[32meth_call[0m
+  Contract call:       BountyBoard#getBounty
+  From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
+  To:                  0x5fbdb2315678afecb367f032d93f642f64180aa3
+
+[32meth_getCode[0m
+[32meth_chainId[0m
+[32meth_chainId (2)[0m
+[32meth_call[0m
+  Contract call:       BountyBoard#getBounty
+  From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
+  To:                  0x5fbdb2315678afecb367f032d93f642f64180aa3
+
+[32meth_getCode[0m
+[32meth_chainId[0m
+[32meth_chainId (2)[0m
+[32meth_call[0m
+  Contract call:       BountyBoard#getBounty
+  From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
+  To:                  0x5fbdb2315678afecb367f032d93f642f64180aa3
+
+[32meth_chainId[0m
+[32meth_getTransactionCount[0m
+[32meth_estimateGas[0m
+[32meth_chainId[0m
+[32meth_chainId (2)[0m
+[32meth_gasPrice[0m
+[32meth_maxPriorityFeePerGas[0m
+[32meth_getBlockByNumber[0m
+[32meth_chainId[0m
+[32meth_blockNumber[0m
+[32meth_sendRawTransaction[0m
+  Contract call:       BountyBoard#claimBounty
+  Transaction:         0x095d2c0df529c6756cede717be1ca02a2fa7cb474d12b9a05b0c6b643bdd7103
+  From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
+  To:                  0x5fbdb2315678afecb367f032d93f642f64180aa3
+  Value:               0 ETH
+  Gas used:            41307 of 41307
+  Block #24:           0x91dabf3a3135c4d7c3a7ca2e182c93c43b9012b6900d17b50dccfbabe3d97922
+
+[32meth_chainId[0m
+[32meth_chainId (2)[0m
+[32meth_getTransactionReceipt[0m
+[32meth_chainId[0m
+[32meth_call[0m
+  Contract call:       LocalSwapPool#token0
+  From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
+  To:                  0xa513e6e4b8f2a923d98304ec87f64353c4d5c853
+
+[32meth_chainId[0m
+[32meth_call[0m
+  Contract call:       LocalSwapPool#token1
+  From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
+  To:                  0xa513e6e4b8f2a923d98304ec87f64353c4d5c853
+
+[32meth_call[0m
+  Contract call:       MockERC20#balanceOf
+  From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
+  To:                  0xcf7ed3acca5a467e9e704c703e8d87f634fb0fc9
+
+[32meth_chainId[0m
+[32meth_chainId (2)[0m
+[32meth_estimateGas[0m
+[32meth_chainId[0m
+[32meth_chainId (2)[0m
+[32meth_chainId (3)[0m
+[32meth_chainId (4)[0m
+[32meth_sendRawTransaction[0m
+  Contract call:       WETH9#deposit
+  Transaction:         0x166b6fb342de8a5e413e5d9b60f67ea8b1479cb206df3eaacb653b4dc9a4c313
+  From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
+  To:                  0xdc64a140aa3e981100a9beca4e685f962f0cf6c9
+  Value:               100. ETH
+  Gas used:            50628 of 50628
+  Block #25:           0x16bba76e0a4a65b87f27e19090329f9099f2cd9d4e86ec8784873574bb4b4dae
+
+[32meth_chainId[0m
+[32meth_getTransactionReceipt[0m
+[32meth_getTransactionCount[0m
+[32meth_chainId[0m
+[32meth_estimateGas[0m
+[32meth_chainId[0m
+[32meth_chainId (2)[0m
+[32meth_gasPrice[0m
+[32meth_maxPriorityFeePerGas[0m
+[32meth_getBlockByNumber[0m
+[32meth_chainId[0m
+[32meth_blockNumber[0m
+[32meth_chainId[0m
+[32meth_sendRawTransaction[0m
+  Contract call:       WETH9#approve
+  Transaction:         0x80c02c9bd535417bdf21e87de214492f56f2dbb4896d03a2f0d9e818a2bb2cd8
+  From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
+  To:                  0xdc64a140aa3e981100a9beca4e685f962f0cf6c9
+  Value:               0 ETH
+  Gas used:            46379 of 46379
+  Block #26:           0xdd9a0d43f5235ff588260a0fdbd718641c8c57a41e9bbae8154f846aa34cf69e
+
+[32meth_chainId[0m
+[32meth_getTransactionReceipt[0m
+[32meth_chainId[0m
+[32meth_call[0m
+  Contract call:       LocalSwapPool#getAmountOut
+  From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
+  To:                  0xa513e6e4b8f2a923d98304ec87f64353c4d5c853
+
+[32meth_chainId[0m
+[32meth_estimateGas[0m
+[32meth_chainId[0m
+[32meth_chainId (2)[0m
+[32meth_chainId (3)[0m
+[32meth_sendRawTransaction[0m
+  Contract call:       LocalSwapPool#swapToken0ForToken1
+  Transaction:         0xf61f9af999fe491a198709b84e4398d44502705802225e945f486b1d6d3e996e
+  From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
+  To:                  0xa513e6e4b8f2a923d98304ec87f64353c4d5c853
+  Value:               0 ETH
+  Gas used:            63427 of 73337
+  Block #27:           0x4a3b8cffcbd99aa8067464a69746c3465aa2eed7d3b081e4bec85825f334631b
+
+[32meth_chainId[0m
+[32meth_chainId (2)[0m
+[32meth_getTransactionReceipt[0m
+[32meth_chainId[0m
+[32meth_call[0m
+  Contract call:       MockERC20#balanceOf
+  From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
+  To:                  0xcf7ed3acca5a467e9e704c703e8d87f634fb0fc9
+
+[32meth_chainId[0m
+[32meth_call[0m
+  Contract call:       MockERC20#decimals
+  From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
+  To:                  0xcf7ed3acca5a467e9e704c703e8d87f634fb0fc9
+
+[32meth_getTransactionCount[0m
+[32meth_chainId[0m
+[32meth_estimateGas[0m
+[32meth_chainId[0m
+[32meth_chainId (2)[0m
+[32meth_gasPrice[0m
+[32meth_maxPriorityFeePerGas[0m
+[32meth_getBlockByNumber[0m
+[32meth_chainId[0m
+[32meth_blockNumber[0m
+[32meth_chainId[0m
+[32meth_sendRawTransaction[0m
+  Contract call:       MockERC20#transfer
+  Transaction:         0x35e2f4688104cc6e838622cf2103f5a0343fac8153b295faed52da82a1fc240b
+  From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
+  To:                  0xcf7ed3acca5a467e9e704c703e8d87f634fb0fc9
+  Value:               0 ETH
+  Gas used:            51602 of 51602
+  Block #28:           0x6c44e9a823de473a6b62802ead08c296ef4576605231b381d030383ad63b3ef2
+
+[32meth_chainId[0m
+[32meth_getTransactionReceipt[0m
+[32meth_chainId[0m
+[32meth_getCode[0m
+[32meth_chainId[0m
+[32meth_call[0m
+  Contract call:       BountyBoard#getRepoIds
+  From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
+  To:                  0x5fbdb2315678afecb367f032d93f642f64180aa3
+
+[32meth_chainId[0m
+[32meth_call[0m
+  Contract call:       BountyBoard#getRepo
+  From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
+  To:                  0x5fbdb2315678afecb367f032d93f642f64180aa3
+
+[32meth_chainId[0m
+[32meth_chainId (2)[0m
+[32meth_call[0m
+  Contract call:       BountyBoard#getRepo
+  From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
+  To:                  0x5fbdb2315678afecb367f032d93f642f64180aa3
+
+[32meth_chainId[0m
+[32meth_call[0m
+  Contract call:       BountyBoard#getBounty
+  From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
+  To:                  0x5fbdb2315678afecb367f032d93f642f64180aa3
+
+[32meth_blockNumber[0m
+[32meth_call[0m
+  Contract call:       BountyVault#totalAssets
+  From:                0x70997970c51812dc3a010c7d01b50e0d17dc79c8
+  To:                  0xc6e7df5e7b4f2a278906862b61205850344d4e7d
+
+[32meth_call[0m
+  Contract call:       BountyVault#totalSupply
+  From:                0x70997970c51812dc3a010c7d01b50e0d17dc79c8
+  To:                  0xc6e7df5e7b4f2a278906862b61205850344d4e7d
+
+[32meth_call[0m
+  Contract call:       BountyVault#totalYieldHarvested
+  From:                0x70997970c51812dc3a010c7d01b50e0d17dc79c8
+  To:                  0xc6e7df5e7b4f2a278906862b61205850344d4e7d
+
+[32meth_call[0m
+  Contract call:       MockERC20#balanceOf
+  From:                0x70997970c51812dc3a010c7d01b50e0d17dc79c8
+  To:                  0xcf7ed3acca5a467e9e704c703e8d87f634fb0fc9
+
+[32meth_call[0m
+  Contract call:       BountyVault#balanceOf
+  From:                0x70997970c51812dc3a010c7d01b50e0d17dc79c8
+  To:                  0xc6e7df5e7b4f2a278906862b61205850344d4e7d
+
+[32meth_call[0m
+  Contract call:       MockERC20#allowance
+  From:                0x70997970c51812dc3a010c7d01b50e0d17dc79c8
+  To:                  0xcf7ed3acca5a467e9e704c703e8d87f634fb0fc9
+
+[32meth_blockNumber[0m
+[32meth_estimateGas[0m
+[32meth_getCode[0m
+[32meth_getCode (2)[0m
+[32meth_gasPrice[0m
+[32meth_getBalance[0m
+[32meth_blockNumber[0m
+[31meth_call[0m
+  Contract call:       MockERC20#<unrecognized-selector>
+  From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
+  To:                  0xcf7ed3acca5a467e9e704c703e8d87f634fb0fc9
+
+  Error: Transaction reverted without a reason
+
+[31meth_call[0m
+  Contract call:       MockERC20#<unrecognized-selector>
+  From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
+  To:                  0xcf7ed3acca5a467e9e704c703e8d87f634fb0fc9
+
+  Error: Transaction reverted without a reason
+
+[32meth_call[0m
+  Contract call:       MockERC20#symbol
+  From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
+  To:                  0xcf7ed3acca5a467e9e704c703e8d87f634fb0fc9
+
+[32meth_call[0m
+  Contract call:       MockERC20#decimals
+  From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
+  To:                  0xcf7ed3acca5a467e9e704c703e8d87f634fb0fc9
+
+[32meth_blockNumber[0m
+[32meth_getBlockByNumber[0m
+[31meth_call[0m
+  Contract call:       MockERC20#<unrecognized-selector>
+  From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
+  To:                  0xcf7ed3acca5a467e9e704c703e8d87f634fb0fc9
+
+  Error: Transaction reverted without a reason
+
+[31meth_call[0m
+  Contract call:       MockERC20#<unrecognized-selector>
+  From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
+  To:                  0xcf7ed3acca5a467e9e704c703e8d87f634fb0fc9
+
+  Error: Transaction reverted without a reason
+
+[32meth_call[0m
+  Contract call:       MockERC20#balanceOf
+  From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
+  To:                  0xcf7ed3acca5a467e9e704c703e8d87f634fb0fc9
+
+[32meth_getTransactionCount[0m
+[32meth_sendRawTransaction[0m
+  Contract call:       MockERC20#mint
+  Transaction:         0x34f09da6950b5a6a488cb848a93c5434fa69e3fde1ba19032fc406e6e47de1ca
+  From:                0x70997970c51812dc3a010c7d01b50e0d17dc79c8
+  To:                  0xcf7ed3acca5a467e9e704c703e8d87f634fb0fc9
+  Value:               0 ETH
+  Gas used:            34180 of 34180
+  Block #29:           0x115a8bd006abd18329c0cd9c273eb930e044dedd395255666f06b9adfbdcc0bc
+
+[31meth_call[0m
+  Contract call:       MockERC20#<unrecognized-selector>
+  From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
+  To:                  0xcf7ed3acca5a467e9e704c703e8d87f634fb0fc9
+
+  Error: Transaction reverted without a reason
+
+[32meth_getTransactionReceipt[0m
+[31meth_call[0m
+  Contract deployment: <UnrecognizedContract>
+  From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
+
+  TransactionExecutionError: StackOverflow
+
+[32meth_blockNumber[0m
+[31meth_call[0m
+  Contract call:       MockERC20#<unrecognized-selector>
+  From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
+  To:                  0xcf7ed3acca5a467e9e704c703e8d87f634fb0fc9
+
+  Error: Transaction reverted without a reason
+
+[32meth_call[0m
+  Contract call:       MockERC20#symbol
+  From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
+  To:                  0xcf7ed3acca5a467e9e704c703e8d87f634fb0fc9
+
+[32meth_call[0m
+  Contract call:       MockERC20#decimals
+  From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
+  To:                  0xcf7ed3acca5a467e9e704c703e8d87f634fb0fc9
+
+[32meth_call[0m
+  Contract call:       BountyVault#totalAssets
+  From:                0x70997970c51812dc3a010c7d01b50e0d17dc79c8
+  To:                  0xc6e7df5e7b4f2a278906862b61205850344d4e7d
+
+[32meth_call[0m
+  Contract call:       BountyVault#totalSupply
+  From:                0x70997970c51812dc3a010c7d01b50e0d17dc79c8
+  To:                  0xc6e7df5e7b4f2a278906862b61205850344d4e7d
+
+[32meth_call[0m
+  Contract call:       BountyVault#totalYieldHarvested
+  From:                0x70997970c51812dc3a010c7d01b50e0d17dc79c8
+  To:                  0xc6e7df5e7b4f2a278906862b61205850344d4e7d
+
+[32meth_call[0m
+  Contract call:       MockERC20#balanceOf
+  From:                0x70997970c51812dc3a010c7d01b50e0d17dc79c8
+  To:                  0xcf7ed3acca5a467e9e704c703e8d87f634fb0fc9
+
+[32meth_call[0m
+  Contract call:       BountyVault#balanceOf
+  From:                0x70997970c51812dc3a010c7d01b50e0d17dc79c8
+  To:                  0xc6e7df5e7b4f2a278906862b61205850344d4e7d
+
+[32meth_call[0m
+  Contract call:       MockERC20#allowance
+  From:                0x70997970c51812dc3a010c7d01b50e0d17dc79c8
+  To:                  0xcf7ed3acca5a467e9e704c703e8d87f634fb0fc9
+
+[32meth_blockNumber[0m
+[32meth_estimateGas[0m
+[32meth_getCode[0m
+[32meth_getCode (2)[0m
+[32meth_gasPrice[0m
+[32meth_getBalance[0m
+[32meth_blockNumber[0m
+[31meth_call[0m
+  Contract call:       MockERC20#<unrecognized-selector>
+  From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
+  To:                  0xcf7ed3acca5a467e9e704c703e8d87f634fb0fc9
+
+  Error: Transaction reverted without a reason
+
+[31meth_call[0m
+  Contract call:       MockERC20#<unrecognized-selector>
+  From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
+  To:                  0xcf7ed3acca5a467e9e704c703e8d87f634fb0fc9
+
+  Error: Transaction reverted without a reason
+
+[31meth_call[0m
+  Contract call:       MockERC20#<unrecognized-selector>
+  From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
+  To:                  0xcf7ed3acca5a467e9e704c703e8d87f634fb0fc9
+
+  Error: Transaction reverted without a reason
+
+[32meth_blockNumber[0m
+[32meth_getBlockByNumber[0m
+[31meth_call[0m
+  Contract call:       MockERC20#<unrecognized-selector>
+  From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
+  To:                  0xcf7ed3acca5a467e9e704c703e8d87f634fb0fc9
+
+  Error: Transaction reverted without a reason
+
+[31meth_call[0m
+  Contract call:       MockERC20#<unrecognized-selector>
+  From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
+  To:                  0xcf7ed3acca5a467e9e704c703e8d87f634fb0fc9
+
+  Error: Transaction reverted without a reason
+
+[31meth_call[0m
+  Contract call:       MockERC20#<unrecognized-selector>
+  From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
+  To:                  0xcf7ed3acca5a467e9e704c703e8d87f634fb0fc9
+
+  Error: Transaction reverted without a reason
+
+[31meth_call[0m
+  Contract call:       MockERC20#<unrecognized-selector>
+  From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
+  To:                  0xcf7ed3acca5a467e9e704c703e8d87f634fb0fc9
+
+  Error: Transaction reverted without a reason
+
+[32meth_call[0m
+  Contract call:       MockERC20#balanceOf
+  From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
+  To:                  0xcf7ed3acca5a467e9e704c703e8d87f634fb0fc9
+
+[31meth_call[0m
+  Contract call:       MockERC20#<unrecognized-selector>
+  From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
+  To:                  0xcf7ed3acca5a467e9e704c703e8d87f634fb0fc9
+
+  Error: Transaction reverted without a reason
+
+[31meth_call[0m
+  Contract call:       MockERC20#<unrecognized-selector>
+  From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
+  To:                  0xcf7ed3acca5a467e9e704c703e8d87f634fb0fc9
+
+  Error: Transaction reverted without a reason
+
+[32meth_getTransactionCount[0m
+[32meth_sendRawTransaction[0m
+  Contract call:       MockERC20#approve
+  Transaction:         0x76f3ff46fe358587093ead01c633445a5b805725857c2fb929adafa77d66f957
+  From:                0x70997970c51812dc3a010c7d01b50e0d17dc79c8
+  To:                  0xcf7ed3acca5a467e9e704c703e8d87f634fb0fc9
+  Value:               0 ETH
+  Gas used:            46331 of 46331
+  Block #30:           0xb378b3188de3d8357ba41c49cf05551299935b64da606c1ef47d2dd31798d2d6
+
+[31meth_call[0m
+  Contract call:       MockERC20#<unrecognized-selector>
+  From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
+  To:                  0xcf7ed3acca5a467e9e704c703e8d87f634fb0fc9
+
+  Error: Transaction reverted without a reason
+
+[32meth_getTransactionReceipt[0m
+[31meth_call[0m
+  Contract deployment: <UnrecognizedContract>
+  From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
+
+  TransactionExecutionError: StackOverflow
+
+[32meth_blockNumber[0m
+[31meth_call[0m
+  Contract call:       MockERC20#<unrecognized-selector>
+  From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
+  To:                  0xcf7ed3acca5a467e9e704c703e8d87f634fb0fc9
+
+  Error: Transaction reverted without a reason
+
+[32meth_call[0m
+  Contract call:       MockERC20#symbol
+  From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
+  To:                  0xcf7ed3acca5a467e9e704c703e8d87f634fb0fc9
+
+[32meth_call[0m
+  Contract call:       MockERC20#decimals
+  From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
+  To:                  0xcf7ed3acca5a467e9e704c703e8d87f634fb0fc9
+
+[32meth_call[0m
+  Contract call:       BountyVault#totalAssets
+  From:                0x70997970c51812dc3a010c7d01b50e0d17dc79c8
+  To:                  0xc6e7df5e7b4f2a278906862b61205850344d4e7d
+
+[32meth_call[0m
+  Contract call:       BountyVault#totalSupply
+  From:                0x70997970c51812dc3a010c7d01b50e0d17dc79c8
+  To:                  0xc6e7df5e7b4f2a278906862b61205850344d4e7d
+
+[32meth_call[0m
+  Contract call:       BountyVault#totalYieldHarvested
+  From:                0x70997970c51812dc3a010c7d01b50e0d17dc79c8
+  To:                  0xc6e7df5e7b4f2a278906862b61205850344d4e7d
+
+[32meth_call[0m
+  Contract call:       MockERC20#balanceOf
+  From:                0x70997970c51812dc3a010c7d01b50e0d17dc79c8
+  To:                  0xcf7ed3acca5a467e9e704c703e8d87f634fb0fc9
+
+[32meth_call[0m
+  Contract call:       BountyVault#balanceOf
+  From:                0x70997970c51812dc3a010c7d01b50e0d17dc79c8
+  To:                  0xc6e7df5e7b4f2a278906862b61205850344d4e7d
+
+[32meth_call[0m
+  Contract call:       MockERC20#allowance
+  From:                0x70997970c51812dc3a010c7d01b50e0d17dc79c8
+  To:                  0xcf7ed3acca5a467e9e704c703e8d87f634fb0fc9
+
+[31meth_call[0m
+  Contract call:       MockERC20#<unrecognized-selector>
+  From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
+  To:                  0xcf7ed3acca5a467e9e704c703e8d87f634fb0fc9
+
+  Error: Transaction reverted without a reason
+
+[31meth_call[0m
+  Contract call:       MockERC20#<unrecognized-selector>
+  From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
+  To:                  0xcf7ed3acca5a467e9e704c703e8d87f634fb0fc9
+
+  Error: Transaction reverted without a reason
+
+[32meth_blockNumber[0m
+[32meth_estimateGas[0m
+[32meth_getCode[0m
+[32meth_getCode (2)[0m
+[32meth_gasPrice[0m
+[32meth_blockNumber[0m
+[32meth_getBalance[0m
+[31meth_call[0m
+  Contract call:       BountyVault#<unrecognized-selector>
+  From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
+  To:                  0xc6e7df5e7b4f2a278906862b61205850344d4e7d
+
+  Error: Transaction reverted without a reason
+
+[31meth_call[0m
+  Contract call:       BountyVault#<unrecognized-selector>
+  From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
+  To:                  0xc6e7df5e7b4f2a278906862b61205850344d4e7d
+
+  Error: Transaction reverted without a reason
+
+[32meth_call[0m
+  Contract call:       BountyVault#symbol
+  From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
+  To:                  0xc6e7df5e7b4f2a278906862b61205850344d4e7d
+
+[32meth_call[0m
+  Contract call:       BountyVault#decimals
+  From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
+  To:                  0xc6e7df5e7b4f2a278906862b61205850344d4e7d
+
+[32meth_blockNumber[0m
+[32meth_getBlockByNumber[0m
+[31meth_call[0m
+  Contract call:       BountyVault#<unrecognized-selector>
+  From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
+  To:                  0xc6e7df5e7b4f2a278906862b61205850344d4e7d
+
+  Error: Transaction reverted without a reason
+
+[31meth_call[0m
+  Contract call:       BountyVault#<unrecognized-selector>
+  From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
+  To:                  0xc6e7df5e7b4f2a278906862b61205850344d4e7d
+
+  Error: Transaction reverted without a reason
+
+[32meth_call[0m
+  Contract call:       BountyVault#balanceOf
+  From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
+  To:                  0xc6e7df5e7b4f2a278906862b61205850344d4e7d
+
+[32meth_blockNumber[0m
+[32meth_blockNumber (2)[0m
+[32meth_getTransactionCount[0m
+[32meth_sendRawTransaction[0m
+  Contract call:       BountyVault#harvestYield
+  Transaction:         0xbf6821d87124bdcbb0b3e8923dd2a8f3ed10df146cb30ac63a23c3c1450cc21a
+  From:                0x70997970c51812dc3a010c7d01b50e0d17dc79c8
+  To:                  0xc6e7df5e7b4f2a278906862b61205850344d4e7d
+  Value:               0 ETH
+  Gas used:            85053 of 85053
+  Block #31:           0x2d8f6dbfe204b338066ec26ff10bf47cbc3fe11b36c945b7147aa96ac1932faf
+
+[31meth_call[0m
+  Contract call:       BountyVault#<unrecognized-selector>
+  From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
+  To:                  0xc6e7df5e7b4f2a278906862b61205850344d4e7d
+
+  Error: Transaction reverted without a reason
+
+[31meth_call[0m
+  Contract deployment: <UnrecognizedContract>
+  From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
+
+  TransactionExecutionError: StackOverflow
+
+[31meth_call[0m
+  Contract call:       BountyVault#<unrecognized-selector>
+  From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
+  To:                  0xc6e7df5e7b4f2a278906862b61205850344d4e7d
+
+  Error: Transaction reverted without a reason
+
+[31meth_call[0m
+  Contract call:       BountyVault#<unrecognized-selector>
+  From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
+  To:                  0xc6e7df5e7b4f2a278906862b61205850344d4e7d
+
+  Error: Transaction reverted without a reason
+
+[31meth_call[0m
+  Contract call:       BountyVault#<unrecognized-selector>
+  From:                0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
+  To:                  0xc6e7df5e7b4f2a278906862b61205850344d4e7d
+
+  Error: Transaction reverted without a reason
+
+[32meth_getTransactionReceipt[0m
+[32meth_blockNumber[0m
+[32meth_call[0m
+  Contract call:       BountyVault#totalAssets
+  From:                0x70997970c51812dc3a010c7d01b50e0d17dc79c8
+  To:                  0xc6e7df5e7b4f2a278906862b61205850344d4e7d
+
+[32meth_call[0m
+  Contract call:       BountyVault#totalSupply
+  From:                0x70997970c51812dc3a010c7d01b50e0d17dc79c8
+  To:                  0xc6e7df5e7b4f2a278906862b61205850344d4e7d
+
+[32meth_call[0m
+  Contract call:       BountyVault#totalYieldHarvested
+  From:                0x70997970c51812dc3a010c7d01b50e0d17dc79c8
+  To:                  0xc6e7df5e7b4f2a278906862b61205850344d4e7d
+
+[32meth_call[0m
+  Contract call:       MockERC20#balanceOf
+  From:                0x70997970c51812dc3a010c7d01b50e0d17dc79c8
+  To:                  0xcf7ed3acca5a467e9e704c703e8d87f634fb0fc9
+
+[32meth_call[0m
+  Contract call:       BountyVault#balanceOf
+  From:                0x70997970c51812dc3a010c7d01b50e0d17dc79c8
+  To:                  0xc6e7df5e7b4f2a278906862b61205850344d4e7d
+
+[32meth_call[0m
+  Contract call:       MockERC20#allowance
+  From:                0x70997970c51812dc3a010c7d01b50e0d17dc79c8
+  To:                  0xcf7ed3acca5a467e9e704c703e8d87f634fb0fc9
+
+^C

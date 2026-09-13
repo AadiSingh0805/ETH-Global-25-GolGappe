@@ -25,9 +25,9 @@ const Navbar = () => {
         </div>
         <div className="navbar-right">
           <div className="navbar-links">
-            <a href="#" className="nav-link">Browse</a>
+            <a href="/contributor/dashboard" className="nav-link">Browse</a>
             <a href="/bounties/redeem" className="nav-link">Bounties</a>
-            <a href="#" className="nav-link">Leaderboard</a>
+            <a href="/vault" className="nav-link vault-highlight">ERC-4626 Vault</a>
           </div>
           <div className="profile-section">
             <div className="profile-dropdown" onClick={toggleDropdown}>

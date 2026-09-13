@@ -59,6 +59,11 @@ async function main() {
   await (await weth.approve(await wethUsdcPool.getAddress(), usdcReserveEth)).wait();
   await (await wethUsdcPool.addLiquidity(usdcReserveEth, usdcReserveToken)).wait();
 
+  // Deploy BountyVault (ERC-4626 Tokenized Vault for GitBountys)
+  const BountyVault = await hre.ethers.getContractFactory('BountyVault');
+  const bountyVault = await BountyVault.deploy(await tokenC.getAddress());
+  await bountyVault.waitForDeployment();
+
   const deploymentsDir = path.join(__dirname, '..', 'deployments');
   fs.mkdirSync(deploymentsDir, { recursive: true });
   const deploymentPath = path.join(deploymentsDir, 'localhost.json');
@@ -70,6 +75,9 @@ async function main() {
     ggp: await tokenA.getAddress(),
     btc: await tokenB.getAddress(),
     usdc: await tokenC.getAddress(),
+    mockUSDC: await tokenC.getAddress(),
+    bountyVault: await bountyVault.getAddress(),
+    studentVault: await bountyVault.getAddress(),
     tokenA: await tokenA.getAddress(),
     tokenB: await tokenB.getAddress(),
     tokenC: await tokenC.getAddress(),

@@ -10,6 +10,128 @@
 🚀 Server running on port 5000
 📊 Environment: development
 🌐 Frontend URL: http://localhost:5173
-[31m[nodemon] app crashed - waiting for file changes before starting...[39m
+[0mPOST /api/auth/metamask/nonce [32m200[0m 2.942 ms - 171[0m
+Creating new user for wallet 0x70997970c51812dc3a010c7d01b50e0d17dc79c8
+[0mPOST /api/auth/metamask/verify [32m200[0m 84.433 ms - 589[0m
+[0mGET /api/auth/github [36m304[0m 0.892 ms - -[0m
+[0mGET /api/auth/github/callback?code=9e475adeb412df09d115&iss=https%3A%2F%2Fgithub.com%2Flogin%2Foauth [36m302[0m 1210.423 ms - 65[0m
+[0mGET /api/auth/me [32m200[0m 1.979 ms - 780[0m
+[0mGET /api/auth/me [32m200[0m 0.467 ms - 780[0m
+[0mGET /api/auth/me [32m200[0m 0.366 ms - 780[0m
+[0mGET /api/auth/me [32m200[0m 0.442 ms - 780[0m
+🔍 Fetching listed repositories...
+🔍 Fetching listed repositories...
+📊 Repository listing query result: { success: true, total: 0, dataLength: 0 }
+📊 Repository listing query result: { success: true, total: 0, dataLength: 0 }
+[0mGET /api/repos/listed [32m200[0m 81.391 ms - 83[0m
+[0mGET /api/repos/listed [32m200[0m 74.919 ms - 83[0m
+[0mGET /api/repos [36m304[0m 545.930 ms - -[0m
+[0mGET /api/repos [32m200[0m 1300.490 ms - 17757[0m
+[0mGET /api/repos/1204859322/bounties [32m200[0m 56.844 ms - 206[0m
+[0mGET /api/repos/github/AadiSingh0805/cbd-mp-temp/issues [36m304[0m 389.429 ms - -[0m
+[0mGET /api/repos/github/AadiSingh0805/cbd-mp-temp/issues [36m304[0m 404.312 ms - -[0m
+� Creating bounty for user wallet_709979_0996 on repo 1204859322 (skipping ownership validation)
+✅ User wallet_709979_0996 creating bounty with admin override (ownership validation skipped)
+[0mPOST /api/repos/1204859322/issues/4/bounty [32m200[0m 369.671 ms - 1060[0m
+🔍 Fetching listed repositories...
+🔍 Fetching listed repositories...
+🔍 Fetching listed repositories...
+🔍 Fetching listed repositories...
+📊 Repository listing query result: { success: true, total: 1, dataLength: 1 }
+📦 Repo 1: {
+  blockchainId: 1204859322,
+  cid: null,
+  owner: '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266',
+  githubId: 1204859322,
+  name: 'https://github.com/AadiSingh0805/cbd-mp-temp',
+  hasMetadata: false
+}
+📊 Repository listing query result: { success: true, total: 1, dataLength: 1 }
+📦 Repo 1: {
+  blockchainId: 1204859322,
+  cid: null,
+  owner: '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266',
+  githubId: 1204859322,
+  name: 'https://github.com/AadiSingh0805/cbd-mp-temp',
+  hasMetadata: false
+}
+📊 Repository listing query result: { success: true, total: 1, dataLength: 1 }
+📦 Repo 1: {
+  blockchainId: 1204859322,
+  cid: null,
+  owner: '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266',
+  githubId: 1204859322,
+  name: 'https://github.com/AadiSingh0805/cbd-mp-temp',
+  hasMetadata: false
+}
+📊 Repository listing query result: { success: true, total: 1, dataLength: 1 }
+📦 Repo 1: {
+  blockchainId: 1204859322,
+  cid: null,
+  owner: '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266',
+  githubId: 1204859322,
+  name: 'https://github.com/AadiSingh0805/cbd-mp-temp',
+  hasMetadata: false
+}
+[0mGET /api/repos/listed [32m200[0m 93.697 ms - 435[0m
+[0mGET /api/repos/listed [32m200[0m 90.000 ms - 435[0m
+[0mGET /api/repos/listed [32m200[0m 89.032 ms - 435[0m
+[0mGET /api/repos/listed [32m200[0m 88.231 ms - 435[0m
+🔍 Fetching listed repositories...
+🔍 Fetching listed repositories...
+📊 Repository listing query result: { success: true, total: 1, dataLength: 1 }
+📦 Repo 1: {
+  blockchainId: 1204859322,
+  cid: null,
+  owner: '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266',
+  githubId: 1204859322,
+  name: 'https://github.com/AadiSingh0805/cbd-mp-temp',
+  hasMetadata: false
+}
+📊 Repository listing query result: { success: true, total: 1, dataLength: 1 }
+📦 Repo 1: {
+  blockchainId: 1204859322,
+  cid: null,
+  owner: '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266',
+  githubId: 1204859322,
+  name: 'https://github.com/AadiSingh0805/cbd-mp-temp',
+  hasMetadata: false
+}
+[0mGET /api/repos/listed [32m200[0m 89.061 ms - 435[0m
+[0mGET /api/repos/listed [32m200[0m 86.192 ms - 435[0m
+[0mGET /api/repos/1204859322/bounties [32m200[0m 77.957 ms - 820[0m
+[0mGET /api/repos/1204859322/bounties [32m200[0m 74.826 ms - 820[0m
+[0mGET /api/repos/1204859322/bounties [32m200[0m 73.403 ms - 820[0m
+[0mGET /api/repos/1204859322/issues/4/payout-quote?payoutCurrency=ETH&_t=1787895887111 [32m200[0m 57.110 ms - 276[0m
+[0mGET /api/repos/1204859322/bounties [32m200[0m 85.803 ms - 820[0m
+[0mGET /api/repos/1204859322/bounties [36m304[0m 88.552 ms - -[0m
+[0mGET /api/repos/1204859322/bounties [32m200[0m 86.711 ms - 820[0m
+[0mGET /api/repos/1204859322/issues/4/payout-quote?payoutCurrency=ETH&_t=1787895887215 [32m200[0m 49.351 ms - 276[0m
+[0mGET /api/repos/1204859322/issues/4/payout-quote?payoutCurrency=vUSDC&_t=1787895890914 [31m500[0m 51.917 ms - 107[0m
+[0mPOST /api/repos/1204859322/issues/4/complete [32m200[0m 823.223 ms - 512[0m
+🔍 Fetching listed repositories...
+📊 Repository listing query result: { success: true, total: 1, dataLength: 1 }
+📦 Repo 1: {
+  blockchainId: 1204859322,
+  cid: null,
+  owner: '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266',
+  githubId: 1204859322,
+  name: 'https://github.com/AadiSingh0805/cbd-mp-temp',
+  hasMetadata: false
+}
+[0mGET /api/repos/listed [36m304[0m 68.337 ms - -[0m
+[0mGET /api/repos/1204859322/bounties [32m200[0m 54.664 ms - 908[0m
+[0mGET /api/repos/deployments [36m304[0m 0.487 ms - -[0m
+[0mGET /api/auth/me [32m200[0m 0.376 ms - 780[0m
+[0mGET /api/auth/me [36m304[0m 0.615 ms - -[0m
+[0mGET /api/repos/deployments [36m304[0m 0.309 ms - -[0m
+[0mGET /api/repos/deployments [36m304[0m 0.298 ms - -[0m
+[0mGET /api/repos/deployments [36m304[0m 0.319 ms - -[0m
+[0mGET /api/auth/me [36m304[0m 0.409 ms - -[0m
+[0mGET /api/auth/me [36m304[0m 0.511 ms - -[0m
 [32m[nodemon] restarting child process[39m
 [32m[nodemon] starting `node server.js`[39m
+🚀 Server running on port 5000
+📊 Environment: development
+🌐 Frontend URL: http://localhost:5173
+^C

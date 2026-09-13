@@ -30,6 +30,22 @@ const resolvePayoutAddress = () => {
   return null;
 };
 
+// Get deployment contract addresses
+router.get('/deployments', optionalAuth, (req, res) => {
+  try {
+    const deployment = bountyService.getLocalDeployment ? bountyService.getLocalDeployment() : null;
+    res.json({
+      success: true,
+      deployment
+    });
+  } catch (err) {
+    res.json({
+      success: false,
+      error: err.message
+    });
+  }
+});
+
 // Get user repositories from GitHub
 router.get('/', requireAuth, async (req, res) => {
   try {

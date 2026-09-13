@@ -73,6 +73,17 @@
   background-color: rgba(29, 185, 84, 0.1);
 }
 
+.nav-link.vault-highlight {
+  color: #1DB954;
+  border: 1px solid #1DB954;
+  background-color: rgba(29, 185, 84, 0.05);
+}
+
+.nav-link.vault-highlight:hover {
+  background-color: #1DB954;
+  color: #000000;
+}
+
 .profile-section {
   position: relative;
 }

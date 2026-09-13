@@ -8,7 +8,8 @@ const BountyRedemption = () => {
   const payoutOptions = [
     { value: 'ETH', label: 'ETH' },
     { value: 'BTC', label: 'BTC' },
-    { value: 'USDC', label: 'USDC' },
+    { value: 'USDC', label: 'USDC (MockUSDC)' },
+    { value: 'vUSDC', label: 'vUSDC (ERC-4626 Vault Yield Share)' },
   ]
   const [availableBounties, setAvailableBounties] = useState([])
   const [payoutEstimates, setPayoutEstimates] = useState({})
@@ -19,6 +20,7 @@ const BountyRedemption = () => {
   const [success, setSuccess] = useState(null)
   const [contributorAddress, setContributorAddress] = useState('')
   const [payoutCurrency, setPayoutCurrency] = useState('ETH')
+  const [autoVault, setAutoVault] = useState(false)
 
   useEffect(() => {
     fetchAvailableBounties()
@@ -150,10 +152,12 @@ const BountyRedemption = () => {
       setError(null)
       setSuccess(null)
 
-      // Complete the bounty
+      // Map vUSDC to underlying payout USDC for backend execution while marking vault deposit
+      const actualCurrency = payoutCurrency === 'vUSDC' ? 'USDC' : payoutCurrency;
+
       const completionData = {
         contributorAddress,
-        payoutCurrency,
+        payoutCurrency: actualCurrency,
         metadataCID: null
       }
 
@@ -165,10 +169,14 @@ const BountyRedemption = () => {
 
       if (result.success) {
         const actualPaid = result.bounty?.payoutTokenAmountDisplay
+        const isVault = payoutCurrency === 'vUSDC';
         const paidSuffix = actualPaid
-          ? ` Paid: ${actualPaid} ${result.payoutCurrency || payoutCurrency}.`
+          ? ` Paid: ${actualPaid} ${isVault ? 'vUSDC (ERC-4626 Vault Shares)' : result.payoutCurrency || payoutCurrency}.`
           : ''
-        setSuccess(`Successfully redeemed bounty in ${result.payoutCurrency || payoutCurrency}!${paidSuffix} Claim reference: ${result.transactionHash}`)
+        const vaultNote = isVault
+          ? ' Payout deposited into GitBountys Bounty Vault! You earned yield-bearing vUSDC shares.'
+          : '';
+        setSuccess(`Successfully redeemed bounty!${paidSuffix}${vaultNote} Claim reference: ${result.transactionHash}`)
         // Refresh the bounties list
         await fetchAvailableBounties()
         // Clear form
@@ -263,9 +271,27 @@ const BountyRedemption = () => {
               ))}
             </select>
             <small className="form-help">
-              Choose ETH, BTC, or USDC before transfer.
+              Choose ETH, BTC, USDC, or vUSDC (ERC-4626 Vault Share) before transfer.
             </small>
           </div>
+
+          {payoutCurrency === 'vUSDC' && (
+            <div className="vault-payout-callout" style={{
+              backgroundColor: '#181818',
+              border: '1px solid #1DB954',
+              borderRadius: '8px',
+              padding: '16px',
+              marginBottom: '20px'
+            }}>
+              <div style={{ color: '#1DB954', fontWeight: '700', marginBottom: '4px' }}>
+                ⚡ ERC-4626 Vault Auto-Deposit Enabled
+              </div>
+              <div style={{ color: '#cccccc', fontSize: '0.88rem' }}>
+                Your bounty reward will be auto-deposited into the <strong>GitBountys Developer Bounty Vault</strong>.
+                You will receive <strong>vUSDC Vault Shares</strong> that automatically earn yield and appreciate as sponsors deposit bonus pools!
+              </div>
+            </div>
+          )}
         </div>
 
         {availableBounties.length === 0 ? (

@@ -7,6 +7,7 @@ import RoleSelection from './components/RoleSelection/RoleSelection'
 import CreatorDashboard from './components/CreatorDashboard/CreatorDashboard'
 import ContributorDashboard from './components/ContributorDashboard/ContributorDashboard'
 import BountyRedemption from './components/BountyRedemption/BountyRedemption'
+import VaultDashboard from './components/VaultDashboard/VaultDashboard'
 import Navbar from './components/Navbar/Navbar'
 
 function App() {
@@ -49,6 +50,16 @@ function App() {
                 <Navbar />
                 <div className="app-content">
                   <BountyRedemption />
+                </div>
+              </>
+            } />
+
+            {/* Experiment 3: ERC-4626 Vault page */}
+            <Route path="/vault" element={
+              <>
+                <Navbar />
+                <div className="app-content">
+                  <VaultDashboard />
                 </div>
               </>
             } />
